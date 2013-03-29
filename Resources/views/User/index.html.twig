@@ -1,0 +1,76 @@
+{% extends "RedpillLinproCommonBundle::layout.html.twig" %}
+
+{% block content %}
+
+<h1>User list</h1>
+
+
+{% if pages is defined and pages > 1 %}
+    <p>Pages: 
+    {% for route in routes %}
+        {% if pagenum != route.num %}
+            <a href="{{ route.route  }}">{{ route.num }}</a>
+        {% else %}
+            {{ route.num }}
+        {% endif %}
+    {% endfor %}
+  </p> 
+{% endif %}
+
+
+<table class="records_list" id="sortable_table">
+    <thead>
+        <tr>
+            <th>Username</th>
+            <th>Usernamecanonical</th>
+            <th>Email</th>
+            <th>Emailcanonical</th>
+            <th>Enabled</th>
+            <th>Lastlogin</th>
+            <th>Locked</th>
+            <th>Expired</th>
+            <th>Expiresat</th>
+            <th>Roles</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for entity in entities %}
+        <tr>
+            <td><a href="{{ path('user_show', { 'id': entity.id }) }}">{{ entity.username }}</a></td>
+            <td>{{ entity.usernameCanonical }}</td>
+            <td>{{ entity.email }}</td>
+            <td>{{ entity.emailCanonical }}</td>
+            <td>{{ entity.enabled }}</td>
+            <td>{% if entity.lastLogin %}{{ entity.lastLogin|date('Y-m-d H:i:s') }}{% endif %}</td>
+            <td>{{ entity.locked }}</td>
+            <td>{{ entity.expired }}</td>
+{#
+            <td>{% if entity.expiresAt %}{{ entity.expiresAt|date('Y-m-d H:i:s') }}{% endif %}</td>
+#}
+            <td>{% if entity.passwordRequestedAt %}{{ entity.passwordRequestedAt|date('Y-m-d H:i:s') }}{% endif %}</td>
+            <td>{{ entity.roles | prettyprint }}</td>
+            <td>
+                <ul>
+                    <li>
+                        <a href="{{ path('user_show', { 'id': entity.id }) }}">show</a>
+                    </li>
+                    <li>
+                        <a href="{{ path('user_edit', { 'id': entity.id }) }}">edit</a>
+                    </li>
+                </ul>
+            </td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+
+<ul>
+    <li>
+        <a href="{{ path('user_new') }}">
+            Create a new entry
+        </a>
+    </li>
+</ul>
+
+{% endblock %}

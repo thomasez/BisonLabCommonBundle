@@ -1,0 +1,15 @@
+{% extends "RedpillLinproInventoryBundle::layout.html.twig" %}
+
+{% block content %}
+
+<h1>Dang!</h1>
+
+<p>{{ message }}</p>
+
+{% if url is defined %}
+
+<p><a href="{{ url.url }}">{{ url.text }}</a></p>
+
+{% endif %}
+
+{% endblock %}

@@ -1,0 +1,420 @@
+<?php
+
+namespace RedpillLinpro\CommonBundle\Controller;
+
+use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\Serializer\Normalizer\GetSetMethodNormalizer;
+use Symfony\Component\Serializer\Serializer;
+use Symfony\Component\Serializer\Encoder\JsonEncoder;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
+use Symfony\Component\HttpFoundation\Response;
+
+class CommonController extends Controller
+{
+
+    /*
+     * The Context stuff
+     */
+
+    public function contextGetAction($context_config, $access, $system, $key, $value)
+    {
+
+        $em = $this->getDoctrine()->getManager();
+        $request = $this->getRequest();
+
+        $repo = $em->getRepository($context_config['entity']);
+
+        // Grabbing only one for now.. 
+        $entities = $repo->getOneByContext($system, $key,
+                      $value);
+
+        if ($access == 'rest') {
+            return $this->returnRestData($this->getRequest(), $entities);
+        }
+
+        return $this->render($context_config['show_template'],
+               $this->showAction($access, $entities->getId()));
+
+        if (count($entities) == 1) {
+            // Yes, we do end up with an extra find-query but it's not
+            // much of an issue speed wise, this is a search.
+            // And the template name here? not good at all.
+            return $this->render('RedpillLinproInventoryBundle:Site:show.html.twig', 
+                        $this->showAction($access, $entities[0]->getId()));
+        } else {
+            return $this->render('RedpillLinproInventoryBundle:Site:index.html.twig', array('entities' => $entities));
+        }
+
+    }
+
+    public function contextPostAction($context_config, $access)
+    {
+
+        $request = $this->getRequest();
+        $post_data = $request->request->get('form');
+
+        $system = $post_data['system'];
+        $object_name = $post_data['key'];
+        $object_id = $post_data['value'];
+
+        return $this->contextGetAction($context_config, $access, $system, $key, $value);
+
+    }
+
+    public function createContextForms($context_for, $contexts) {
+
+        // prepare the contexts, which is putting them in an array we can use
+        $context_arr = array();
+        foreach ($contexts as $c) {
+            $context_arr[$c->getSystem()][$c->getObjectName()] = $c;
+        }
+
+        $form_factory = $this->container->get('form.factory');
+
+        // This is actually very wrong... It's not really common is it?
+        // TODO: get rid of this one, aka make it generic.
+        $context_conf = $this->container->getParameter('app.contexts');
+        list($bundle, $object) = explode(":", $context_for);
+        $conf = $context_conf[$bundle][$object];
+        $forms = array();
+        foreach ($conf as $system_name => $object_info) {
+            foreach ($object_info as $context_data) {
+                $object_name = $context_data['object_name'];
+                $form_name  = "context__" . $system_name . "__" . $object_name;
+                $form_label = $context_data['label'];
+
+                if (isset($context_arr[$system_name][$object_name])) {
+                    $c_object = $context_arr[$system_name][$object_name];
+
+                    $form   = $form_factory->createNamedBuilder($form_name, 'form', $c_object)
+                        ->add('id', 'hidden', array('data' => $c_object->getId()))
+                        ->add('external_id', 'text', array('label' => 'External ID', 'required' => false))
+                        ->add('url', 'text', array('label' => 'URL', 'required' => false))
+                        ->getForm();
+                } else {
+                    $form   = $form_factory->createNamedBuilder($form_name, 'form')
+                        ->add('external_id', 'text', array('label' => 'External ID', 'required' => false))
+                        ->add('url', 'text', array('label' => 'URL', 'required' => false, 'data' => $context_data['url_base']))
+                        ->getForm();
+
+                }
+                $forms[] = array('label' => $form_label,
+                        'form' => $form->createView());
+            }
+        } 
+        return $forms;
+
+    }
+
+    public function updateContextForms($context_for, $context_class, $context_for_object) {
+
+        $em = $this->getDoctrine()->getManager();
+        $request = $this->getRequest();
+
+        $context_conf = $this->container->getParameter('app.contexts');
+        list($bundle, $object) = explode(":", $context_for);
+        $conf = $context_conf[$bundle][$object];
+        $forms = array();
+        foreach ($conf as $system_name => $object_info) {
+            foreach ($object_info as $context_data) {
+                $object_name = $context_data['object_name'];
+                $form_name  = "context__" . $system_name . "__" . $object_name;
+
+                $context_arr = $request->request->get($form_name);
+
+                if (empty($context_arr)) { continue; }
+
+                if (isset($context_arr['id']) ) {
+                    $context = $em->getRepository($context_class)->find($context_arr['id']);
+                    $context->setExternalId($context_arr['external_id']);
+                    $context->setUrl($context_arr['url']);
+                } elseif (!empty($context_arr['external_id'])) { 
+                    $context = new $context_class;
+                    $context->setSystem($system_name);
+                    $context->setObjectName($object_name);
+                    $context->setExternalId($context_arr['external_id']);
+                    $context->setUrl($context_arr['url']);
+                    $context->setContextForObject($context_for_object);
+                } else {
+                    continue;
+                }
+                $em->persist($context);
+
+            }
+        }
+
+    }
+    
+    /*
+     * The REST stuff
+     */
+
+    public function returnRestData($request, $data)
+    {
+
+        if (in_array('application/xml', $request->getAcceptableContentTypes())) {
+            $serializer = $this->get('serializer');
+            header('Content-Type: application/xml');
+            echo $serializer->serialize($data, 'xml');
+            return new Response('', 200);
+        } elseif (in_array('application/yml;', $request->getAcceptableContentTypes())) {
+            $serializer = $this->get('serializer');
+            header('Content-Type: text/yaml');
+            echo $serializer->serialize($data, 'yml');
+            return new Response('', 200);
+        } elseif (in_array('application/html', $request->getAcceptableContentTypes())) {
+            header('Content-Type: application/html');
+            $serializer = $this->get('serializer');
+            $data_arr = json_decode($serializer->serialize($data, 'json'), true);
+            return $this->render('RedpillLinproCommonBundle:Default:show.html.twig', 
+                array('data' => $data_arr));
+        } elseif (in_array('text/plain', $request->getAcceptableContentTypes())) {
+            if (!is_string($data)) {
+                throw InvalidArgumentException("Can not return non-string content as plain text.");
+            }
+            header('Content-Type: text/plain');
+            echo $data;
+            return new Response('', 200);
+        } else { // Json.
+            $serializer = $this->get('serializer');
+            header('Content-Type: application/json');
+            echo $serializer->serialize($data, 'json');
+            return new Response('', 200);
+        }
+    }
+
+    public function returnAsJson($entity) 
+    {
+        // But why?
+        echo $entity->toJson(true);
+        return new Response('', 200);
+    }
+
+    public function returnEntitiesAsJson($entities) 
+    {
+        // json encode does not send an empty {} if nothing in it.
+        if (count($entities) == 0) {
+            return new Response('{}', 200);
+        }
+
+        $arr = array();
+        foreach ($entities as $entity) {
+            $arr[] = $entity->toArray(true);
+        }
+        $json = new JsonEncoder();
+        echo $json->encode($arr, 'json');
+        return new Response('', 200);
+    }
+
+    /* 
+     * Common controller actions
+     */
+    public function showLogPage($access, $entity_name, $id)
+    {
+        $em = $this->getDoctrine()->getManager();
+
+        $entity = $em->getRepository('RedpillLinproInventoryBundle:' . $entity_name)->find($id);
+
+        if (!$entity) {
+            throw $this->createNotFoundException('Unable to find ' . $entity_name . ' entity.');
+        }
+
+        $log_repo = $em->getRepository('Gedmo\Loggable\Entity\LogEntry');
+
+        $logs = $log_repo->findBy(array('objectClass' => get_class($entity),
+            'objectId' => $entity->getId()));
+
+        if ($access == 'rest') {
+            return $this->returnRestData($this->getRequest(), $logs);
+        }
+
+        return $this->render('RedpillLinproInventoryBundle::showLog.html.twig', 
+            array(
+                'entity'      => $entity,
+                'logs'    => $logs,
+            )
+        );
+
+    }
+
+    /*
+     * Generic paged list actions.
+     */
+
+    public function pagedListByEntityAction($access, $em, $repo, $field_name, $entity, $entity_obj, $route, $total_amount_items, $entity_identifier_name = null)
+    {
+
+        $request = $this->getRequest();
+
+        // Pagination with rest? 
+        if ($access == 'rest') {
+            $entities = $repo->findBy(
+                array($field_name => $entity_obj));
+            return $this->returnRestData($this->getRequest(), $entities);
+        }
+
+        $order_by = $this->getOrderBy($request);
+
+        if ( "all" === $request->get('page') ) {
+            $entities = $repo->findBy(
+                array($field_name => $entity_obj), $order_by, null, null);
+            $page = 'all';
+        } else {
+            $page     = (int)$request->get('page') 
+                      ? (int)$request->get('page') : 1;
+            $offset = ($page - 1) * $this->per_page;
+
+            $entities = $repo->findBy(
+                array($field_name => $entity_obj), $order_by, $this->per_page, $offset);
+        }
+
+        $pages = ceil($total_amount_items / $this->per_page);
+
+// The ever needing debug, just commented out
+// error_log("entities:" . count($entities) . "pages:$pages page:$page, offset:$offset pp:" . $this->per_page);
+
+        $entity_identifier_name = isset($entity_identifier_name) ?  
+                $entity_identifier_name : strtolower($entity);
+
+        $routes = array();
+        $router = $this->get('router');
+
+        $routes[] = array('num' => 'All', 
+                    'route' => $router->generate($route, 
+                     array('page' => 'all', 
+                       $entity_identifier_name => $entity_obj->getId())));
+
+        for ($i = 1 ; $i <= $pages ; $i++) {
+            $routes[] = array('num' => $i, 
+                    'route' => $router->generate($route, 
+                     array('page' => $i, 
+                       $entity_identifier_name => $entity_obj->getId())));
+        }
+
+        return array(
+                'entities'     => $entities,
+                'pages'        => $pages,
+                'pagenum'      => $page,
+                'routes'       => $routes,
+                'orderby'     => $order_by,
+                'total_items'  => $total_amount_items
+                );
+
+    }
+
+    public function pagedIndexAction($access, $em, $repo, $route)
+    {
+
+        if ($access == 'rest') {
+            $entities = $repo->findAll();
+            return $this->returnRestData($this->getRequest(), $entities);
+        }
+
+        $request  = $this->getRequest();
+        $order_by = $this->getOrderBy($request);
+
+        if ( "all" === $request->get('page') ) {
+            $entities = $repo->findBy(array(), $order_by, null, null);
+            $page = 'all';
+        } else {
+            $page     = (int)$request->get('page') 
+                      ? (int)$request->get('page') : 1;
+            $offset = ($page - 1) * $this->per_page;
+            $entities = $repo->findBy(array(), $order_by, $this->per_page, $offset);
+        }
+
+        // It is so stupid I want to scream.
+        $total_entities = $repo->findAll();
+        $total_amount_entities = count($total_entities);
+        $pages = ceil($total_amount_entities / $this->per_page);
+
+        $routes = $this->createPageRoutes($request, $pages, $route, null, null);
+
+        return array(
+            'entities' => $entities,
+            'pages'          => $pages,
+            'pagenum'        => $page,
+            'routes'         => $routes,
+            'total_entities' => $total_amount_entities,
+        );
+    }
+
+    /*
+     * Generic helpers. (And I don't even like Unclean Bobs "Clean code")
+     */
+    public function createPageRoutes($request, $pages, $base_route, $object_name, $object_id)
+    {
+
+        $routes = array();
+        $router = $this->get('router');
+
+        $options['page'] = 'all';
+        if ($order_by = $this->getOrderBy($request)) {
+            $options['order_by'] = current(array_keys($order_by));
+        }
+
+        $routes[] = array('num' => 'All', 
+                    'route' => $router->generate($base_route, $options));
+
+        for ($i = 1 ; $i <= $pages ; $i++) {
+            if ($object_name && $object_id) { 
+                $options = array('page' => $i, $object_name => $object_id);
+            } else {
+                $options = array('page' => $i);
+            }
+            if ($order_by) {
+                // Ok, scream and let me know a better way if there are one.
+                // (The current thingie)
+                $options['order_by'] = current(array_keys($order_by));
+            }
+
+            $routes[] = array('num' => $i, 
+                'route' => $router->generate($base_route, $options));
+
+        }
+
+        return $routes;
+
+    }
+
+    public function createOrderByRoutes($request, $fields = array())
+    {
+
+        // I am not sure how future-proof PathInfo is here but we will find out.
+        $path = $request->getPathInfo();
+        $qs = $request->getQueryString();
+        $routes = array();
+        foreach ($fields as $field) {
+            // This should be more elegant, I guess.
+            $o_qs = preg_replace("/order_by=\w+/", "order_by=" . $field, $qs);
+
+            if (!preg_match("/order_by=\w+/", $o_qs)) {
+                $o_qs = empty($qs) ? "order_by=".$field : $qs . "&order_by=".$field;
+            }
+            $routes[] = array('route' => $path . "?" . $o_qs, 
+                    'label' => ucfirst($field) , 'orderby' => $field);
+        }
+
+        return $routes;
+    }
+
+    /*
+     * Generic helpers. (And I don't even like Unclean Bobs "Clean code")
+     */
+    public function getOrderBy($request) 
+    {
+        // Should check against what is allowed to order by. Searchable?
+        if ($order_by = $request->get('order_by')) {
+            $oarr = explode(",", $order_by);
+            $direction = isset($oarr[1]) ? $oarr[1] : 'ASC';
+            $order_by = array($oarr[0] => $direction);
+        } else {
+            $order_by = null;
+        }
+        return $order_by;
+    }
+
+}
+

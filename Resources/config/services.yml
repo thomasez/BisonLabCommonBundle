@@ -1,0 +1,13 @@
+services:
+    my.listener:
+        class: RedpillLinpro\CommonBundle\EventListener\InsertConfigIntoEntitiesListener
+        calls: 
+            - [ setContainer, ['@service_container'] ]
+        tags:
+            - { name: doctrine.event_listener, event: postLoad  }
+#    twig.extension.csv2html:
+#        class: RedpillLinpro\CommonBundle\Extension\TwigExtensionCsv2Html
+#        tags:
+#            - { name: 'twig.extension' }
+
+
