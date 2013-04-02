@@ -1,18 +1,65 @@
-{% extends "RedpillLinproLayoutBundle::layout.html.twig" %}
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <link rel="stylesheet" href="{{ asset('bundles/layout/css/standard.css') }}" type="text/css" media="all" />
+        <title>{% block title %}RedpillLinpro Examples{% endblock %}</title>
+        <link rel="shortcut icon" href="{{ asset('bundles/layout/images/favicon.ico') }}" />
+        <script type="text/javascript" src="/js/jquery-1.8.2.min.js"></script>
+        <script type="text/javascript" src="/js/jquery.tablesorter.js"></script>
 
-{% block lsidemenu %}
-<!-- <ul class="menu"> -->
-<ul>
-    <li class='active'> <a href="{{ path('home') }}"><span>Home</span></a>
-    <li>&nbsp;
-</ul>
-{% endblock %}
+<script type="text/javascript">
+$(document).ready(function()
+    {
+        $("#sortable_table").tablesorter();
+    }
+);
+</script>
 
-{% block lcontent %}
+    </head>
+    <body>
+        <div id="rl-wrapper">
+            <div id="rl-header">
+<!--
+                    <img src="{{ asset('bundles/layout/images/rl_logo_trans.png') }}" alt="Redpill Linpro">
+-->
+            </div>
 
-{% block content %}
+            {% for key, message in app.session.getFlashes() %}
+            <div class="{{ key }}">
+                {{ message|trans({}, 'FOSUserBundle') }}
+            </div>
+            {% endfor %}
 
-{% endblock %}
+            {% if app.session.flash('notice') %}
+                <div class="flash-message">
+                    <em>Notice</em>: {{ app.session.flash('notice') }}
+                </div>
+            {% endif %}
 
-{% endblock %}
+            <div id="rl-sidemenu">
+                  <img src="{{ asset('bundles/layout/images/i-sign2.png') }}" alt="Inventory"><br><br>
+                    {% block lsidemenu %}
+                    {% endblock %}
+              <div id="rl_loggedin_check">
+                 {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
+                     <small><small><b>
+                     {{ 'layout.logged_in_as'|trans({'%username%': app.user.username}, 'FOSUserBundle') }}  </b><br>
+                     <a href="{{ path('fos_user_security_logout') }}">
+                         <small><small> {{ 'layout.logout'|trans({}, 'FOSUserBundle') }} </small></small>
+                     </a></small></small>
+                 {% else %}
+                     <a href="{{ path('fos_user_security_login') }}">{{ 'layout.login'|trans({}, 'FOSUserBundle') }}</a>
+                 {% endif %}
+               </div>
+            </div>
+     
+            <div class="rl-content">
+                {% block lcontent %}
+                    {% block fos_user_content %}{% endblock fos_user_content %}
+                {% endblock %}
+            </div>
 
+        </div>
+    </body>
+</html>
