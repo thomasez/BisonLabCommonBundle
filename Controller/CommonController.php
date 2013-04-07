@@ -151,6 +151,22 @@ class CommonController extends Controller
      * The REST stuff
      */
 
+    /*
+     * Basically, "rest" is the basic authen Web services, "ajax" is the 
+     * same but from a web client with session data.
+     *
+     * I have not found any way to use two different firewalls on the
+     * same path, alas, rest and ajax is the same, but different.
+     */
+    public function isRest($access, $request = null)
+    {
+        if ('rest' == $access || 'ajax' == $access) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     public function returnRestData($request, $data)
     {
 
