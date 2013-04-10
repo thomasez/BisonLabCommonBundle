@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <link rel="stylesheet" href="{{ asset('bundles/layout/css/standard.css') }}" type="text/css" media="all" />
+        <title>{% block title %}RedpillLinpro Examples{% endblock %}</title>
+        <link rel="shortcut icon" href="{{ asset('bundles/layout/images/favicon.ico') }}" />
+        <script type="text/javascript" src="/js/jquery.min.js"></script>
+        <script type="text/javascript" src="/js/jquery.tablesorter.js"></script>
+
+<script type="text/javascript">
+$(document).ready(function()
+    {
+        $("#sortable_table").tablesorter();
+    }
+);
+</script>
+
+    </head>
+    <body>
+
+            {% for key, message in app.session.getFlashes() %}
+            <div class="{{ key }}">
+                {{ message|trans({}, 'FOSUserBundle') }}
+            </div>
+            {% endfor %}
+
+            {% if app.session.flash('notice') %}
+                <div class="flash-message">
+                    <em>Notice</em>: {{ app.session.flash('notice') }}
+                </div>
+            {% endif %}
+
+            {% block content %}
+
+            {% endblock %}
+
+        </div>
+    </body>
+</html>
