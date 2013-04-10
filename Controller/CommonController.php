@@ -265,7 +265,7 @@ class CommonController extends Controller
         $request = $this->getRequest();
 
         // Pagination with rest? 
-        if ($access == 'rest') {
+        if ($this->isRest($access)) {
             $entities = $repo->findBy(
                 array($field_name => $entity_obj));
             return $this->returnRestData($this->getRequest(), $entities);
