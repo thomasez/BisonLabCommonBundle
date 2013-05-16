@@ -19,17 +19,19 @@ $(document).ready(function()
     </head>
     <body>
 
-            {% for key, message in app.session.getFlashes() %}
-            <div class="{{ key }}">
-                {{ message|trans({}, 'FOSUserBundle') }}
-            </div>
+            {% for type, flashMessages in app.session.flashbag.all() %}
+                {% for flashMessage in flashMessages %}
+                    <div class="flash-{{ type }}">
+                        {{ flashMessage }}
+                    </div>
+                {% endfor %}
             {% endfor %}
 
-            {% if app.session.flash('notice') %}
-                <div class="flash-message">
-                    <em>Notice</em>: {{ app.session.flash('notice') }}
+            {% for flashMessage in app.session.flashbag.get('notice') %}
+                <div class="flash-notice">
+                    {{ flashMessage }}
                 </div>
-            {% endif %}
+            {% endfor %}
 
             {% block content %}
 
