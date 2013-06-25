@@ -1,0 +1,30 @@
+{% extends "RedpillLinproCommonBundle::layout.html.twig" %}
+
+{% block content %}
+
+<h1>History for {{ entity.name }}</h1>
+
+<table class="records_list" id="sortable_table">
+    <thead>
+        <tr>
+            <th>Username</th>
+            <th>Logged at</th>
+            <th>Version</th>
+            <th>Action</th>
+            <th>Data</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for log in logs %}
+        <tr>
+            <td>{{ log.username }}</td>
+            <td>{{ log.loggedat|date('Y-m-d') }}</td>
+            <td>{{ log.version }}</td>
+            <td>{{ log.action }}</td>
+            <td>{{ log.data | prettyprint }}</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+
+{% endblock %}

@@ -34,17 +34,18 @@ class CommonController extends Controller
             return $this->returnRestData($this->getRequest(), $entities);
         }
 
-        return $this->render($context_config['show_template'],
-               $this->showAction($access, $entities->getId()));
+        if (!$entities) {
+            return $this->render('RedpillLinproCommonBundle::error.html.twig', 
+                array('message' => 'Sorry, could not find what you were looking for'));
+        }
 
         if (count($entities) == 1) {
-            // Yes, we do end up with an extra find-query but it's not
-            // much of an issue speed wise, this is a search.
-            // And the template name here? not good at all.
-            return $this->render('RedpillLinproInventoryBundle:Site:show.html.twig', 
-                        $this->showAction($access, $entities[0]->getId()));
+            return $this->render($context_config['show_template'],
+               $this->showAction($access, $entities->getId()));
         } else {
-            return $this->render('RedpillLinproInventoryBundle:Site:index.html.twig', array('entities' => $entities));
+            // Not that it exists, yet.
+            return $this->render($context_config['list_template'],
+               $this->showAction($access, $entities));
         }
 
     }
@@ -55,11 +56,10 @@ class CommonController extends Controller
         $request = $this->getRequest();
         $post_data = $request->request->get('form');
 
-        $system = $post_data['system'];
-        $object_name = $post_data['key'];
-        $object_id = $post_data['value'];
+        list( $system, $object_name) = explode("__", $post_data['system__object_name']);
+        $object_id = $post_data['object_id'];
 
-        return $this->contextGetAction($context_config, $access, $system, $key, $value);
+        return $this->contextGetAction($context_config, $access, $system, $object_name, $object_id);
 
     }
 
@@ -147,6 +147,27 @@ class CommonController extends Controller
 
     }
     
+    public function createContextSearchForm($config)
+    {
+
+        $choices = array();
+        foreach ($config as $system => $system_config) {
+            if (count($system_config) > 1) {
+                foreach ($system_config as $object_config) {
+                    $choices[$system . "__" .  $object_config['object_name']] = ucfirst($system) . " - " . $object_config['object_name'];
+                }
+            } else {
+                $choices[$system . "__" .  $system_config[0]['object_name']] = ucfirst($system);
+            }
+        }
+
+        return $this->createFormBuilder()
+            ->add('system__object_name', 'choice', array('choices' => $choices))
+            ->add('object_id', 'text')
+            ->getForm();
+
+    }
+
     /*
      * The REST stuff
      */
@@ -231,7 +252,7 @@ class CommonController extends Controller
     {
         $em = $this->getDoctrine()->getManager();
 
-        $entity = $em->getRepository('RedpillLinproInventoryBundle:' . $entity_name)->find($id);
+        $entity = $em->getRepository($entity_name)->find($id);
 
         if (!$entity) {
             throw $this->createNotFoundException('Unable to find ' . $entity_name . ' entity.');
@@ -246,7 +267,7 @@ class CommonController extends Controller
             return $this->returnRestData($this->getRequest(), $logs);
         }
 
-        return $this->render('RedpillLinproInventoryBundle::showLog.html.twig', 
+        return $this->render('RedpillLinproCommonBundle::showLog.html.twig', 
             array(
                 'entity'      => $entity,
                 'logs'    => $logs,
