@@ -10,6 +10,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Request;
 
 class CommonController extends Controller
 {
@@ -128,8 +129,14 @@ class CommonController extends Controller
 
                 if (isset($context_arr['id']) ) {
                     $context = $em->getRepository($context_class)->find($context_arr['id']);
-                    $context->setExternalId($context_arr['external_id']);
-                    $context->setUrl($context_arr['url']);
+                    if (empty($context_arr['external_id'])) { 
+                        // No need for an empty context.
+                        $em->remove($context);
+                    } else {
+                        $context->setExternalId($context_arr['external_id']);
+                        $context->setUrl($context_arr['url']);
+                        $em->persist($context);
+                    }
                 } elseif (!empty($context_arr['external_id'])) { 
                     $context = new $context_class;
                     $context->setSystem($system_name);
@@ -137,10 +144,10 @@ class CommonController extends Controller
                     $context->setExternalId($context_arr['external_id']);
                     $context->setUrl($context_arr['url']);
                     $context->setContextForObject($context_for_object);
+                    $em->persist($context);
                 } else {
                     continue;
                 }
-                $em->persist($context);
 
             }
         }
