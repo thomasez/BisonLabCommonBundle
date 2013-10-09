@@ -394,10 +394,12 @@ class CommonController extends Controller
         $pages = ceil($total_amount_entities / $this->per_page);
 
         $routes = $this->createPageRoutes($request, $pages, $route, null, null);
+        $filters = $this->createFilterByForm($request, $repo);
 
         return array(
             'entities' => $entities,
             'pages'          => $pages,
+            'filters'        => $filters,
             'pagenum'        => $page,
             'routes'         => $routes,
             'total_entities' => $total_amount_entities,
@@ -463,6 +465,39 @@ class CommonController extends Controller
         return $routes;
     }
 
+    public function createFilterByForm($request, $repo)
+    {
+
+        if (!method_exists($repo, "getFilerableProperties")) { return null; }
+
+        // I am not sure how future-proof PathInfo is here but we will find out.
+        $path = $request->getPathInfo();
+        $qs = $request->getQueryString();
+        $filters = array();
+
+        $builder = $this->get('form.factory')->createNamedBuilder('filters', 'form');
+
+        $i = 1;
+
+        foreach ($repo->getFilerableProperties() as $prop => $values) {
+            $choices = array();
+            foreach ($values as $value) {
+                $key = $prop . "," . $value;
+                $choices[$key] = $value;
+            }
+            $name = "filter_by_" . $i;
+            $builder->add($name, 'choice', array(
+                'choices'  => $choices,
+                'label'    => "Add filter",
+                'required' => false,
+                'empty_value' => ucfirst($prop)
+                ));
+            $i++;
+        }
+
+        return $builder->getForm()->createView();
+    }
+
     /*
      * Generic helpers. (And I don't even like Unclean Bobs "Clean code")
      */
@@ -482,7 +517,21 @@ class CommonController extends Controller
     public function getFilterBy($request) 
     {
         // Should check against what is allowed to order by. Searchable?
-        if ($filter_by = $request->get('filter_by')) {
+        $filter_by = $request->get('filter_by');
+
+        if (!is_array($filter_by)) $filter_by = array();
+
+        // This is ohh, so annoying. I just want to POSt withj []'s!
+        $filter_by_post = $request->request->get('filters');
+        if ($filter_by_post) {
+            foreach($filter_by_post as $key => $val) {
+                if (preg_match("/^filter_by/", $key) && strlen($val) > 3) {
+                    $filter_by[] = $val;
+                }
+            } 
+        }
+
+        if (count($filter_by) > 0) {
             $filters = array();
             if (is_array($filter_by)) {
                 foreach ($filter_by as $filter) {
