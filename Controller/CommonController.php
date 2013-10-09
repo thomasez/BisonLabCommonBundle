@@ -484,8 +484,15 @@ class CommonController extends Controller
         // Should check against what is allowed to order by. Searchable?
         if ($filter_by = $request->get('filter_by')) {
             $filters = array();
-            foreach ($filter_by as $filter) {
-                $farr = explode(",", $filter);
+            if (is_array($filter_by)) {
+                foreach ($filter_by as $filter) {
+                    $farr = explode(",", $filter);
+                    $value = isset($farr[1]) ? $farr[1] : null;
+                    if (!$value) { return null; }
+                    $filters[$farr[0]] = $value;
+                }
+            } else {
+                $farr = explode(",", $filter_by);
                 $value = isset($farr[1]) ? $farr[1] : null;
                 if (!$value) { return null; }
                 $filters[$farr[0]] = $value;
