@@ -280,7 +280,6 @@ class CommonController extends Controller
                 'logs'    => $logs,
             )
         );
-
     }
 
     /*
@@ -369,9 +368,15 @@ class CommonController extends Controller
             $entities = $repo->findBy(array(), $order_by, $this->per_page, $offset);
         }
 
-        // It is so stupid I want to scream.
-        $total_entities = $repo->findAll();
-        $total_amount_entities = count($total_entities);
+        // I am sure someone will, one day, pick me on the shoulder and tell
+        // me Doctrine has a function for this..
+        if (method_exists($repo, "countAll")) {
+            $total_amount_entities = $repo->countAll();
+        } else {
+            // It is so stupid I want to scream.
+            $total_entities = $repo->findAll();
+            $total_amount_entities = count($total_entities);
+        }
         $pages = ceil($total_amount_entities / $this->per_page);
 
         $routes = $this->createPageRoutes($request, $pages, $route, null, null);
