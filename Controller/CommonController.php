@@ -298,11 +298,17 @@ class CommonController extends Controller
             return $this->returnRestData($this->getRequest(), $entities);
         }
 
-        $order_by = $this->getOrderBy($request);
+        $order_by  = $this->getOrderBy($request);
+        $filter_by = $this->getFilterBy($request);
+
+        $criteria = array($field_name => $entity_obj);
+        if ($filter_by) {
+            $criteria = array_merge($criteria, $filter_by);
+        }
 
         if ( "all" === $request->get('page') ) {
             $entities = $repo->findBy(
-                array($field_name => $entity_obj), $order_by, null, null);
+                array($criteria), $order_by, null, null);
             $page = 'all';
         } else {
             $page     = (int)$request->get('page') 
@@ -310,7 +316,7 @@ class CommonController extends Controller
             $offset = ($page - 1) * $this->per_page;
 
             $entities = $repo->findBy(
-                array($field_name => $entity_obj), $order_by, $this->per_page, $offset);
+                array($criteria), $order_by, $this->per_page, $offset);
         }
 
         $pages = ceil($total_amount_items / $this->per_page);
@@ -358,14 +364,22 @@ class CommonController extends Controller
         $request  = $this->getRequest();
         $order_by = $this->getOrderBy($request);
 
+        $filter_by = $this->getFilterBy($request);
+
+        $criteria = array();
+        if ($filter_by) {
+            $criteria = array_merge($criteria, $filter_by);
+        }
+
+
         if ( "all" === $request->get('page') ) {
-            $entities = $repo->findBy(array(), $order_by, null, null);
+            $entities = $repo->findBy($criteria, $order_by, null, null);
             $page = 'all';
         } else {
             $page     = (int)$request->get('page') 
                       ? (int)$request->get('page') : 1;
             $offset = ($page - 1) * $this->per_page;
-            $entities = $repo->findBy(array(), $order_by, $this->per_page, $offset);
+            $entities = $repo->findBy($criteria, $order_by, $this->per_page, $offset);
         }
 
         // I am sure someone will, one day, pick me on the shoulder and tell
@@ -463,6 +477,24 @@ class CommonController extends Controller
             $order_by = null;
         }
         return $order_by;
+    }
+
+    public function getFilterBy($request) 
+    {
+        // Should check against what is allowed to order by. Searchable?
+        if ($filter_by = $request->get('filter_by')) {
+            $filters = array();
+            foreach ($filter_by as $filter) {
+                $farr = explode(",", $filter);
+                $value = isset($farr[1]) ? $farr[1] : null;
+                if (!$value) { return null; }
+                $filters[$farr[0]] = $value;
+            }
+            return $filters;
+        } else {
+            $filter_by = null;
+        }
+        return $filter_by;
     }
 
 }
