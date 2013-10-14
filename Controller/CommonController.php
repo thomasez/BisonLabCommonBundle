@@ -308,7 +308,7 @@ class CommonController extends Controller
 
         if ( "all" === $request->get('page') ) {
             $entities = $repo->findBy(
-                array($criteria), $order_by, null, null);
+                $criteria, $order_by, null, null);
             $page = 'all';
         } else {
             $page     = (int)$request->get('page') 
@@ -316,7 +316,7 @@ class CommonController extends Controller
             $offset = ($page - 1) * $this->per_page;
 
             $entities = $repo->findBy(
-                array($criteria), $order_by, $this->per_page, $offset);
+                $criteria, $order_by, $this->per_page, $offset);
         }
 
         $pages = ceil($total_amount_items / $this->per_page);
@@ -385,7 +385,7 @@ class CommonController extends Controller
         // I am sure someone will, one day, pick me on the shoulder and tell
         // me Doctrine has a function for this..
         if (method_exists($repo, "countAll")) {
-            $total_amount_entities = $repo->countAll();
+            $total_amount_entities = $repo->countAll($criteria);
         } else {
             // It is so stupid I want to scream.
             $total_entities = $repo->findAll();
