@@ -468,7 +468,7 @@ class CommonController extends Controller
     public function createFilterByForm($request, $repo)
     {
 
-        if (!method_exists($repo, "getFilerableProperties")) { return null; }
+        if (!method_exists($repo, "getFilterableProperties")) { return null; }
 
         // I am not sure how future-proof PathInfo is here but we will find out.
         $path = $request->getPathInfo();
