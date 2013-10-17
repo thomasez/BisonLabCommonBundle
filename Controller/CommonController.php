@@ -342,12 +342,14 @@ class CommonController extends Controller
                        $entity_identifier_name => $entity_obj->getId())));
         }
 
+        $filters = $this->createFilterByForm($request, $repo);
         return array(
                 'entities'     => $entities,
                 'pages'        => $pages,
                 'pagenum'      => $page,
                 'routes'       => $routes,
-                'orderby'     => $order_by,
+                'filters'      => $filters,
+                'orderby'      => $order_by,
                 'total_items'  => $total_amount_items
                 );
 
