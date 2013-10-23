@@ -35,7 +35,7 @@ class InsertConfigIntoEntitiesListener
          // perhaps you only want to act on some "Product" entity
         if (preg_match("/Context/", get_class($entity))) {
             $context_conf = $this->container->getParameter('app.contexts');
-            list($bundle, $object) = explode(":", $entity->getContextForEntity());
+            list($bundle, $object) = explode(":", $entity->getOwnerEntity());
             // do something with the Product
             $object_name = $entity->getObjectName();
             foreach ($context_conf[$bundle][$object][$entity->getSystem()] as $c)

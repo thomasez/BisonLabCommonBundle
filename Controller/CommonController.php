@@ -109,7 +109,7 @@ class CommonController extends Controller
 
     }
 
-    public function updateContextForms($context_for, $context_class, $context_for_object) {
+    public function updateContextForms($context_for, $context_class, $owner) {
 
         $em = $this->getDoctrine()->getManager();
         $request = $this->getRequest();
@@ -143,7 +143,7 @@ class CommonController extends Controller
                     $context->setObjectName($object_name);
                     $context->setExternalId($context_arr['external_id']);
                     $context->setUrl($context_arr['url']);
-                    $context->setContextForObject($context_for_object);
+                    $context->setOwner($owner);
                     $em->persist($context);
                 } else {
                     continue;
