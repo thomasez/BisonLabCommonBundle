@@ -2,9 +2,9 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-        <link rel="stylesheet" href="{{ asset('bundles/layout/css/standard.css') }}" type="text/css" media="all" />
+        <link rel="stylesheet" href="{{ asset('bundles/redpilllinprocommon/css/standard.css') }}" type="text/css" media="all" />
         <title>{% block title %}RedpillLinpro Examples{% endblock %}</title>
-        <link rel="shortcut icon" href="{{ asset('bundles/layout/images/favicon.ico') }}" />
+        <link rel="shortcut icon" href="{{ asset('bundles/redpilllinprocommon/images/favicon.ico') }}" />
         <script type="text/javascript" src="/js/jquery.min.js"></script>
         <script type="text/javascript" src="/js/jquery.tablesorter.js"></script>
 
@@ -21,7 +21,7 @@ $(document).ready(function()
         <div id="rl-wrapper">
             <div id="rl-header">
 <!--
-                    <img src="{{ asset('bundles/layout/images/rl_logo_trans.png') }}" alt="Redpill Linpro">
+                    <img src="{{ asset('bundles/redpilllinprocommon/images/rl_logo_trans.png') }}" alt="Redpill Linpro">
 -->
             </div>
 
@@ -40,18 +40,18 @@ $(document).ready(function()
             {% endfor %}
 
             <div id="rl-sidemenu">
-                  <img src="{{ asset('bundles/layout/images/i-sign2.png') }}" alt="Inventory"><br><br>
+                  <img src="{{ asset('bundles/redpilllinprocommon/images/rl_logo_trans.png') }}" alt="RL-Logo"><br><br>
                     {% block lsidemenu %}
                     {% endblock %}
               <div id="rl_loggedin_check">
                  {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
                      <small><small><b>
-                     {{ 'layout.logged_in_as'|trans({'%username%': app.user.username}, 'FOSUserBundle') }}  </b><br>
+                     {{ 'common.logged_in_as'|trans({'%username%': app.user.username}, 'FOSUserBundle') }}  </b><br>
                      <a href="{{ path('fos_user_security_logout') }}">
-                         <small><small> {{ 'layout.logout'|trans({}, 'FOSUserBundle') }} </small></small>
+                         <small><small> {{ 'common.logout'|trans({}, 'FOSUserBundle') }} </small></small>
                      </a></small></small>
                  {% else %}
-                     <a href="{{ path('fos_user_security_login') }}">{{ 'layout.login'|trans({}, 'FOSUserBundle') }}</a>
+                     <a href="{{ path('fos_user_security_login') }}">{{ 'common.login'|trans({}, 'FOSUserBundle') }}</a>
                  {% endif %}
                </div>
             </div>
