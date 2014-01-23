@@ -97,7 +97,7 @@ class CommonController extends Controller
                 } else {
                     $form   = $form_factory->createNamedBuilder($form_name, 'form')
                         ->add('external_id', 'text', array('label' => 'External ID', 'required' => false))
-                        ->add('url', 'text', array('label' => 'URL', 'required' => false, 'data' => $context_data['url_base']))
+                        ->add('url', 'text', array('label' => 'URL', 'required' => false))
                         ->getForm();
 
                 }
@@ -110,7 +110,6 @@ class CommonController extends Controller
     }
 
     public function updateContextForms($context_for, $context_class, $owner) {
-
         $em = $this->getDoctrine()->getManager();
         $request = $this->getRequest();
 
@@ -118,7 +117,10 @@ class CommonController extends Controller
         list($bundle, $object) = explode(":", $context_for);
         $conf = $context_conf[$bundle][$object];
         $forms = array();
+        // Object_info was a bas choice, it's the context object listing per
+        // system.
         foreach ($conf as $system_name => $object_info) {
+            // And here, context_data is the object config itself.
             foreach ($object_info as $context_data) {
                 $object_name = $context_data['object_name'];
                 $form_name  = "context__" . $system_name . "__" . $object_name;
@@ -134,7 +136,11 @@ class CommonController extends Controller
                         $em->remove($context);
                     } else {
                         $context->setExternalId($context_arr['external_id']);
+                    if (empty($context_arr['url'])) {
+                        $context->setUrl($this->createContextUrl($context_arr, $context_data));
+                    } else {
                         $context->setUrl($context_arr['url']);
+                    }
                         $em->persist($context);
                     }
                 } elseif (!empty($context_arr['external_id'])) { 
@@ -142,7 +148,11 @@ class CommonController extends Controller
                     $context->setSystem($system_name);
                     $context->setObjectName($object_name);
                     $context->setExternalId($context_arr['external_id']);
-                    $context->setUrl($context_arr['url']);
+                    if (empty($context_arr['url'])) {
+                        $context->setUrl($this->createContextUrl($context_arr, $context_data));
+                    } else {
+                        $context->setUrl($context_arr['url']);
+                    }
                     $context->setOwner($owner);
                     $em->persist($context);
                 } else {
@@ -152,6 +162,23 @@ class CommonController extends Controller
             }
         }
 
+    }
+
+    public function createContextUrl($context_arr, $config)
+    {
+        // Good old one.
+        if (isset($config['url_base'])) {
+            return $config['url_base'] . $context_arr['external_id'];
+        }    
+        // Or we have a twig template'ish.
+        if (isset($config['url_template'])) {
+            $url = $config['url_template'];
+            foreach ($context_arr as $key => $val) {
+                $url = preg_replace('/\{\{\s?'.$key.'\s?\}\}/i',
+                                $val , $url);
+            }
+            return $url;
+        }    
     }
     
     public function createContextSearchForm($config)
