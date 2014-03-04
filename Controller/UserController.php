@@ -88,7 +88,7 @@ class UserController extends Controller
     {
         $entity  = new User();
         $form = $this->createForm(new UserType());
-        $form->bind($request);
+        $form->handleRequest($request);
 
         $post_data = $request->request->get('user');
 
@@ -161,7 +161,7 @@ class UserController extends Controller
 
         $deleteForm = $this->createDeleteForm($id);
         $editForm = $this->createForm(new UserType());
-        $editForm->bind($request);
+        $editForm->handleRequest($request);
 
         if ($editForm->isValid()) {
             
@@ -206,7 +206,7 @@ class UserController extends Controller
     public function deleteAction(Request $request, $id)
     {
         $form = $this->createDeleteForm($id);
-        $form->bind($request);
+        $form->handleRequest($request);
 
         if ($form->isValid()) {
             $em = $this->getDoctrine()->getManager();
