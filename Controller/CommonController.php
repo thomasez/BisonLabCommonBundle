@@ -137,7 +137,7 @@ class CommonController extends Controller
                     } else {
                         $context->setExternalId($context_arr['external_id']);
                     if (empty($context_arr['url'])) {
-                        $context->setUrl($this->createContextUrl($context_arr, $context_data));
+                        $context->setUrl(self::createContextUrl($context_arr, $context_data));
                     } else {
                         $context->setUrl($context_arr['url']);
                     }
@@ -149,7 +149,7 @@ class CommonController extends Controller
                     $context->setObjectName($object_name);
                     $context->setExternalId($context_arr['external_id']);
                     if (empty($context_arr['url'])) {
-                        $context->setUrl($this->createContextUrl($context_arr, $context_data));
+                        $context->setUrl(self::createContextUrl($context_arr, $context_data));
                     } else {
                         $context->setUrl($context_arr['url']);
                     }
@@ -164,7 +164,7 @@ class CommonController extends Controller
 
     }
 
-    public function createContextUrl($context_arr, $config)
+    static function createContextUrl($context_arr, $config)
     {
         // Good old one.
         if (isset($config['url_base'])) {
