@@ -222,7 +222,7 @@ class CommonController extends Controller
         }
     }
 
-    public function returnRestData($request, $data)
+    public function returnRestData($request, $data, $templates = array())
     {
 
         if (in_array('application/xml', $request->getAcceptableContentTypes())) {
@@ -238,9 +238,19 @@ class CommonController extends Controller
         } elseif (in_array('application/html', $request->getAcceptableContentTypes())) {
             header('Content-Type: application/html');
             $serializer = $this->get('serializer');
-            $data_arr = json_decode($serializer->serialize($data, 'json'), true);
-            return $this->render('RedpillLinproCommonBundle:Default:show.html.twig', 
-                array('data' => $data_arr));
+            // Reason for this is the extremely simple template for showing
+            // whatever as HTML. Just send it as an array and it can be dumped
+            // more easily.
+            $data_arr = json_decode($serializer->serialize($data, 'json'),
+true);
+            if (isset($templates['html'])) {
+                // But here we'll let the progreammer choose.
+                return $this->render($templates['html'],
+                    array('data_array' => $data_arr, 'data_entity' => $data));
+            } else {
+                return $this->render('RedpillLinproCommonBundle:Default:show.html.twig', 
+                    array('data' => $data_arr));
+            }
         } elseif (in_array('text/plain', $request->getAcceptableContentTypes())) {
             if (!is_string($data)) {
                 throw InvalidArgumentException("Can not return non-string content as plain text.");
