@@ -178,7 +178,7 @@ ul li
     #-moz-border-radius:         16px;
     #-webkit-border-radius:      16px;
     #border-radius:              16px;
-    margin-left:                 140px;
+    #margin-left:                 140px;
     margin-bottom:              20px;
     word-wrap:                  break-word;
 }
@@ -368,7 +368,7 @@ table.records_list thead tr th, table.records_list tfoot tr th {
     padding: 4px;
 }
 table.records_list thead tr .header {
-    background-image: url(/images/bg.gif);
+    background-image: url(../images/bg.gif);
     background-repeat: no-repeat;
     background-position: center right;
     cursor: pointer;
@@ -394,12 +394,24 @@ table.records_list tbody tr.odd td {
     background-color:#F0F0F6;
 }
 table.records_list thead tr .headerSortUp {
-    background-image: url(/images/asc.gif);
+    background-image: url(../images/asc.gif);
 }
 table.records_list thead tr .headerSortDown {
-    background-image: url(/images/desc.gif);
+    background-image: url(../images/desc.gif);
 }
 table.records_list thead tr .headerSortDown, table.records_list thead tr .headerSortUp {
-    background-color: #8dbdd8;
+    background-color: #f7001C;
 }
+
+/* Bamboo overrides: */
+
+@media only screen and (min-width: 768px) {
+    #container { left: 180px; }
+}
+	/* .navigation { background: #D7001C; color: #FFFFFF; } */
+	.navigation { background: #A60F1A; color: #FFFFFF; }
+	.navigation ul li a ,
+	.navigation ul li a:hover ,
+	.navigation ul li a:visited ,
+	.navigation ul li a:focus { color: #FFFFFF; line-height: 25px;}
 
