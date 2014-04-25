@@ -27,12 +27,29 @@ class InsertConfigIntoEntitiesListener
 
     public function postLoad(LifecycleEventArgs $args)
     {
-         $entity = $args->getEntity();
 
-//If you feel like being show hos much is actually loaded, decomment this one..
+//If you feel like being shown how much is actually loaded, decomment this one..
 //error_log("Hva har vi:" . get_class($entity));
+        $this->_insertConfig($args);
 
-         // perhaps you only want to act on some "Product" entity
+    }
+
+    public function prePersist(LifecycleEventArgs $args)
+    {
+
+//If you feel like being shown how much is actually loaded, decomment this one..
+//error_log("Hva har vi:" . get_class($entity));
+        $entity = $this->_insertConfig($args);
+
+        if ($entity && !$entity->getUrl() 
+                && method_exists($entity, 'resetUrl')) {
+            $entity->resetUrl();
+        }
+
+    }
+
+    private function _insertConfig($args) {
+        $entity = $args->getEntity();
         if (preg_match("/Context/", get_class($entity))) {
             $context_conf = $this->container->getParameter('app.contexts');
             list($bundle, $object) = explode(":", $entity->getOwnerEntity());
@@ -46,6 +63,11 @@ class InsertConfigIntoEntitiesListener
                 }
             }
             $entity->setConfig($conf);
+            return $entity;
         }
+        
+        // Had nothing to do.
+        return false;
+
     }
 }

@@ -5,6 +5,7 @@ services:
             - [ setContainer, ['@service_container'] ]
         tags:
             - { name: doctrine.event_listener, event: postLoad  }
+            - { name: doctrine.event_listener, event: prePersist  }
 #    twig.extension.csv2html:
 #        class: RedpillLinpro\CommonBundle\Extension\TwigExtensionCsv2Html
 #        tags:
