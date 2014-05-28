@@ -55,15 +55,19 @@ class InsertConfigIntoEntitiesListener
             list($bundle, $object) = explode(":", $entity->getOwnerEntity());
             // do something with the Product
             $object_name = $entity->getObjectName();
-            foreach ($context_conf[$bundle][$object][$entity->getSystem()] as $c)
-            {
-                if ($c['object_name'] == $object_name) {
-                    $conf = $c;
-                    break;
+            // Gotta be able to handle the case of no config at all..
+            if (isset($context_conf[$bundle][$object]) 
+                    && $context_conf[$bundle][$object][$entity->getSystem()]) {
+                foreach ($context_conf[$bundle][$object][$entity->getSystem()] as $c)
+                {
+                    if ($c['object_name'] == $object_name) {
+                        $conf = $c;
+                        break;
+                    }
                 }
+                $entity->setConfig($conf);
+                return $entity;
             }
-            $entity->setConfig($conf);
-            return $entity;
         }
         
         // Had nothing to do.
