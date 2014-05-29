@@ -6,6 +6,11 @@ services:
         tags:
             - { name: doctrine.event_listener, event: postLoad  }
             - { name: doctrine.event_listener, event: prePersist  }
+
+    external_retriever:
+        class: RedpillLinpro\CommonBundle\Service\ExternalRetriever
+        arguments: ['@service_container' ]
+
 #    twig.extension.csv2html:
 #        class: RedpillLinpro\CommonBundle\Extension\TwigExtensionCsv2Html
 #        tags:
