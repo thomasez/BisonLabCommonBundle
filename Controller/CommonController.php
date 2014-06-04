@@ -81,10 +81,10 @@ class CommonController extends Controller
         $conf = $context_conf[$bundle][$object];
         $forms = array();
         foreach ($conf as $system_name => $object_info) {
-            foreach ($object_info as $context_data) {
-                $object_name = $context_data['object_name'];
+            foreach ($object_info as $context_object_config) {
+                $object_name = $context_object_config['object_name'];
                 $form_name  = "context__" . $system_name . "__" . $object_name;
-                $form_label = $context_data['label'];
+                $form_label = $context_object_config['label'];
 
                 if (isset($context_arr[$system_name][$object_name])) {
                     $c_object = $context_arr[$system_name][$object_name];
@@ -100,8 +100,8 @@ class CommonController extends Controller
                 /* Only these two methods shall make it possible to edit/add a
                  * URL in the forms. The rest will be calculated
                  * automatically.*/
-                if ($context_data['url_from_method'] == "manual" 
-                        || $context_data['url_from_method'] == "editable") {
+                if ($context_object_config['url_from_method'] == "manual" 
+                  || $context_object_config['url_from_method'] == "editable") {
                     $form->add('url', 'text', 
                         array('label' => 'URL', 'required' => false));
                 }
@@ -124,9 +124,9 @@ class CommonController extends Controller
         // Object_info was a bas choice, it's the context object listing per
         // system.
         foreach ($conf as $system_name => $object_info) {
-            // And here, context_data is the object config itself.
-            foreach ($object_info as $context_data) {
-                $object_name = $context_data['object_name'];
+            // And here, context_object_config is the object config itself.
+            foreach ($object_info as $context_object_config) {
+                $object_name = $context_object_config['object_name'];
                 $form_name  = "context__" . $system_name . "__" . $object_name;
 
                 $context_arr = $request->request->get($form_name);
@@ -141,7 +141,7 @@ class CommonController extends Controller
                     } else {
                         $context->setExternalId($context_arr['external_id']);
                     if (empty($context_arr['url']) ) {
-                        $context->setUrl(self::createContextUrl($context_arr, $context_data));
+                        $context->setUrl(self::createContextUrl($context_arr, $context_object_config));
                     } else {
                         $context->setUrl($context_arr['url']);
                     }
@@ -153,7 +153,7 @@ class CommonController extends Controller
                     $context->setObjectName($object_name);
                     $context->setExternalId($context_arr['external_id']);
                     if (empty($context_arr['url'])) {
-                        $context->setUrl(self::createContextUrl($context_arr, $context_data));
+                        $context->setUrl(self::createContextUrl($context_arr, $context_object_config));
                     } else {
                         $context->setUrl($context_arr['url']);
                     }
