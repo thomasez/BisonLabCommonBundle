@@ -91,18 +91,22 @@ class CommonController extends Controller
 
                     $form   = $form_factory->createNamedBuilder($form_name, 'form', $c_object)
                         ->add('id', 'hidden', array('data' => $c_object->getId()))
-                        ->add('external_id', 'text', array('label' => 'External ID', 'required' => false))
-                        ->add('url', 'text', array('label' => 'URL', 'required' => false))
-                        ->getForm();
+                        ->add('external_id', 'text', array('label' => 'External ID', 'required' => false));
                 } else {
                     $form   = $form_factory->createNamedBuilder($form_name, 'form')
-                        ->add('external_id', 'text', array('label' => 'External ID', 'required' => false))
-                        ->add('url', 'text', array('label' => 'URL', 'required' => false))
-                        ->getForm();
+                        ->add('external_id', 'text', array('label' => 'External ID', 'required' => false));
+                }
 
+                /* Only these two methods shall make it possible to edit/add a
+                 * URL in the forms. The rest will be calculated
+                 * automatically.*/
+                if ($context_data['url_from_method'] == "manual" 
+                        || $context_data['url_from_method'] == "editable") {
+                    $form->add('url', 'text', 
+                        array('label' => 'URL', 'required' => false));
                 }
                 $forms[] = array('label' => $form_label,
-                        'form' => $form->createView());
+                        'form' => $form->getForm()->createView());
             }
         } 
         return $forms;
@@ -136,7 +140,7 @@ class CommonController extends Controller
                         $em->remove($context);
                     } else {
                         $context->setExternalId($context_arr['external_id']);
-                    if (empty($context_arr['url'])) {
+                    if (empty($context_arr['url']) ) {
                         $context->setUrl(self::createContextUrl($context_arr, $context_data));
                     } else {
                         $context->setUrl($context_arr['url']);
