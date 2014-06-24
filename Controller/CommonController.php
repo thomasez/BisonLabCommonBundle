@@ -12,6 +12,9 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 
+use Symfony\Component\Serializer\Encoder\XmlEncoder;
+
+
 class CommonController extends Controller
 {
 
@@ -229,7 +232,30 @@ class CommonController extends Controller
     public function returnRestData($request, $data, $templates = array())
     {
 
-        if (in_array('application/xml', $request->getAcceptableContentTypes())) {
+        // If the data has a toArray, I would consider it as wanted to be used
+        // instead of the jms serializer graph stuff.
+        // data can be both an array of objects and one object, aka test.
+        /* I think I changed my mind. I'd rather want the programmer/user to
+         * decide, not add magic like this. So, you'd better do the toArray
+         * conversion before calling this function if you want it like that.
+         */
+        /*
+        if (is_array($data)) {
+            if (method_exists($data[0], 'toArray')) {
+                $arr = array();
+                foreach ($data as $d) {
+                    $arr[] = $d->toArray(); 
+                }
+                $data = $arr;
+            }
+        }
+        if (method_exists($data, 'toArray')) {
+            $data = $data->toArray();
+        }
+        */
+
+        if (in_array('application/xml', $request->getAcceptableContentTypes()))
+{
             $serializer = $this->get('serializer');
             header('Content-Type: application/xml');
             echo $serializer->serialize($data, 'xml');
@@ -245,8 +271,7 @@ class CommonController extends Controller
             // Reason for this is the extremely simple template for showing
             // whatever as HTML. Just send it as an array and it can be dumped
             // more easily.
-            $data_arr = json_decode($serializer->serialize($data, 'json'),
-true);
+            $data_arr = json_decode($serializer->serialize($data, 'json'), true);
             if (isset($templates['html'])) {
                 // But here we'll let the progreammer choose.
                 return $this->render($templates['html'],
@@ -594,6 +619,16 @@ true);
             $filter_by = null;
         }
         return $filter_by;
+    }
+
+    private function _serialize($data, $format) {
+
+        if (method_exists($data, 'toArray')) {
+        error_log("Har toarray");
+            var_dump($data->toArray());
+            $data = $data->toArray();
+            }
+
     }
 
 }
