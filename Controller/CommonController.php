@@ -161,7 +161,9 @@ class CommonController extends Controller
                         $context->setUrl($context_arr['url']);
                     }
                     $context->setOwner($owner);
+                    $owner->addContext($context);
                     $em->persist($context);
+                    $em->persist($owner);
                 } else {
                     continue;
                 }
