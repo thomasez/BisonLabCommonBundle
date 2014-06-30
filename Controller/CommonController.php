@@ -103,10 +103,14 @@ class CommonController extends Controller
                 /* Only these two methods shall make it possible to edit/add a
                  * URL in the forms. The rest will be calculated
                  * automatically.*/
-                if ($context_object_config['url_from_method'] == "manual" 
-                  || $context_object_config['url_from_method'] == "editable") {
-                    $form->add('url', 'text', 
-                        array('label' => 'URL', 'required' => false));
+                if (!isset($context_object_config['url_from_method'])) {
+                    error_log("No url_from_method for " . $systen_name . "::" . $object_name);
+                } else {
+                    if ($context_object_config['url_from_method'] == "manual" 
+                      || $context_object_config['url_from_method'] == "editable") {
+                        $form->add('url', 'text', 
+                            array('label' => 'URL', 'required' => false));
+                    }
                 }
                 $forms[] = array('label' => $form_label,
                         'form' => $form->getForm()->createView());
