@@ -215,6 +215,36 @@ class ContextBase
         return $this->config;
     }
 
+    /**
+     * Get label
+     *
+     * @return string 
+     */
+    public function getLabel()
+    {
+        return $this->getConfig()['label'];
+    }
+
+    /**
+     * Get Context type
+     *
+     * @return string 
+     */
+    public function getContextType()
+    {
+        return $this->getConfig()['type'];
+    }
+
+    /**
+     * Get Default (Not that I have any idea if we need this or not..)
+     *
+     * @return boolean 
+     */
+    public function getDefault()
+    {
+        return $this->getConfig()['default'];
+    }
+
     /*
      * This is decided by the context type and the existance of an external id.
      * It should be no context object if there are no external ID but that's
