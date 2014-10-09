@@ -393,9 +393,6 @@ class CommonController extends Controller
 
         $pages = ceil($total_amount_items / $this->per_page);
 
-// The ever needing debug, just commented out
-// error_log("entities:" . count($entities) . "pages:$pages page:$page, offset:$offset pp:" . $this->per_page);
-
         $entity_identifier_name = isset($entity_identifier_name) ?  
                 $entity_identifier_name : strtolower($entity);
 
@@ -630,7 +627,6 @@ class CommonController extends Controller
     private function _serialize($data, $format) {
 
         if (method_exists($data, 'toArray')) {
-        error_log("Har toarray");
             var_dump($data->toArray());
             $data = $data->toArray();
             }

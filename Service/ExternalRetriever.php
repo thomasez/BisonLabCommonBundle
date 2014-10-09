@@ -26,7 +26,6 @@ class ExternalRetriever
     {
 
         $rname = strtolower($context->getSystem() . "_retriever");
-error_log("Gonna retrieve from " . $rname);
         $retriever = $this->container->get($rname);
         return $retriever->getExternalDataFromContext($context);
 

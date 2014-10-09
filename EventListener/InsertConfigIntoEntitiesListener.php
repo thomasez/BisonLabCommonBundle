@@ -28,8 +28,6 @@ class InsertConfigIntoEntitiesListener
     public function postLoad(LifecycleEventArgs $args)
     {
 
-//If you feel like being shown how much is actually loaded, decomment this one..
-//error_log("Hva har vi:" . get_class($entity));
         $this->_insertConfig($args);
 
     }
@@ -37,8 +35,6 @@ class InsertConfigIntoEntitiesListener
     public function prePersist(LifecycleEventArgs $args)
     {
 
-//If you feel like being shown how much is actually loaded, decomment this one..
-//error_log("Hva har vi:" . get_class($entity));
         $entity = $this->_insertConfig($args);
 
         if ($entity && !$entity->getUrl() 

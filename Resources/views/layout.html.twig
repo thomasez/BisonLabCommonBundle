@@ -24,21 +24,6 @@ $(document).ready(function()
                     <img src="{{ asset('bundles/redpilllinprocommon/images/rl_logo_trans.png') }}" alt="Redpill Linpro">
 -->
             </div>
-
-            {% for type, flashMessages in app.session.flashbag.all() %}
-                {% for flashMessage in flashMessages %}
-                    <div class="flash-{{ type }}">
-                        {{ flashMessage }}
-                    </div>
-                {% endfor %}
-            {% endfor %}
-
-            {% for flashMessage in app.session.flashbag.get('notice') %}
-                <div class="flash-notice">
-                    {{ flashMessage }}
-                </div>
-            {% endfor %}
-
             <div id="rl-sidemenu">
                   <img src="{{ asset('bundles/redpilllinprocommon/images/rl_logo_trans.png') }}" alt="RL-Logo"><br><br>
                     {% block lsidemenu %}
@@ -57,6 +42,21 @@ $(document).ready(function()
             </div>
      
             <div class="rl-content">
+
+            {% for type, flashMessages in app.session.flashbag.all() %}
+                {% for flashMessage in flashMessages %}
+                    <div class="flash-{{ type }}">
+                        {{ flashMessage }}
+                    </div>
+                {% endfor %}
+            {% endfor %}
+
+            {% for flashMessage in app.session.flashbag.get('notice') %}
+                <div class="flash-notice">
+                    {{ flashMessage }}
+                </div>
+            {% endfor %}
+
                 {% block lcontent %}
                     {% block fos_user_content %}{% endblock fos_user_content %}
                 {% endblock %}
