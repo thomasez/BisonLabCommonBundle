@@ -552,8 +552,8 @@ class CommonController extends Controller
 
         foreach ($repo->getFilterableProperties() as $prop => $values) {
             $choices = array();
-            foreach ($values as $value) {
-                $key = $prop . "," . $value;
+            foreach ($values as $key => $value) {
+                $key = $prop . "," . $key;
                 $choices[$key] = $value;
             }
             $name = "filter_by_" . $i;
