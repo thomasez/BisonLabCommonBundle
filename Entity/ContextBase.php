@@ -1,6 +1,6 @@
 <?php
 
-namespace RedpillLinpro\CommonBundle\Entity;
+namespace BisonLab\CommonBundle\Entity;
 
 use Gedmo\Mapping\Annotation as Gedmo;
 use Doctrine\ORM\Mapping as ORM;

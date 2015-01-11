@@ -1,14 +1,14 @@
 <?php
 
-namespace RedpillLinpro\CommonBundle\Controller;
+namespace BisonLab\CommonBundle\Controller;
 
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
-use RedpillLinpro\CommonBundle\Entity\User;
-use RedpillLinpro\CommonBundle\Form\UserType;
+use BisonLab\CommonBundle\Entity\User;
+use BisonLab\CommonBundle\Form\UserType;
 
 use Symfony\Component\Validator\Constraints\NotBlank;
 
@@ -29,7 +29,7 @@ class UserController extends Controller
     {
         $em = $this->getDoctrine()->getManager();
 
-        $entities = $em->getRepository('RedpillLinproCommonBundle:User')->findAll();
+        $entities = $em->getRepository('BisonLabCommonBundle:User')->findAll();
 
         return array(
             'entities' => $entities,
@@ -46,7 +46,7 @@ class UserController extends Controller
     {
         $em = $this->getDoctrine()->getManager();
 
-        $entity = $em->getRepository('RedpillLinproCommonBundle:User')->find($id);
+        $entity = $em->getRepository('BisonLabCommonBundle:User')->find($id);
 
         if (!$entity) {
             throw $this->createNotFoundException('Unable to find User entity.');
@@ -82,7 +82,7 @@ class UserController extends Controller
      *
      * @Route("/create", name="user_create")
      * @Method("POST")
-     * @Template("RedpillLinproCommonBundle:User:new.html.twig")
+     * @Template("BisonLabCommonBundle:User:new.html.twig")
      */
     public function createAction(Request $request)
     {
@@ -121,7 +121,7 @@ class UserController extends Controller
     public function editAction($id)
     {
         $em = $this->getDoctrine()->getManager();
-        $entity = $em->getRepository('RedpillLinproCommonBundle:User')->find($id);
+        $entity = $em->getRepository('BisonLabCommonBundle:User')->find($id);
 
         if (!$entity) {
             throw $this->createNotFoundException('Unable to find User entity.');
@@ -142,7 +142,7 @@ class UserController extends Controller
      *
      * @Route("/{id}/update", name="user_update")
      * @Method("POST")
-     * @Template("RedpillLinproCommonBundle:User:edit.html.twig")
+     * @Template("BisonLabCommonBundle:User:edit.html.twig")
      */
     public function updateAction(Request $request, $id)
     {
@@ -157,7 +157,7 @@ class UserController extends Controller
         }
 
         $em = $this->getDoctrine()->getManager();
-        $entity = $em->getRepository('RedpillLinproCommonBundle:User')->find($id);
+        $entity = $em->getRepository('BisonLabCommonBundle:User')->find($id);
 
         $deleteForm = $this->createDeleteForm($id);
         $editForm = $this->createForm(new UserType());
@@ -210,7 +210,7 @@ class UserController extends Controller
 
         if ($form->isValid()) {
             $em = $this->getDoctrine()->getManager();
-            $entity = $em->getRepository('RedpillLinproCommonBundle:User')->find($id);
+            $entity = $em->getRepository('BisonLabCommonBundle:User')->find($id);
 
             if (!$entity) {
                 throw $this->createNotFoundException('Unable to find User entity.');

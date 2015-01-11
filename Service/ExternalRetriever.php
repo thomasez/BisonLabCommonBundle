@@ -1,6 +1,6 @@
 <?php
 
-namespace RedpillLinpro\CommonBundle\Service;
+namespace BisonLab\CommonBundle\Service;
 
 
 /*

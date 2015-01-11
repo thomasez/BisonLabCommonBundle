@@ -1,6 +1,6 @@
 services:
     my.listener:
-        class: RedpillLinpro\CommonBundle\EventListener\InsertConfigIntoEntitiesListener
+        class: BisonLab\CommonBundle\EventListener\InsertConfigIntoEntitiesListener
         calls: 
             - [ setContainer, ['@service_container'] ]
         tags:
@@ -8,11 +8,11 @@ services:
             - { name: doctrine.event_listener, event: prePersist  }
 
     external_retriever:
-        class: RedpillLinpro\CommonBundle\Service\ExternalRetriever
+        class: BisonLab\CommonBundle\Service\ExternalRetriever
         arguments: ['@service_container' ]
 
 #    twig.extension.csv2html:
-#        class: RedpillLinpro\CommonBundle\Extension\TwigExtensionCsv2Html
+#        class: BisonLab\CommonBundle\Extension\TwigExtensionCsv2Html
 #        tags:
 #            - { name: 'twig.extension' }
 

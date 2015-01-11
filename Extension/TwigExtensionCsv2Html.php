@@ -1,6 +1,6 @@
 <?php
 
-namespace RedpillLinpro\CommonBundle\Extension;
+namespace BisonLab\CommonBundle\Extension;
   
 /*
  * This takes a csv file and make a html table from it.
@@ -14,7 +14,7 @@ class TwigExtensionCsv2Html extends \Twig_Extension
    {
   
         return array(
-            'csv2html' => new \Twig_Filter_Function('\RedpillLinpro\NosqlBundle\Extension\twig_csv2html', 
+            'csv2html' => new \Twig_Filter_Function('\BisonLab\NosqlBundle\Extension\twig_csv2html', 
                 array('needs_environment' => true)),
 
         );

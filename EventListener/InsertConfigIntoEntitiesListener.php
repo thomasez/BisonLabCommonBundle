@@ -1,6 +1,6 @@
 <?php
 
-namespace RedpillLinpro\CommonBundle\EventListener;
+namespace BisonLab\CommonBundle\EventListener;
 
 use Doctrine\ORM\Event\LifecycleEventArgs;
 

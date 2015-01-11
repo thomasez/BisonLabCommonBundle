@@ -1,14 +1,14 @@
 {
-    "name": "redpilllinpro/common-bundle",
+    "name": "bisonlab/common-bundle",
     "type": "symfony-bundle",
     "description": "This bundle includes some of the typical stuff the author needs for his projects, like a user object, generic REST stuff and the context system.",
     "keywords": ["common symfony user context rest"],
-    "homepage": "https://github.com/thomasez/RedpillLinproCommonBundle",
+    "homepage": "https://github.com/thomasez/BisonLabCommonBundle",
     "license": "GPLv2",
     "authors": [
         {
             "name": "Thomas Lundquist",
-            "email": "thomasez@redpill-linpro.com"
+            "email": "higbutthub@bisonlab.no"
         }
     ],
     "require": {
@@ -16,8 +16,8 @@
         "friendsofsymfony/user-bundle": "2.0.*@dev"
     },
     "autoload": {
-        "psr-0": { "RedpillLinpro\\CommonBundle": "" }
+        "psr-0": { "BisonLab\\CommonBundle": "" }
     },
-    "target-dir": "RedpillLinpro/CommonBundle"
+    "target-dir": "BisonLab/CommonBundle"
 }
 

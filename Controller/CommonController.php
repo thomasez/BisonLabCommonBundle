@@ -1,6 +1,6 @@
 <?php
 
-namespace RedpillLinpro\CommonBundle\Controller;
+namespace BisonLab\CommonBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Serializer\Normalizer\GetSetMethodNormalizer;
@@ -39,7 +39,7 @@ class CommonController extends Controller
         }
 
         if (!$entities) {
-            return $this->render('RedpillLinproCommonBundle::error.html.twig', 
+            return $this->render('BisonLabCommonBundle::error.html.twig', 
                 array('message' => 'Sorry, could not find what you were looking for'));
         }
 
@@ -283,7 +283,7 @@ class CommonController extends Controller
                 return $this->render($templates['html'],
                     array('data_array' => $data_arr, 'data_entity' => $data));
             } else {
-                return $this->render('RedpillLinproCommonBundle:Default:show.html.twig', 
+                return $this->render('BisonLabCommonBundle:Default:show.html.twig', 
                     array('data' => $data_arr));
             }
         } elseif (in_array('text/plain', $request->getAcceptableContentTypes())) {
@@ -346,7 +346,7 @@ class CommonController extends Controller
             return $this->returnRestData($this->getRequest(), $logs);
         }
 
-        return $this->render('RedpillLinproCommonBundle::showLog.html.twig', 
+        return $this->render('BisonLabCommonBundle::showLog.html.twig', 
             array(
                 'entity'      => $entity,
                 'logs'    => $logs,

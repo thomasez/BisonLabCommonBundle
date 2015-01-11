@@ -1,6 +1,6 @@
 <?php
 
-namespace RedpillLinpro\CommonBundle\Entity;
+namespace BisonLab\CommonBundle\Entity;
 
 use Doctrine\ORM\EntityRepository;
 
