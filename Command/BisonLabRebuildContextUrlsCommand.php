@@ -34,7 +34,7 @@ This command rebuilds context URLs based on the config set in contexts.yml.
 EOT
             );
 
-        $this->setName('rplp:rebuild-context-urls');
+        $this->setName('bison:rebuild-context-urls');
     }
 
     protected function initialize(InputInterface $input, OutputInterface $output)
