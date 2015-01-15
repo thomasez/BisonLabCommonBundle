@@ -392,11 +392,23 @@ table.records_list a {
 table.records_list tbody td {
     color: #3D3D3D;
     padding: 4px;
-    background-color: #FFF;
     vertical-align: top;
 }
+/* This one just does not work.*/
 table.records_list tbody tr.odd td {
     background-color:#F0F0F6;
+}
+/* From another standard.css I've used: */
+table.records_list tbody tr:nth-child(odd) {
+    background: white;
+}
+table.records_list tbody tr:nth-child(even) {
+/* The yellow we have in the Logo: background: CCCC00; */
+/* Magenta-based. lighter : DC00FF; */
+/* Yellow-based, lighter: FEFF00 */
+background: #CCCC00;
+/* (To be honest, I don't really like this eiter, but it does use the color
+ * scheme.. So I'll keep it for now. */
 }
 table.records_list thead tr .headerSortUp {
     background-image: url(/images/asc.gif);
