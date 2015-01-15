@@ -14,7 +14,7 @@ class TwigExtensionCsv2Html extends \Twig_Extension
    {
   
         return array(
-            'csv2html' => new \Twig_Filter_Function('\BisonLab\NosqlBundle\Extension\twig_csv2html', 
+            'csv2html' => new \Twig_Filter_Function('\BisonLab\CommonBundle\Extension\twig_csv2html', 
                 array('needs_environment' => true)),
 
         );
@@ -57,6 +57,6 @@ function c2v2html($filename)
 
 function twig_csv2html(\Twig_Environment $env, $value, $length = 80, $separator = "\n", $preserve = false)
 {
-return;
+    return;
 }
 
