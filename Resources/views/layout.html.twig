@@ -23,7 +23,9 @@ $(document).ready(function()
             <div id="rl-header">
             </div>
             <div id="rl-sidemenu">
-                  <img src="{{ asset('bundles/bisonlabcommon/images/logo.png') }}" alt="Logo"><br><br>
+                  <a href="{{ path('homepage') }}">
+                    <img src="{{ asset('bundles/bisonlabcommon/images/logo.png') }}" alt="Logo"><br><br>
+                  </a>
                   {% block lsidemenu %}
                   {% endblock lsidemenu %}
                   <div id="rl_loggedin_check">
