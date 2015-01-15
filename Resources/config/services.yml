@@ -11,6 +11,11 @@ services:
         class: BisonLab\CommonBundle\Service\ExternalRetriever
         arguments: ['@service_container' ]
 
+    twig.extension.pretty_print:
+        class: BisonLab\CommonBundle\Extension\TwigExtensionPrettyPrint
+        tags:
+            - { name: 'twig.extension' }
+
 #    twig.extension.csv2html:
 #        class: BisonLab\CommonBundle\Extension\TwigExtensionCsv2Html
 #        tags:
