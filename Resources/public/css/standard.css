@@ -8,6 +8,11 @@ http://developer.yahoo.com/yui/license.html
 version: 2.8.2r1
 
 Reset
+
+BisonLab colours.
+Yellow 5 / #CCCC00
+Magenta / #800080
+
 */
 
 html{color:#000;background:#FFFFFF;}
@@ -352,9 +357,9 @@ li.menu
 
 table.records_list {
     font-family:arial;
-    # background-color: #D7001C;
+    # background-color: #800080;
     margin:10px 0pt 15px;
-    border: 1px solid #D7001C;
+    border: 1px solid #800080;
     font-size: 8pt;
     width: 100%;
     text-align: left;
@@ -362,7 +367,7 @@ table.records_list {
 }
 table.records_list thead tr th, table.records_list tfoot tr th {
     color: white;
-    background-color: #D7001C;
+    background-color: #800080;
     border: 1px solid #FFFFFF;
     font-size: 8pt;
     padding: 4px;
