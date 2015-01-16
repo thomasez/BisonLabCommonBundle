@@ -1,12 +1,23 @@
 services:
     my.listener:
-        class: RedpillLinpro\CommonBundle\EventListener\InsertConfigIntoEntitiesListener
+        class: BisonLab\CommonBundle\EventListener\InsertConfigIntoEntitiesListener
         calls: 
             - [ setContainer, ['@service_container'] ]
         tags:
             - { name: doctrine.event_listener, event: postLoad  }
+            - { name: doctrine.event_listener, event: prePersist  }
+
+    external_retriever:
+        class: BisonLab\CommonBundle\Service\ExternalRetriever
+        arguments: ['@service_container' ]
+
+    twig.extension.pretty_print:
+        class: BisonLab\CommonBundle\Extension\TwigExtensionPrettyPrint
+        tags:
+            - { name: 'twig.extension' }
+
 #    twig.extension.csv2html:
-#        class: RedpillLinpro\CommonBundle\Extension\TwigExtensionCsv2Html
+#        class: BisonLab\CommonBundle\Extension\TwigExtensionCsv2Html
 #        tags:
 #            - { name: 'twig.extension' }
 

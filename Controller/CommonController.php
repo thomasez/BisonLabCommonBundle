@@ -1,6 +1,6 @@
 <?php
 
-namespace RedpillLinpro\CommonBundle\Controller;
+namespace BisonLab\CommonBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Serializer\Normalizer\GetSetMethodNormalizer;
@@ -11,6 +11,9 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
+
+use Symfony\Component\Serializer\Encoder\XmlEncoder;
+
 
 class CommonController extends Controller
 {
@@ -36,7 +39,7 @@ class CommonController extends Controller
         }
 
         if (!$entities) {
-            return $this->render('RedpillLinproCommonBundle::error.html.twig', 
+            return $this->render('BisonLabCommonBundle::error.html.twig', 
                 array('message' => 'Sorry, could not find what you were looking for'));
         }
 
@@ -81,28 +84,36 @@ class CommonController extends Controller
         $conf = $context_conf[$bundle][$object];
         $forms = array();
         foreach ($conf as $system_name => $object_info) {
-            foreach ($object_info as $context_data) {
-                $object_name = $context_data['object_name'];
+            foreach ($object_info as $context_object_config) {
+                $object_name = $context_object_config['object_name'];
                 $form_name  = "context__" . $system_name . "__" . $object_name;
-                $form_label = $context_data['label'];
+                $form_label = $context_object_config['label'];
 
                 if (isset($context_arr[$system_name][$object_name])) {
                     $c_object = $context_arr[$system_name][$object_name];
 
                     $form   = $form_factory->createNamedBuilder($form_name, 'form', $c_object)
                         ->add('id', 'hidden', array('data' => $c_object->getId()))
-                        ->add('external_id', 'text', array('label' => 'External ID', 'required' => false))
-                        ->add('url', 'text', array('label' => 'URL', 'required' => false))
-                        ->getForm();
+                        ->add('external_id', 'text', array('label' => 'External ID', 'required' => false));
                 } else {
                     $form   = $form_factory->createNamedBuilder($form_name, 'form')
-                        ->add('external_id', 'text', array('label' => 'External ID', 'required' => false))
-                        ->add('url', 'text', array('label' => 'URL', 'required' => false))
-                        ->getForm();
+                        ->add('external_id', 'text', array('label' => 'External ID', 'required' => false));
+                }
 
+                /* Only these two methods shall make it possible to edit/add a
+                 * URL in the forms. The rest will be calculated
+                 * automatically.*/
+                if (!isset($context_object_config['url_from_method'])) {
+                    error_log("No url_from_method for " . $systen_name . "::" . $object_name);
+                } else {
+                    if ($context_object_config['url_from_method'] == "manual" 
+                      || $context_object_config['url_from_method'] == "editable") {
+                        $form->add('url', 'text', 
+                            array('label' => 'URL', 'required' => false));
+                    }
                 }
                 $forms[] = array('label' => $form_label,
-                        'form' => $form->createView());
+                        'form' => $form->getForm()->createView());
             }
         } 
         return $forms;
@@ -120,9 +131,9 @@ class CommonController extends Controller
         // Object_info was a bas choice, it's the context object listing per
         // system.
         foreach ($conf as $system_name => $object_info) {
-            // And here, context_data is the object config itself.
-            foreach ($object_info as $context_data) {
-                $object_name = $context_data['object_name'];
+            // And here, context_object_config is the object config itself.
+            foreach ($object_info as $context_object_config) {
+                $object_name = $context_object_config['object_name'];
                 $form_name  = "context__" . $system_name . "__" . $object_name;
 
                 $context_arr = $request->request->get($form_name);
@@ -136,8 +147,8 @@ class CommonController extends Controller
                         $em->remove($context);
                     } else {
                         $context->setExternalId($context_arr['external_id']);
-                    if (empty($context_arr['url'])) {
-                        $context->setUrl(self::createContextUrl($context_arr, $context_data));
+                    if (empty($context_arr['url']) ) {
+                        $context->setUrl(self::createContextUrl($context_arr, $context_object_config));
                     } else {
                         $context->setUrl($context_arr['url']);
                     }
@@ -149,12 +160,14 @@ class CommonController extends Controller
                     $context->setObjectName($object_name);
                     $context->setExternalId($context_arr['external_id']);
                     if (empty($context_arr['url'])) {
-                        $context->setUrl(self::createContextUrl($context_arr, $context_data));
+                        $context->setUrl(self::createContextUrl($context_arr, $context_object_config));
                     } else {
                         $context->setUrl($context_arr['url']);
                     }
                     $context->setOwner($owner);
+                    $owner->addContext($context);
                     $em->persist($context);
+                    $em->persist($owner);
                 } else {
                     continue;
                 }
@@ -225,7 +238,30 @@ class CommonController extends Controller
     public function returnRestData($request, $data, $templates = array())
     {
 
-        if (in_array('application/xml', $request->getAcceptableContentTypes())) {
+        // If the data has a toArray, I would consider it as wanted to be used
+        // instead of the jms serializer graph stuff.
+        // data can be both an array of objects and one object, aka test.
+        /* I think I changed my mind. I'd rather want the programmer/user to
+         * decide, not add magic like this. So, you'd better do the toArray
+         * conversion before calling this function if you want it like that.
+         */
+        /*
+        if (is_array($data)) {
+            if (method_exists($data[0], 'toArray')) {
+                $arr = array();
+                foreach ($data as $d) {
+                    $arr[] = $d->toArray(); 
+                }
+                $data = $arr;
+            }
+        }
+        if (method_exists($data, 'toArray')) {
+            $data = $data->toArray();
+        }
+        */
+
+        if (in_array('application/xml', $request->getAcceptableContentTypes()))
+{
             $serializer = $this->get('serializer');
             header('Content-Type: application/xml');
             echo $serializer->serialize($data, 'xml');
@@ -241,14 +277,13 @@ class CommonController extends Controller
             // Reason for this is the extremely simple template for showing
             // whatever as HTML. Just send it as an array and it can be dumped
             // more easily.
-            $data_arr = json_decode($serializer->serialize($data, 'json'),
-true);
+            $data_arr = json_decode($serializer->serialize($data, 'json'), true);
             if (isset($templates['html'])) {
                 // But here we'll let the progreammer choose.
                 return $this->render($templates['html'],
                     array('data_array' => $data_arr, 'data_entity' => $data));
             } else {
-                return $this->render('RedpillLinproCommonBundle:Default:show.html.twig', 
+                return $this->render('BisonLabCommonBundle:Default:show.html.twig', 
                     array('data' => $data_arr));
             }
         } elseif (in_array('text/plain', $request->getAcceptableContentTypes())) {
@@ -311,7 +346,7 @@ true);
             return $this->returnRestData($this->getRequest(), $logs);
         }
 
-        return $this->render('RedpillLinproCommonBundle::showLog.html.twig', 
+        return $this->render('BisonLabCommonBundle::showLog.html.twig', 
             array(
                 'entity'      => $entity,
                 'logs'    => $logs,
@@ -357,9 +392,6 @@ true);
         }
 
         $pages = ceil($total_amount_items / $this->per_page);
-
-// The ever needing debug, just commented out
-// error_log("entities:" . count($entities) . "pages:$pages page:$page, offset:$offset pp:" . $this->per_page);
 
         $entity_identifier_name = isset($entity_identifier_name) ?  
                 $entity_identifier_name : strtolower($entity);
@@ -520,8 +552,8 @@ true);
 
         foreach ($repo->getFilterableProperties() as $prop => $values) {
             $choices = array();
-            foreach ($values as $value) {
-                $key = $prop . "," . $value;
+            foreach ($values as $key => $value) {
+                $key = $prop . "," . $key;
                 $choices[$key] = $value;
             }
             $name = "filter_by_" . $i;
@@ -590,6 +622,15 @@ true);
             $filter_by = null;
         }
         return $filter_by;
+    }
+
+    private function _serialize($data, $format) {
+
+        if (method_exists($data, 'toArray')) {
+            var_dump($data->toArray());
+            $data = $data->toArray();
+            }
+
     }
 
 }

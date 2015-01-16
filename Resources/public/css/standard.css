@@ -8,6 +8,11 @@ http://developer.yahoo.com/yui/license.html
 version: 2.8.2r1
 
 Reset
+
+BisonLab colours.
+Yellow 5 / #CCCC00
+Magenta / #800080
+
 */
 
 html{color:#000;background:#FFFFFF;}
@@ -365,9 +370,9 @@ li.menu
 
 table.records_list {
     font-family:arial;
-    # background-color: #A60F1A;
+    # background-color: #800080;
     margin:10px 0pt 15px;
-    border: 1px solid #A60F1A;
+    border: 1px solid #800080;
     font-size: 8pt;
     width: 100%;
     text-align: left;
@@ -375,7 +380,7 @@ table.records_list {
 }
 table.records_list thead tr th, table.records_list tfoot tr th {
     color: white;
-    background-color: #A60F1A;
+    background-color: #800080;
     border: 1px solid #FFFFFF;
     font-size: 8pt;
     padding: 4px;
@@ -400,11 +405,23 @@ table.records_list a {
 table.records_list tbody td {
     color: #3D3D3D;
     padding: 4px;
-    background-color: #FFF;
     vertical-align: top;
 }
+/* This one just does not work.*/
 table.records_list tbody tr.odd td {
     background-color:#F0F0F6;
+}
+/* From another standard.css I've used: */
+table.records_list tbody tr:nth-child(odd) {
+    background: white;
+}
+table.records_list tbody tr:nth-child(even) {
+/* The yellow we have in the Logo: background: CCCC00; */
+/* Magenta-based. lighter : DC00FF; */
+/* Yellow-based, lighter: FEFF00 */
+background: #CCCC00;
+/* (To be honest, I don't really like this eiter, but it does use the color
+ * scheme.. So I'll keep it for now. */
 }
 table.records_list thead tr .headerSortUp {
     background-image: url(../images/asc.gif);

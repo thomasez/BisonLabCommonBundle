@@ -1,6 +1,6 @@
 <?php
 
-namespace RedpillLinpro\CommonBundle\Form;
+namespace BisonLab\CommonBundle\Form;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -29,7 +29,7 @@ class UserType extends AbstractType
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults(array(
-            'data_class' => 'RedpillLinpro\CommonBundle\Entity\User'
+            'data_class' => 'BisonLab\CommonBundle\Entity\User'
         ));
     }
 

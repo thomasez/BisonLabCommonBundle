@@ -1,4 +1,4 @@
-{% extends "RedpillLinproCommonBundle::layout.html.twig" %}
+{% extends "BisonLabCommonBundle::layout.html.twig" %}
 
 {% block content %}
 
@@ -18,7 +18,7 @@
     {% for log in logs %}
         <tr>
             <td>{{ log.username }}</td>
-            <td>{{ log.loggedat|date('Y-m-d') }}</td>
+            <td>{{ log.loggedat|date('Y-m-d H:i:s') }}</td>
             <td>{{ log.version }}</td>
             <td>{{ log.action }}</td>
             <td>{{ log.data | prettyprint }}</td>

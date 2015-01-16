@@ -1,6 +1,6 @@
 <?php
 
-namespace RedpillLinpro\CommonBundle\Command;
+namespace BisonLab\CommonBundle\Command;
 
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
@@ -8,7 +8,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
-use RedpillLinpro\CommonBundle\Controller\CommonController as CommonController;
+use BisonLab\CommonBundle\Controller\CommonController as CommonController;
 /**
  *
  * @author    Thomas Lundquist <thomasez@redpill-linpro.com>
@@ -16,7 +16,7 @@ use RedpillLinpro\CommonBundle\Controller\CommonController as CommonController;
  * @license   http://www.gnu.org/copyleft/lesser.html  LGPL License 2.1
  */
 
-class RedpillLinproRebuildContextUrlsCommand extends ContainerAwareCommand
+class BisonLabRebuildContextUrlsCommand extends ContainerAwareCommand
 {
 
     private $verbose = true;
@@ -34,7 +34,7 @@ This command rebuilds context URLs based on the config set in contexts.yml.
 EOT
             );
 
-        $this->setName('rplp:rebuild-context-urls');
+        $this->setName('bison:rebuild-context-urls');
     }
 
     protected function initialize(InputInterface $input, OutputInterface $output)

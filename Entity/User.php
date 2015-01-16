@@ -1,13 +1,13 @@
 <?php
 
-namespace RedpillLinpro\CommonBundle\Entity;
+namespace BisonLab\CommonBundle\Entity;
 
 use FOS\UserBundle\Model\User as BaseUser;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity
- * @ORM\Table(name="rplp_user")
+ * @ORM\Table(name="bisoncommon_user")
  */
 class User extends BaseUser
 {
