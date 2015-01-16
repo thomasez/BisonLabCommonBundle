@@ -358,7 +358,13 @@ class CommonController extends Controller
      * Generic paged list actions.
      */
 
-    public function pagedListByEntityAction($access, $em, $repo, $field_name, $entity, $entity_obj, $route, $total_amount_items, $entity_identifier_name = null)
+    /* TODO: I have to add the template to this humogous list, so we can render
+     * it here and always return whatever comes from this one in the
+     * controllers.  Right now the controller using this one has to check on
+     * response or array to know what to do. That's not a good thing. */
+    public function pagedListByEntityAction($access, $em, $repo, $field_name,
+$entity, $entity_obj, $route, $total_amount_items, $entity_identifier_name =
+null)
     {
 
         $request = $this->getRequest();
@@ -424,6 +430,7 @@ class CommonController extends Controller
 
     }
 
+    /* TODO: Same as above. Render a template here. */
     public function pagedIndexAction($access, $em, $repo, $route)
     {
 
