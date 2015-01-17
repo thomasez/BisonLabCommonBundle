@@ -147,17 +147,11 @@ ul li
 
 #rl-sidemenu
 {
-    #float: left;
     position: absolute;
     top: 3px;
     left: 3px;
     width: 140px;
     background-color:           white;
-    #border:                     1px solid #DFDFDF;
-    #padding:                    50px;
-    #-moz-border-radius:         16px;
-    #-webkit-border-radius:      16px;
-    #border-radius:              16px;
     margin-bottom:              20px;
     word-wrap:                  break-word;
 }
@@ -166,11 +160,6 @@ ul li
 {
     float: top;
     background-color:           gray;
-    #border:                     1px solid #DFDFDF;
-    #padding:                    50px;
-    #-moz-border-radius:         16px;
-    #-webkit-border-radius:      16px;
-    #border-radius:              16px;
     margin-bottom:              5px;
     word-wrap:                  break-word;
 }
@@ -178,12 +167,6 @@ ul li
 {
     padding-top: 10px;
     background-color:           white;
-    #border:                     1px solid #DFDFDF;
-    #padding:                    50px;
-    #-moz-border-radius:         16px;
-    #-webkit-border-radius:      16px;
-    #border-radius:              16px;
-    #margin-left:                 140px;
     margin-bottom:              20px;
     word-wrap:                  break-word;
 }
@@ -430,7 +413,7 @@ table.records_list thead tr .headerSortDown {
     background-image: url(../images/desc.gif);
 }
 table.records_list thead tr .headerSortDown, table.records_list thead tr .headerSortUp {
-    background-color: #D7001C;
+    background-color: #900090;
 }
 
 table.record_properties {
@@ -560,8 +543,9 @@ ul.record_actions button {
 @media only screen and (min-width: 768px) {
     #container { left: 180px; }
 }
+
 	/* .navigation { background: #D7001C; color: #FFFFFF; } */
-	.navigation { background: #A60F1A; color: #FFFFFF; }
+	.navigation { background: #800080; color: #FFFFFF; }
 	.navigation ul li a ,
 	.navigation ul li a:hover ,
 	.navigation ul li a:visited ,
