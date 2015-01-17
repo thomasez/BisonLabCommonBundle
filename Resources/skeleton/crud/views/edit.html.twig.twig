@@ -1,17 +1,15 @@
-{{ '{% extends "'}}{{ bundle }}{{'::layout.html.twig" %}' }}
+{% block extends %}
+{{ "{% extends '::base.html.twig' %}" }}
+{% endblock extends %}
 
-{{ '{% block content %}' }}
+{% block body %}
+{{ "{% block body -%}" }}
+    <h1>{{ entity }} edit</h1>
 
-<h1>{{ entity }} edit</h1>
+    {{ '{{ form(edit_form) }}' }}
 
-<form action="{{ "{{ path('"~ route_name_prefix ~"_update', { 'id': entity.id }) }}" }}" method="post" {{ "{{ form_enctype(edit_form) }}" }}>
-    {{ "{{ form_widget(edit_form) }}" }}
-    <p>
-        <button type="submit">Save</button>
-    </p>
-</form>
+    {% set hide_edit, hide_delete = true, false %}
+    {% include 'crud/views/others/record_actions.html.twig.twig' %}
+{{ "{% endblock %}" }}
+{% endblock body %}
 
-{% set hide_edit, hide_delete = true, false %}
-{% include 'crud/views/others/record_actions.html.twig.twig' %}
-
-{{ '{% endblock %}' }}

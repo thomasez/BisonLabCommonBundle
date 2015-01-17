@@ -2,46 +2,68 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <meta name="msapplication-tap-highlight" content="no" />
+        <meta name="viewport" content="initial-scale=1, maximum-scale=1" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <link rel="stylesheet" href="{{ asset('bundles/bisonlabcommon/css/bamboo.css') }}" type="text/css" media="all" />
+        <link rel="stylesheet" href="{{ asset('bundles/bisonlabcommon/css/normalize.css') }}" type="text/css" media="all" />
         <link rel="stylesheet" href="{{ asset('bundles/bisonlabcommon/css/standard.css') }}" type="text/css" media="all" />
         <title>{% block title %}{% endblock title %}</title>
         <link rel="shortcut icon" href="{{ asset('bundles/bisonlabcommon/images/favicon.ico') }}" />
         <script type="text/javascript" src="{{ asset('bundles/bisonlabcommon/js/jquery.min.js') }}"></script>
         <script type="text/javascript" src="{{ asset('bundles/bisonlabcommon/js/jquery.tablesorter.js') }}"></script>
+        {% block javascripts %}{% endblock %}
 
 <script type="text/javascript">
 $(document).ready(function()
     {
-        $("#sortable_table").tablesorter();
+        $("#sortable_table").tablesorter({sortList: [[0,0]]} );
     }
 );
 </script>
 
-    </head>
-    <body>
-       {% block javascripts %}{% endblock %}
-        <div id="rl-wrapper">
-            <div id="rl-header">
-            </div>
-            <div id="rl-sidemenu">
-                  <a href="{{ path('homepage') }}">
-                    <img src="{{ asset('bundles/bisonlabcommon/images/logo.png') }}" alt="Logo"><br><br>
-                  </a>
-                  {% block lsidemenu %}
-                  {% endblock lsidemenu %}
-                  <div id="rl_loggedin_check">
-                     {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
-                         <small><small><b>
-                         {{ 'layout.logged_in_as'|trans({'%username%': app.user.username}, 'FOSUserBundle') }}  </b><br>
-                         <a href="{{ path('fos_user_security_logout') }}">
-                             <small><small> {{ 'layout.logout'|trans({}, 'FOSUserBundle') }} </small></small>
-                         </a></small></small>
-                     {% else %}
-                         <a href="{{ path('fos_user_security_login') }}">{{ 'layout.login'|trans({}, 'FOSUserBundle') }}</a>
-                     {% endif %}
-                   </div>
-            </div>
-     
-            <div class="rl-content">
+
+ </head>
+ <body>
+      <nav id="main-nav" class="navigation overflow">
+        <ul>
+            <li><a href="{{ path('homepage') }}"><span>Home</span></a>
+            {% if is_granted("ROLE_USER") %}
+              {% block lsidemenu %}
+              {% endblock lsidemenu %}
+            {% endif %}
+              {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
+                  {% if is_granted('ROLE_ADMIN') %}
+                        <li> <a href="{{ path('user') }}">User admin</a> </li>
+                  {% endif %}
+              <li>
+<!--
+                  {{ 'layout.logged_in_as'|trans({'%username%': app.user.username}, 'FOSUserBundle') }}<br />
+-->
+                   <a href="{{ path('fos_user_security_logout') }}">
+                  {{ 'layout.logout'|trans({}, 'FOSUserBundle') }}  {{ app.user.username }}
+               </a>
+              </li>
+             {% else %}
+                  <li>
+                    <a href="{{ path('fos_user_security_login') }}">{{ 'layout.login'|trans({}, 'FOSUserBundle') }}</a>
+                  </li>
+            {% endif %}
+        </ul>
+    </nav>
+
+    <div id="container">
+
+    <header class="primary">
+        <span class="open icon">&#9776;</span>
+        <hgroup>
+            {% block header_title %}
+            {% endblock %}
+        </hgroup>
+    </header>
+      <section id="scroller" class="overflow">
+            <div id="content" class="rl-content">
 
             {% for type, flashMessages in app.session.flashbag.all() %}
                 {% for flashMessage in flashMessages %}
@@ -56,12 +78,18 @@ $(document).ready(function()
                     {{ flashMessage }}
                 </div>
             {% endfor %}
-
                 {% block lcontent %}
-                    {% block fos_user_content %}{% endblock fos_user_content %}
-                    {% block body %}{% endblock body %}
+                  {% block fos_user_content %}{% endblock fos_user_content %}
+                  {% block body %}{% endblock body %}
                 {% endblock lcontent %}
             </div>
-        </div>
+      </section>
+    </div>
+
+        <script type="text/javascript" src="{{ asset('bundles/bisonlabcommon/js/bamboo.0.1.js') }}"></script>
+    <script>
+            var site = new Bamboo();
+    </script>
+
     </body>
 </html>

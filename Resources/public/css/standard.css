@@ -147,17 +147,11 @@ ul li
 
 #rl-sidemenu
 {
-    #float: left;
     position: absolute;
     top: 3px;
     left: 3px;
     width: 140px;
     background-color:           white;
-    #border:                     1px solid #DFDFDF;
-    #padding:                    50px;
-    #-moz-border-radius:         16px;
-    #-webkit-border-radius:      16px;
-    #border-radius:              16px;
     margin-bottom:              20px;
     word-wrap:                  break-word;
 }
@@ -166,11 +160,6 @@ ul li
 {
     float: top;
     background-color:           gray;
-    #border:                     1px solid #DFDFDF;
-    #padding:                    50px;
-    #-moz-border-radius:         16px;
-    #-webkit-border-radius:      16px;
-    #border-radius:              16px;
     margin-bottom:              5px;
     word-wrap:                  break-word;
 }
@@ -178,12 +167,6 @@ ul li
 {
     padding-top: 10px;
     background-color:           white;
-    #border:                     1px solid #DFDFDF;
-    #padding:                    50px;
-    #-moz-border-radius:         16px;
-    #-webkit-border-radius:      16px;
-    #border-radius:              16px;
-    margin-left:                 140px;
     margin-bottom:              20px;
     word-wrap:                  break-word;
 }
@@ -227,6 +210,19 @@ input[type=text], input[type=password]
     color:       #565656;
     font-family: 'Lucida Sans Unicode', 'Lucida Grande', Verdana, Arial, Helvetica, sans-serif;
     font-size:   12px;
+}
+
+input
+{
+    -webkit-border-radius: 7px; //For Safari, etc.
+    -moz-border-radius: 7px; //For Mozilla, etc.
+    border-radius: 7px; //CSS3 Feature
+}
+
+.button
+{
+    padding: 10px 10px;
+    border: none;
 }
 
 .rl-button-grey,
@@ -373,7 +369,7 @@ table.records_list thead tr th, table.records_list tfoot tr th {
     padding: 4px;
 }
 table.records_list thead tr .header {
-    background-image: url(/images/bg.gif);
+    background-image: url(../images/bg.gif);
     background-repeat: no-repeat;
     background-position: center right;
     cursor: pointer;
@@ -411,12 +407,147 @@ background: #CCCC00;
  * scheme.. So I'll keep it for now. */
 }
 table.records_list thead tr .headerSortUp {
-    background-image: url(/images/asc.gif);
+    background-image: url(../images/asc.gif);
 }
 table.records_list thead tr .headerSortDown {
-    background-image: url(/images/desc.gif);
+    background-image: url(../images/desc.gif);
 }
 table.records_list thead tr .headerSortDown, table.records_list thead tr .headerSortUp {
-    background-color: #8dbdd8;
+    background-color: #900090;
 }
+
+table.record_properties {
+    font-family:arial;
+    margin:10px 0pt 15px;
+    border: 1px solid #A60F1A;
+    font-size: 8pt;
+    width: 100%;
+    text-align: left;
+}
+
+table.record_properties th {
+    color: white;
+    background-color: #A60F1A;
+    border: 1px solid #FFFFFF;
+    font-size: 8pt;
+    padding: 4px;
+    width: 200px;
+}
+
+table.record_properties td {
+    color: #3D3D3D;
+    padding: 4px;
+    background-color: #FFF;
+    vertical-align: top;
+}
+
+table.record_properties a {
+    color: #A60F1A;
+    font-weight: bold;
+    font-family: arial;
+    font-size: 8pt;
+}
+
+table.record_properties a:hover {
+    text-decoration: none;
+    color: #FFF;
+    background: #585858;
+    -moz-border-radius:         3px;
+    -webkit-border-radius:      3px;
+    border-radius:              3px;
+}
+
+ul.record_actions a:hover {
+    text-decoration: none;
+    color: #FFF;
+    background: #585858;
+    -moz-border-radius:         3px;
+    -webkit-border-radius:      3px;
+    border-radius:              3px;
+}
+
+ul.record_actions button {
+    margin: 0px 0px 0px 0px;
+}
+
+.myform {
+    width: 700px;
+    padding: 14px;
+    text-align: left;
+}
+
+#formstyle label {
+    display: block;
+    font-weight: bold;
+    text-align: right;
+    width: 250px;
+    float: left;
+}
+
+#formstyle input {
+    float: left;
+    padding: 2px 2px;
+    width: 430px;
+    margin: 2px 0px 10px 10px;
+}
+
+#formstyle input[type=text] {
+    float: left;
+    padding: 2px 2px;
+    width: 430px;
+    margin: 2px 0px 10px 10px;
+}
+
+#formstyle input[type=select] {
+    float: left;
+    padding: 2px 2px;
+    width: 430px;
+    margin: 2px 0px 10px 10px;
+}
+
+#formstyle input[type=option] {
+    float: left;
+    padding: 2px 2px;
+    width: 430px;
+    margin: 2px 0px 10px 10px;
+}
+
+#formstyle input[type=textarea] {
+    float: left;
+    padding: 2px 2px;
+    width: 430px;
+    margin: 2px 0px 10px 10px;
+}
+
+#formstyle input[type=checkbox] {
+    float: left;
+    padding: 2px 2px;
+    width: 20px;
+    margin: 2px 390px 10px 10px;
+    text-align: left;
+}
+
+#cool-fp-l {
+    float: left;
+    width: 250px;
+    margin: 0;
+}
+
+#cool-fp-r {
+    float: left;
+    width: 250px;
+    margin: 0;
+}
+/* Bamboo overrides: */
+
+@media only screen and (min-width: 768px) {
+    #container { left: 180px; }
+}
+
+	/* .navigation { background: #D7001C; color: #FFFFFF; } */
+	.navigation { background: #800080; color: #FFFFFF; }
+	.navigation ul li a ,
+	.navigation ul li a:hover ,
+	.navigation ul li a:visited ,
+	.navigation ul li a:focus { color: #FFFFFF; line-height: 25px;}
 
