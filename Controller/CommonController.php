@@ -44,8 +44,14 @@ class CommonController extends Controller
         }
 
         if (count($entities) == 1) {
-            return $this->render($context_config['show_template'],
-               $this->showAction($access, $entities->getId()));
+            $classMethod = new \ReflectionMethod($this,"showAction");
+            $argumentCount = count($classMethod->getParameters());
+            if ($argumentCount == 3)
+                return $this->render($context_config['show_template'],
+                   $this->showAction($request, $access, $entities->getId()));
+            else
+                return $this->render($context_config['show_template'],
+                    $this->showAction($access, $entities->getId()));
         } else {
             // Not that it exists, yet.
             return $this->render($context_config['list_template'],
