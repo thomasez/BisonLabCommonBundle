@@ -30,9 +30,7 @@ class CommonController extends Controller
 
         $repo = $em->getRepository($context_config['entity']);
 
-        // Grabbing only one for now.. 
-        $entities = $repo->getOneByContext($system, $key,
-                      $value);
+        $entities = $repo->findByContext($system, $key, $value);
 
         if ($access == 'rest') {
             return $this->returnRestData($this->getRequest(), $entities);
@@ -44,18 +42,18 @@ class CommonController extends Controller
         }
 
         if (count($entities) == 1) {
+            // Need to do this for BC.
             $classMethod = new \ReflectionMethod($this,"showAction");
             $argumentCount = count($classMethod->getParameters());
-            if ($argumentCount == 3)
+            if ($argumentCount == 3) 
                 return $this->render($context_config['show_template'],
                    $this->showAction($request, $access, $entities->getId()));
             else
                 return $this->render($context_config['show_template'],
                     $this->showAction($access, $entities->getId()));
         } else {
-            // Not that it exists, yet.
             return $this->render($context_config['list_template'],
-               $this->showAction($access, $entities));
+                array('entities' => $entities));
         }
 
     }
