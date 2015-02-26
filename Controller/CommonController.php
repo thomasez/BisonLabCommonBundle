@@ -45,14 +45,15 @@ class CommonController extends Controller
 
         if (count($entities) == 1) {
             // Need to do this for BC.
+            $eid = is_array($entities) ? $entities[0]->getId() : $entities->getId();
             $classMethod = new \ReflectionMethod($this,"showAction");
             $argumentCount = count($classMethod->getParameters());
-            if ($argumentCount == 3) 
+            if ($argumentCount == 3)
                 return $this->render($context_config['show_template'],
-                   $this->showAction($request, $access, $entities->getId()));
+                   $this->showAction($request, $access, $eid));
             else
                 return $this->render($context_config['show_template'],
-                    $this->showAction($access, $entities->getId()));
+                    $this->showAction($access, $eid));
         } else {
             // Not that it exists, yet.
             return $this->render($context_config['list_template'],
