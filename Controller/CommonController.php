@@ -30,9 +30,7 @@ class CommonController extends Controller
 
         $repo = $em->getRepository($context_config['entity']);
 
-        // Grabbing only one for now.. 
-        $entities = $repo->getOneByContext($system, $key,
-                      $value);
+        $entities = $repo->findByContext($system, $key, $value);
 
         if ($access == 'rest') {
             return $this->returnRestData($this->getRequest(), $entities);
@@ -55,9 +53,8 @@ class CommonController extends Controller
                 return $this->render($context_config['show_template'],
                     $this->showAction($access, $eid));
         } else {
-            // Not that it exists, yet.
             return $this->render($context_config['list_template'],
-               $this->showAction($request, $access, $entities));
+                array('entities' => $entities));
         }
 
     }
