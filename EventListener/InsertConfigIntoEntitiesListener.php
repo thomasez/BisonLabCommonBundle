@@ -61,6 +61,10 @@ class InsertConfigIntoEntitiesListener
                         break;
                     }
                 }
+                // You may end up with an error point at this place.
+                // The reason for this is that you haven't configured
+                // contexts.yml properly. You might miss either a system or
+                // object_name.
                 $entity->setConfig($conf);
                 return $entity;
             }

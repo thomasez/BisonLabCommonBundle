@@ -261,4 +261,16 @@ class ContextBase
             && $this->getExternalId()) ? false : true;
     }
 
+    /*
+     * Owner helpers.
+     */
+    public function getOwnerId()
+    {
+        return $this->getOwner()->getid();
+    }
+
+    public function getOwnerClass()
+    {
+        return get_class($this->getOwner());
+    }
 }
