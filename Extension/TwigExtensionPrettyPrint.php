@@ -33,12 +33,12 @@ class TwigExtensionPrettyPrint extends \Twig_Extension
 
 }
 
-function pretty($value)
+function pretty($data)
 {
-    if (empty($value)) { return ""; }
+    if (empty($data)) { return ""; }
 
     echo "<table>\n";
-    foreach($value as $key => $value) {
+    foreach($data as $key => $value) {
 
         echo "<tr>\n<th valign='top'>$key</th>\n<td>";
         if (is_array($value)) {
