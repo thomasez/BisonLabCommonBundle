@@ -648,5 +648,16 @@ null)
 
     }
 
+    /* Masking stuff. */
+    /* Could work if we had the access. But no can do, yet.
+    public function createNotFoundException($text)
+    {
+        if ($this->isRest($access)) {
+            return new Response($text, 404);
+        }
+        throw $parent:->createNotFoundException($text);
+    }
+    */
+
 }
 
