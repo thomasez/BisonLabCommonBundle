@@ -16,10 +16,17 @@
         "friendsofsymfony/user-bundle": "2.0.*@dev",
         "robloach/component-installer": "*",
         "components/jquery": "2.*",
+        "components/normalize.css": "3.*",
         "components/bootstrap": "3.*"
     },
     "config": {
-        "component-dir": "public"
+        "component-dir": "web/public",
+        "component-scriptFilters": {
+            "\\Assetic\\Filter\\GoogleClosure\\CompilerApiFilter": []
+        },
+        "component-styleFilters": {
+            "\\Assetic\\Filter\\CssImportFilter": []
+        }
     },
     "autoload": {
         "psr-0": { "BisonLab\\CommonBundle": "" }
