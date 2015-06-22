@@ -20,7 +20,7 @@
     },
     "config": {
         "component-dir": "public"
-    }
+    },
     "autoload": {
         "psr-0": { "BisonLab\\CommonBundle": "" }
     },
