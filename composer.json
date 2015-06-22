@@ -12,9 +12,15 @@
         }
     ],
     "require": {
-        "symfony/framework-bundle": ">=2.6, <3.0",
-        "friendsofsymfony/user-bundle": "2.0.*@dev"
+        "symfony/framework-bundle": ">=2.7, <3.0",
+        "friendsofsymfony/user-bundle": "2.0.*@dev",
+        "robloach/component-installer": "*",
+        "components/jquery": "2.*",
+        "components/bootstrap": "3.*"
     },
+    "config": {
+        "component-dir": "public"
+    }
     "autoload": {
         "psr-0": { "BisonLab\\CommonBundle": "" }
     },
