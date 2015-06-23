@@ -7,11 +7,13 @@
         <meta name="viewport" content="initial-scale=1, maximum-scale=1" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <link rel="stylesheet" href="{{ asset('bundles/bisonlabcommon/css/bamboo.css') }}" type="text/css" media="all" />
-        <link rel="stylesheet" href="{{ asset('bundles/bisonlabcommon/css/normalize.css') }}" type="text/css" media="all" />
+        <link rel="stylesheet" href="{{ asset('public/normalize-css/normalize.css') }}" type="text/css" media="all" />
+        <link rel="stylesheet" href="{{ asset('public/bootstrap/css/bootstrap.min.css') }}" type="text/css" media="all" />
+        <link rel="stylesheet" href="{{ asset('public/bootstrap/css/bootstrap-theme.min.css') }}" type="text/css" media="all" />
         <link rel="stylesheet" href="{{ asset('bundles/bisonlabcommon/css/standard.css') }}" type="text/css" media="all" />
         <title>{% block title %}{% endblock title %}</title>
         <link rel="shortcut icon" href="{{ asset('bundles/bisonlabcommon/images/favicon.ico') }}" />
-        <script type="text/javascript" src="{{ asset('bundles/bisonlabcommon/js/jquery.min.js') }}"></script>
+        <script type="text/javascript" src="{{ asset('public/jquery/jquery.min.js') }}"></script>
         <script type="text/javascript" src="{{ asset('bundles/bisonlabcommon/js/jquery.tablesorter.js') }}"></script>
         {% block javascripts %}{% endblock %}
 
@@ -19,6 +21,7 @@
 $(document).ready(function()
     {
         $("#sortable_table").tablesorter({sortList: [[0,0]]} );
+        $(".records_list").tablesorter({sortList: [[0,0]]} );
     }
 );
 </script>
