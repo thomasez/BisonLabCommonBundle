@@ -22,7 +22,7 @@ class CommonController extends Controller
      * The Context stuff
      */
 
-    public function contextGetAction($context_config, $access, $system, $key, $value)
+    public function contextGetAction(Request $request, $context_config, $access, $system, $key, $value)
     {
 
         $em = $this->getDoctrine()->getManager();
@@ -62,7 +62,7 @@ class CommonController extends Controller
 
     }
 
-    public function contextPostAction($context_config, $access)
+    public function contextPostAction(Request $request, $context_config, $access)
     {
 
         $request = $this->getRequest();
@@ -71,7 +71,7 @@ class CommonController extends Controller
         list( $system, $object_name) = explode("__", $post_data['system__object_name']);
         $object_id = $post_data['object_id'];
 
-        return $this->contextGetAction($context_config, $access, $system, $object_name, $object_id);
+        return $this->contextGetAction($request, $context_config, $access, $system, $object_name, $object_id);
 
     }
 
@@ -649,15 +649,42 @@ null)
     }
 
     /* Masking stuff. */
-    /* Could work if we had the access. But no can do, yet.
-    public function createNotFoundException($text)
+    /* Or kinda. Right now I cannot just throw an exception in one case and not
+     * in others. The way to do that would be to change all my controllers to
+     * not throw the createNotFoundException, but return it. 
+     * And I'm not prepared for that, yet at least.
+     */
+    public function returnNotFound($text, \Exception $previous = null)
     {
-        if ($this->isRest($access)) {
-            return new Response($text, 404);
+        $request = $this->getRequest();
+        $data = array('code' => 404, 'status' => 'Not Found', 'error_text' => $text);
+        $serializer = $this->get('serializer');
+        $response_text = '';
+foreach($request->getAcceptableContentTypes() as $a) {
+error_log($a);
+}
+
+        if (in_array('text/html', $request->getAcceptableContentTypes())) {
+            throw parent::createNotFoundException($text, $previous);
+        } elseif (in_array('application/xml', $request->getAcceptableContentTypes()))
+{
+            header('Content-Type: application/xml');
+            $response_text .=  $serializer->serialize($data, 'xml');
+        } elseif (in_array('application/yml', $request->getAcceptableContentTypes())) {
+            header('Content-Type: text/yaml');
+            $response_text .=  $serializer->serialize($data, 'yml');
+        } elseif (in_array('text/plain', $request->getAcceptableContentTypes())) {
+            header('Content-Type: text/plain');
+            $response_text .=  $text;
+        } elseif (in_array('application/json', $request->getAcceptableContentTypes())) {
+            header('Content-Type: application/json');
+            $response_text .=  $serializer->serialize($data, 'json');
+        } else {
+            // Guess I should default to html here.
+            throw parent::createNotFoundException($text, $previous);
         }
-        throw $parent:->createNotFoundException($text);
+        return new Response($response_text, 404);
     }
-    */
 
 }
 
