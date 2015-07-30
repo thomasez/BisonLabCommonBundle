@@ -333,6 +333,44 @@ class CommonController extends Controller
     }
 
     /* 
+     * This hacks forms into accept Json.. Kinda.
+     * It also tackels CSRF-protection when doing rest stuff.
+     */
+    public function handleForm(&$form, &$request, $access = null)
+    {
+        if ($data = json_decode($request->getContent(), true)) {
+            /*
+            if ($this->isRest($access)) {
+                $tm = $this->container->get('security.csrf.token_manager');
+                // This is kinda bad (but it's all a hack anyway) since I
+                // should rather get the CsrfFieldName (defaultFieldName in the
+                // FormType. Yes, odd name).
+                $token = $tm->getToken($edit_form->getName());
+                $data[$edit_form->getName()]['_token'] = $token;
+            }
+            */
+            foreach($data as $key => $value) {
+                $request->request->set($key, $value);
+            }
+        }
+        // I don't want to disable CSRF when doing ajax calls, aka I just check
+        // for rest.
+        if ("rest" == $access) {
+            $tm = $this->container->get('security.csrf.token_manager');
+            // This is kinda bad (but it's all a hack anyway) since I
+            // should rather get the CsrfFieldName (defaultFieldName in the
+            // FormType. Yes, odd name).
+            $token = $tm->getToken($form->getName());
+            // Odd it is, but seems to be the suggested way if you Google it.
+            // (Neither add nor set work deep.
+            $form_data = $request->request->get($form->getName());
+            $form_data['_token'] = $token;
+            $form_data = $request->request->set($form->getName(), $form_data);
+        }
+        $form->handleRequest($request);
+    }
+
+    /* 
      * Common controller actions
      */
     public function showLogPage($access, $entity_name, $id)
