@@ -266,6 +266,13 @@ class CommonController extends Controller
         if (method_exists($data, 'toArray')) {
             $data = $data->toArray();
         }
+
+        // If the data is a Model from the NosqlBundle I'd better strip off the
+        // metadata.
+        if ($data instanceof \RedpillLinpro\NosqlBundle\Model\BaseModel) {
+            $data = $data->toDataArray();
+        }
+
         */
 
         if (in_array('application/xml', $request->getAcceptableContentTypes()))
