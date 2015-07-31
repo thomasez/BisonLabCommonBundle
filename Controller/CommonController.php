@@ -705,9 +705,6 @@ null)
         $data = array('code' => 404, 'status' => 'Not Found', 'error_text' => $text);
         $serializer = $this->get('serializer');
         $response_text = '';
-foreach($request->getAcceptableContentTypes() as $a) {
-error_log($a);
-}
 
         if (in_array('text/html', $request->getAcceptableContentTypes())) {
             throw parent::createNotFoundException($text, $previous);
