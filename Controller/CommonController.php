@@ -323,6 +323,17 @@ class CommonController extends Controller
         return new Response('', 200);
     }
 
+    public function returnErrorResponse($message, $code, $errors = null) 
+    {
+        $msg = array('code' => $code, 'message' => $message);
+        if (is_array($errors)) {
+            $msg['errors'] = $errors;
+        } elseif ($errors) {
+            $msg['errors'] = array($errors);
+        }
+        return new Response(json_encode($msg), $code);
+    }
+
     public function returnEntitiesAsJson($entities) 
     {
         // json encode does not send an empty {} if nothing in it.
@@ -346,16 +357,6 @@ class CommonController extends Controller
     public function handleForm(&$form, &$request, $access = null)
     {
         if ($data = json_decode($request->getContent(), true)) {
-            /*
-            if ($this->isRest($access)) {
-                $tm = $this->container->get('security.csrf.token_manager');
-                // This is kinda bad (but it's all a hack anyway) since I
-                // should rather get the CsrfFieldName (defaultFieldName in the
-                // FormType. Yes, odd name).
-                $token = $tm->getToken($edit_form->getName());
-                $data[$edit_form->getName()]['_token'] = $token;
-            }
-            */
             foreach($data as $key => $value) {
                 $request->request->set($key, $value);
             }
@@ -374,7 +375,9 @@ class CommonController extends Controller
             $form_data['_token'] = $token;
             $form_data = $request->request->set($form->getName(), $form_data);
         }
-        $form->handleRequest($request);
+
+        return $form->handleRequest($request);
+        
     }
 
     /* 
