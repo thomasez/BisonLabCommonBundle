@@ -380,6 +380,23 @@ class CommonController extends Controller
         
     }
 
+    /*
+     * Grabbing validation errors isn't as simple as I believe it should.
+     * (On top of the fact that it's not always validating..)
+     * This extracts the errors and puts them in an array with the field as key.
+     */
+    public function handleFormErrors(&$form)
+    {
+        $errors = array();
+        foreach ($form->getErrors(true, true) as $e) {
+            $fieldname = (string)$e->getOrigin()->getName();
+            if (!isset($errors[$fieldname])) 
+                $errors[$fieldname] = array();
+            $errors[$fieldname][] = (string)$e->getMessage();
+        }
+        return $errors;
+    }
+
     /* 
      * Common controller actions
      */
