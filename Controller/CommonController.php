@@ -275,7 +275,14 @@ class CommonController extends Controller
 
         */
 
-        if (in_array('application/xml', $request->getAcceptableContentTypes()))
+        /* If json is available, return Json (and at the bottom it's also the
+         * default) */
+        if (in_array('application/json', $request->getAcceptableContentTypes())) {
+            return $this->returnAsJson($request, $data);
+        /* JSONP */
+        } elseif (in_array('application/javascript', $request->getAcceptableContentTypes())) {
+            return $this->returnAsJson($request, $data);
+        } elseif (in_array('application/xml', $request->getAcceptableContentTypes()))
 {
             $serializer = $this->get('serializer');
             header('Content-Type: application/xml');
@@ -309,17 +316,24 @@ class CommonController extends Controller
             echo $data;
             return new Response('', 200);
         } else { // Json.
-            $serializer = $this->get('serializer');
-            header('Content-Type: application/json');
-            echo $serializer->serialize($data, 'json');
-            return new Response('', 200);
+            return $this->returnAsJson($request, $data);
         }
     }
 
-    public function returnAsJson($entity) 
+    public function returnAsJson($request, $data) 
     {
-        // But why?
-        echo $entity->toJson(true);
+        $serializer = $this->get('serializer');
+        $json =  $serializer->serialize($data, 'json');
+        // The line underneath maked $functions as 1, not the conmtent of 
+        // the callback query variable.
+        // if ($function = $request->get('jsonp') || $function = $request->get('callback')) { 
+        if ($request->get('callback')) { 
+            header('Content-Type: application/javascript');
+            $json = $request->get('callback') . "(" . $json . ");";
+        } else {
+            header('Content-Type: application/json');
+        }
+        echo $json;
         return new Response('', 200);
     }
 
