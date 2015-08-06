@@ -375,9 +375,8 @@ class CommonController extends Controller
                 $request->request->set($key, $value);
             }
         }
-        // I don't want to disable CSRF when doing ajax calls, aka I just check
-        // for rest.
-        if ("rest" == $access) {
+        // Both ajax and rest - calls have to be CSRF hacked unfortunately.
+        if ($this->isRest($access)) {
             $tm = $this->container->get('security.csrf.token_manager');
             // This is kinda bad (but it's all a hack anyway) since I
             // should rather get the CsrfFieldName (defaultFieldName in the
