@@ -26,14 +26,13 @@ class CommonController extends Controller
     {
 
         $em = $this->getDoctrine()->getManager();
-        $request = $this->getRequest();
 
         $repo = $em->getRepository($context_config['entity']);
 
         $entities = $repo->findByContext($system, $key, $value);
 
         if ($access == 'rest') {
-            return $this->returnRestData($this->getRequest(), $entities);
+            return $this->returnRestData($request, $entities);
         }
 
         if (!$entities) {
@@ -65,7 +64,6 @@ class CommonController extends Controller
     public function contextPostAction(Request $request, $context_config, $access)
     {
 
-        $request = $this->getRequest();
         $post_data = $request->request->get('form');
 
         list( $system, $object_name) = explode("__", $post_data['system__object_name']);
@@ -128,9 +126,8 @@ class CommonController extends Controller
 
     }
 
-    public function updateContextForms($context_for, $context_class, $owner) {
+    public function updateContextForms(Â$request, $context_for, $context_class, $owner) {
         $em = $this->getDoctrine()->getManager();
-        $request = $this->getRequest();
 
         $context_conf = $this->container->getParameter('app.contexts');
         list($bundle, $object) = explode(":", $context_for);
@@ -413,7 +410,7 @@ class CommonController extends Controller
     /* 
      * Common controller actions
      */
-    public function showLogPage($access, $entity_name, $id)
+    public function showLogPage($request, $access, $entity_name, $id)
     {
         $em = $this->getDoctrine()->getManager();
 
@@ -429,7 +426,7 @@ class CommonController extends Controller
             'objectId' => $entity->getId()));
 
         if ($access == 'rest') {
-            return $this->returnRestData($this->getRequest(), $logs);
+            return $this->returnRestData($request, $logs);
         }
 
         return $this->render('BisonLabCommonBundle::showLog.html.twig', 
@@ -448,18 +445,16 @@ class CommonController extends Controller
      * it here and always return whatever comes from this one in the
      * controllers.  Right now the controller using this one has to check on
      * response or array to know what to do. That's not a good thing. */
-    public function pagedListByEntityAction($access, $em, $repo, $field_name,
+    public function pagedListByEntityAction($request, $access, $em, $repo, $field_name,
 $entity, $entity_obj, $route, $total_amount_items, $entity_identifier_name =
 null)
     {
-
-        $request = $this->getRequest();
 
         // Pagination with rest? 
         if ($this->isRest($access)) {
             $entities = $repo->findBy(
                 array($field_name => $entity_obj));
-            return $this->returnRestData($this->getRequest(), $entities);
+            return $this->returnRestData($request, $entities);
         }
 
         $order_by  = $this->getOrderBy($request);
@@ -517,15 +512,14 @@ null)
     }
 
     /* TODO: Same as above. Render a template here. */
-    public function pagedIndexAction($access, $em, $repo, $route)
+    public function pagedIndexAction($request, $access, $em, $repo, $route)
     {
 
         if ($access == 'rest') {
             $entities = $repo->findAll();
-            return $this->returnRestData($this->getRequest(), $entities);
+            return $this->returnRestData($request, $entities);
         }
 
-        $request  = $this->getRequest();
         $order_by = $this->getOrderBy($request);
 
         $filter_by = $this->getFilterBy($request);
@@ -732,9 +726,8 @@ null)
      * not throw the createNotFoundException, but return it. 
      * And I'm not prepared for that, yet at least.
      */
-    public function returnNotFound($text, \Exception $previous = null)
+    public function returnNotFound($request, $text, \Exception $previous = null)
     {
-        $request = $this->getRequest();
         $data = array('code' => 404, 'status' => 'Not Found', 'error_text' => $text);
         $serializer = $this->get('serializer');
         $response_text = '';
