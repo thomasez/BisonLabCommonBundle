@@ -54,6 +54,7 @@ class InsertConfigIntoEntitiesListener
             // Gotta be able to handle the case of no config at all..
             if (isset($context_conf[$bundle][$object]) 
                     && $context_conf[$bundle][$object][$entity->getSystem()]) {
+                $conf = null;
                 foreach ($context_conf[$bundle][$object][$entity->getSystem()] as $c)
                 {
                     if ($c['object_name'] == $object_name) {
@@ -65,6 +66,10 @@ class InsertConfigIntoEntitiesListener
                 // The reason for this is that you haven't configured
                 // contexts.yml properly. You might miss either a system or
                 // object_name.
+                if (!$conf) {
+                    // Feel free to find a better exception. I just needed one.
+                    throw new \InvalidArgumentException(sprintf("There was not Context config found for the %s:%s-%s context.", $bundle, $object, $object_name));
+                }
                 $entity->setConfig($conf);
                 return $entity;
             }
