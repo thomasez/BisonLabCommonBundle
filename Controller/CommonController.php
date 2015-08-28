@@ -249,28 +249,8 @@ class CommonController extends Controller
         /* I think I changed my mind. I'd rather want the programmer/user to
          * decide, not add magic like this. So, you'd better do the toArray
          * conversion before calling this function if you want it like that.
+         * (Comment kept for reminding myself and others on the descision)
          */
-        /*
-        if (is_array($data)) {
-            if (method_exists($data[0], 'toArray')) {
-                $arr = array();
-                foreach ($data as $d) {
-                    $arr[] = $d->toArray(); 
-                }
-                $data = $arr;
-            }
-        }
-        if (method_exists($data, 'toArray')) {
-            $data = $data->toArray();
-        }
-
-        // If the data is a Model from the NosqlBundle I'd better strip off the
-        // metadata.
-        if ($data instanceof \RedpillLinpro\NosqlBundle\Model\BaseModel) {
-            $data = $data->toDataArray();
-        }
-
-        */
 
         // Odd default, but it's not returned yet :=)
         $response = new Response('', 200);
@@ -345,22 +325,6 @@ class CommonController extends Controller
             $msg['errors'] = array($errors);
         }
         return new Response(json_encode($msg), $code);
-    }
-
-    public function returnEntitiesAsJson($entities) 
-    {
-        // json encode does not send an empty {} if nothing in it.
-        if (count($entities) == 0) {
-            return new Response('{}', 200);
-        }
-
-        $arr = array();
-        foreach ($entities as $entity) {
-            $arr[] = $entity->toArray(true);
-        }
-        $json = new JsonEncoder();
-        echo $json->encode($arr, 'json');
-        return new Response('', 200);
     }
 
     /* 
