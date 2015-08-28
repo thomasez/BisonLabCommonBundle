@@ -47,7 +47,7 @@ class TwigExtensionPrettyPrint extends \Twig_Extension
 
             echo "<tr>\n<th valign='top'>$key</th>\n<td>";
             if (is_array($value)) {
-                pretty($value);
+                $this->pretty($value);
             } else {
                 // I want to change \n to <br />. Not perfect but I need it.
                 $value = preg_replace("/\n/", "<br />", $value);
