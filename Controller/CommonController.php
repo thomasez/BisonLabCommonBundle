@@ -254,6 +254,7 @@ class CommonController extends Controller
 
         // Odd default, but it's not returned yet :=)
         $response = new Response('', 200);
+        $content = '';
 
         /* If json is available, return Json (and at the bottom it's also the
          * default) */
@@ -265,14 +266,14 @@ class CommonController extends Controller
         } elseif (in_array('application/xml', $request->getAcceptableContentTypes()))
 {
             $serializer = $this->get('serializer');
-            $response->headers->set("Content-Type", "application/xml");
-            echo $serializer->serialize($data, 'xml');
+            $headers["Content-Type"] = "application/xml";
+            $content .= $serializer->serialize($data, 'xml');
         } elseif (in_array('application/yml;', $request->getAcceptableContentTypes())) {
             $serializer = $this->get('serializer');
-            $response->headers->set("Content-Type", "text/yaml");
-            echo $serializer->serialize($data, 'yml');
+            $headers["Content-Type"] = "text/yaml";
+            $content .= $serializer->serialize($data, 'yml');
         } elseif (in_array('application/html', $request->getAcceptableContentTypes())) {
-            $response->headers->set("Content-Type", "application/html");
+            $headers["Content-Type"] = "application/html";
             $serializer = $this->get('serializer');
             // Reason for this is the extremely simple template for showing
             // whatever as HTML. Just send it as an array and it can be dumped
@@ -290,29 +291,30 @@ class CommonController extends Controller
             if (!is_string($data)) {
                 throw \InvalidArgumentException("Can not return non-string content as plain text.");
             }
-            $response->headers->set("Content-Type", "text/plain");
-            echo $data;
+            $headers["Content-Type"] = "text/plain";
+            $content .= $data;
         } else { // Json.
             return $this->returnAsJson($request, $data);
         }
+        $response = new Response($content, 200, $headers);
         return $response;
     }
 
     public function returnAsJson($request, $data) 
     {
-        $response = new Response('', 200);
         $serializer = $this->get('serializer');
-        $json =  $serializer->serialize($data, 'json');
+        $content =  $serializer->serialize($data, 'json');
+        $headers = array();
         // The line underneath maked $functions as 1, not the conmtent of 
         // the callback query variable.
         // if ($function = $request->get('jsonp') || $function = $request->get('callback')) { 
         if ($request->get('callback')) { 
-            $response->headers->set("Content-Type", "application/javascript");
-            $json = $request->get('callback') . "(" . $json . ");";
+            $headers["Content-Type"] = "application/javascript";
+            $content = $request->get('callback') . "(" . $content . ");";
         } else {
-            $response->headers->set("Content-Type", "application/json");
+            $headers["Content-Type"] = "application/json";
         }
-        echo $json;
+        $response = new Response($content, 200, $headers);
         return $response;
     }
 
