@@ -22,16 +22,16 @@ class CommonController extends Controller
      * The Context stuff
      */
 
-    public function contextGetAction(Request $request, $context_config, $access, $system, $key, $value)
+    public function contextGetAction(Request $request, $context_config, $access, $system, $object_name, $external_id)
     {
 
         $em = $this->getDoctrine()->getManager();
 
         $repo = $em->getRepository($context_config['entity']);
 
-        $entities = $repo->findByContext($system, $key, $value);
+        $entities = $repo->findByContext($system, $object_name, $external_id);
 
-        if ($access == 'rest') {
+        if ($access == 'rest' || $access == 'ajax') {
             return $this->returnRestData($request, $entities);
         }
 
