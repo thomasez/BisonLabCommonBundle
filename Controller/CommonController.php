@@ -252,8 +252,6 @@ class CommonController extends Controller
          * (Comment kept for reminding myself and others on the descision)
          */
 
-        // Odd default, but it's not returned yet :=)
-        $response = new Response('', 200);
         $content = '';
 
         /* If json is available, return Json (and at the bottom it's also the
