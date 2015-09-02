@@ -289,7 +289,7 @@ class CommonController extends Controller
             }
         } elseif (in_array('text/plain', $request->getAcceptableContentTypes())) {
             if (!is_string($data)) {
-                throw \InvalidArgumentException("Can not return non-string content as plain text.");
+                throw new \InvalidArgumentException("Can not return non-string content as plain text.");
             }
             $headers["Content-Type"] = "text/plain";
             $content .= $data;
