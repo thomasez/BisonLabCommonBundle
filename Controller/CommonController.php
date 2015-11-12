@@ -638,18 +638,37 @@ null)
         return $order_by;
     }
 
+    /* 
+     * Sorry folks, this looks odd and stupid. And maybe it is.
+     * It has to handle both POSt and GEt and two ways of defining a filter,
+     * list and string.
+     */
     public function getFilterBy($request) 
     {
+
+        $filter_by = array();
         // Should check against what is allowed to order by. Searchable?
-        $filter_by = $request->get('filter_by');
+        if ($filter = $request->get('filter_by')) {
+            if (is_array($filter))
+                $filter_by = array_merge($filter_by, $filter);
+            else 
+                $filter_by = array_merge($filter_by, array($filter));
+        }
 
-        if (!is_array($filter_by)) $filter_by = array();
+        // No, I could not use filters in an && 
+        $filters_list = array();
+        if ($filters = $request->get('filters'))
+            if (is_array($filters))
+                $filters_list = $filters;
 
-        // This is ohh, so annoying. I just want to POSt withj []'s!
-        $filter_by_post = $request->request->get('filters');
-        if ($filter_by_post) {
-            foreach($filter_by_post as $key => $val) {
-                if (preg_match("/^filter_by/", $key) && strlen($val) > 3) {
+        
+        if ($filters = $request->request->get('filters'))
+            if (is_array($filters))
+                $filters_list = array_merge($filters, $filters_list);
+
+        if (count($filters_list) > 0) {
+            foreach($filters_list as $key => $val) {
+                if (preg_match("/^filter_by/", $key) && strlen($val) > 2) {
                     $filter_by[] = $val;
                 }
             } 
