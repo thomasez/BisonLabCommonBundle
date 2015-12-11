@@ -1,0 +1,11 @@
+{# For nesting quite basic parent/children. They should have a name and ID, and most does. #}
+{% macro list_children(thingie) %}
+    <ul class="bullet_list">
+    {% for child in thingie.children %}
+        <li><a href="{{ path('item_show', { 'id': child.id }) }}">{{ child.name }} ({{ child.model.name }})</a></li>
+        {% if child.children is not empty %}
+            {{ _self.list_children(child) }}
+        {% endif %}
+    {% endfor %}
+    </ul>
+{% endmacro %}

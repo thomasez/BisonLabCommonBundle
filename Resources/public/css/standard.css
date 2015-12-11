@@ -457,6 +457,10 @@ table.record_properties a:hover {
     border-radius:              3px;
 }
 
+ul.bullet_list {
+    list-style-type: circle;
+}
+
 ul.record_actions a:hover {
     text-decoration: none;
     color: #FFF;
