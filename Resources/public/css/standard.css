@@ -406,11 +406,25 @@ background: #CCCC00;
 /* (To be honest, I don't really like this eiter, but it does use the color
  * scheme.. So I'll keep it for now. */
 }
-table.records_list thead tr .headerSortUp {
-    background-image: url(../images/asc.gif);
+table.records_list thead tr .header,
+.tablesorter-default .tablesorter-header {
+	background-image: url(data:image/gif;base64,R0lGODlhFQAJAIAAACMtMP///yH5BAEAAAEALAAAAAAVAAkAAAIXjI+AywnaYnhUMoqt3gZXPmVg94yJVQAAOw==);
+/*    background-image: url(/images/bg.gif); */
+    background-repeat: no-repeat;
+    background-position: center right;
+    cursor: pointer;
 }
-table.records_list thead tr .headerSortDown {
-    background-image: url(../images/desc.gif);
+table.records_list thead tr .headerSortUp,
+.tablesorter-default thead .tablesorter-headerSortUp,
+.tablesorter-default thead .tablesorter-headerAsc {
+	background-image: url(data:image/gif;base64,R0lGODlhFQAEAIAAACMtMP///yH5BAEAAAEALAAAAAAVAAQAAAINjI8Bya2wnINUMopZAQA7);
+/*    background-image: url(/images/asc.gif); */
+}
+table.records_list thead tr .headerSortDown,
+.tablesorter-default thead .tablesorter-headerSortDown,
+.tablesorter-default thead .tablesorter-headerDesc {
+	background-image: url(data:image/gif;base64,R0lGODlhFQAEAIAAACMtMP///yH5BAEAAAEALAAAAAAVAAQAAAINjB+gC+jP2ptn0WskLQA7);
+/*     background-image: url(/images/desc.gif); */
 }
 table.records_list thead tr .headerSortDown, table.records_list thead tr .headerSortUp {
     background-color: #900090;
