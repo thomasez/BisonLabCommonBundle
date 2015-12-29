@@ -303,9 +303,7 @@ class CommonController extends Controller
         $serializer = $this->get('serializer');
         $content =  $serializer->serialize($data, 'json');
         $headers = array();
-        // The line underneath maked $functions as 1, not the conmtent of 
-        // the callback query variable.
-        // if ($function = $request->get('jsonp') || $function = $request->get('callback')) { 
+
         if ($request->get('callback')) { 
             $headers["Content-Type"] = "application/javascript";
             $content = $request->get('callback') . "(" . $content . ");";
