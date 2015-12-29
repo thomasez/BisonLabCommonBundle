@@ -502,7 +502,6 @@ null)
         }
 
         if ($this->isRest($access, $request)) {
-            $entities = $repo->findAll();
             return $this->returnRestData($request, $entities);
         }
 
