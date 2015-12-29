@@ -481,11 +481,6 @@ null)
     public function pagedIndexAction($request, $access, $em, $repo, $route)
     {
 
-        if ($access == 'rest') {
-            $entities = $repo->findAll();
-            return $this->returnRestData($request, $entities);
-        }
-
         $order_by = $this->getOrderBy($request);
 
         $filter_by = $this->getFilterBy($request);
@@ -504,6 +499,11 @@ null)
                       ? (int)$request->get('page') : 1;
             $offset = ($page - 1) * $this->per_page;
             $entities = $repo->findBy($criteria, $order_by, $this->per_page, $offset);
+        }
+
+        if ($this->isRest($access, $request)) {
+            $entities = $repo->findAll();
+            return $this->returnRestData($request, $entities);
         }
 
         // I am sure someone will, one day, pick me on the shoulder and tell
