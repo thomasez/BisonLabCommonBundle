@@ -298,8 +298,43 @@ class CommonController extends Controller
         return $response;
     }
 
+    /* This is more or less a hack. It does the job, but should probably be
+     * more integrated into the pagedIndexAction and pagedListByEntityAction so
+     * we can get the total and filtered count correct. 
+     * It's only used when DataTables is in serverSide mode.
+     * http://datatables.net/manual/server-side
+     * (DataTables themselves menas there is no need for this until er are
+     * talking 10K rows. Before that it's be better to push everything and let
+     * the client side handle the sorting, paging and filtering.
+     */
+    public function returnAsDataTableJson($request, $data) 
+    {
+        $content_arr = array(
+            'draw' => $request->query->get('draw'),
+            // Cheating.
+            'recordsTotal' => count($data),
+            'recordsFiltered' => count($data),
+            'data' => $data
+        );
+        $serializer = $this->get('serializer');
+        $content = $serializer->serialize($content_arr, 'json');
+        $headers = array();
+
+        if ($request->get('callback')) { 
+            $headers["Content-Type"] = "application/javascript";
+            $content = $request->get('callback') . "(" . $content . ");";
+        } else {
+            $headers["Content-Type"] = "application/json";
+        }
+        $response = new Response($content, 200, $headers);
+        return $response;
+    }
+
     public function returnAsJson($request, $data) 
     {
+        if ($request->query->get('draw'))
+            return $this->returnAsDataTableJson($request, $data);
+
         $serializer = $this->get('serializer');
         $content =  $serializer->serialize($data, 'json');
         $headers = array();
