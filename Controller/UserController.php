@@ -6,7 +6,6 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use BisonLab\CommonBundle\Entity\User;
 use BisonLab\CommonBundle\Form\UserType;
 
@@ -23,7 +22,6 @@ class UserController extends Controller
      * Lists all User entities.
      *
      * @Route("/", name="user")
-     * @Template()
      */
     public function indexAction()
     {
@@ -31,16 +29,17 @@ class UserController extends Controller
 
         $entities = $em->getRepository('BisonLabCommonBundle:User')->findAll();
 
-        return array(
+        $params = array(
             'entities' => $entities,
         );
+        return $this->render('BisonLabCommonBundle:User:index.html.twig', $params);
+
     }
 
     /**
      * Finds and displays a User entity.
      *
      * @Route("/{id}/show", name="user_show")
-     * @Template()
      */
     public function showAction($id)
     {
@@ -54,27 +53,28 @@ class UserController extends Controller
 
         $deleteForm = $this->createDeleteForm($id);
 
-        return array(
+        $params = array(
             'entity'      => $entity,
             'delete_form' => $deleteForm->createView(),
         );
+        return $this->render('BisonLabCommonBundle:User:show.html.twig', $params);
     }
 
     /**
      * Displays a form to create a new User entity.
      *
      * @Route("/new", name="user_new")
-     * @Template()
      */
     public function newAction()
     {
         $entity = new User();
         $form   = $this->createForm(new UserType(), $entity);
 
-        return array(
+        $params = array(
             'entity' => $entity,
             'form'   => $form->createView(),
         );
+        return $this->render('BisonLabCommonBundle:User:new.html.twig', $params);
     }
 
     /**
@@ -82,7 +82,6 @@ class UserController extends Controller
      *
      * @Route("/create", name="user_create")
      * @Method("POST")
-     * @Template("BisonLabCommonBundle:User:new.html.twig")
      */
     public function createAction(Request $request)
     {
@@ -106,17 +105,17 @@ class UserController extends Controller
             return $this->redirect($this->generateUrl('user'));
         }
 
-        return array(
+        $params = array(
             'entity' => $entity,
             'form'   => $form->createView(),
         );
+        return $this->render('BisonLabCommonBundle:User:new.html.twig', $params);
     }
 
     /**
      * Displays a form to edit an existing User entity.
      *
      * @Route("/{id}/edit", name="user_edit")
-     * @Template()
      */
     public function editAction($id)
     {
@@ -130,11 +129,12 @@ class UserController extends Controller
         $editForm = $this->createForm(new UserType(), $entity);
         $deleteForm = $this->createDeleteForm($id);
 
-        return array(
+        $params = array(
             'entity'      => $entity,
             'edit_form'   => $editForm->createView(),
             'delete_form' => $deleteForm->createView(),
         );
+        return $this->render('BisonLabCommonBundle:User:edit.html.twig', $params);
     }
 
     /**
@@ -142,7 +142,6 @@ class UserController extends Controller
      *
      * @Route("/{id}/update", name="user_update")
      * @Method("POST")
-     * @Template("BisonLabCommonBundle:User:edit.html.twig")
      */
     public function updateAction(Request $request, $id)
     {
@@ -190,11 +189,12 @@ class UserController extends Controller
 
         }
 
-        return array(
+        $params = array(
             'entity'      => $entity,
             'edit_form'   => $editForm->createView(),
             'delete_form' => $deleteForm->createView(),
         );
+        return $this->render('BisonLabCommonBundle:User:edit.html.twig', $params);
     }
 
     /**
