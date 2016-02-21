@@ -2,7 +2,6 @@
 
 namespace BisonLab\CommonBundle\Entity;
 
-use Gedmo\Mapping\Annotation as Gedmo;
 use Doctrine\ORM\Mapping as ORM;
 
 /** @ORM\MappedSuperclass */
@@ -27,7 +26,6 @@ class ContextBase
      * @var string $system
      *
      * @ORM\Column(name="system", type="string", length=255)
-     * @Gedmo\Versioned
      */
     private $system;
 
@@ -35,7 +33,6 @@ class ContextBase
      * @var string $object_name
      *
      * @ORM\Column(name="object_name", type="string", length=255)
-     * @Gedmo\Versioned
      */
     private $object_name;
 
@@ -43,7 +40,6 @@ class ContextBase
      * @var string $external_id
      *
      * @ORM\Column(name="external_id", type="string", length=80)
-     * @Gedmo\Versioned
      */
     private $external_id;
 
@@ -51,7 +47,6 @@ class ContextBase
      * @var string $url
      *
      * @ORM\Column(name="url", type="string", length=255, nullable=true)
-     * @Gedmo\Versioned
      */
     private $url;
 
