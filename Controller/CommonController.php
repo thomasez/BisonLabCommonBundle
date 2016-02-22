@@ -128,7 +128,7 @@ class CommonController extends Controller
     }
 
     public function updateContextForms($request, $context_for, $context_class, $owner) {
-        $em = $this->getDoctrine()->getManagerForClass($context_class);
+        $em = $this->getDoctrine()->getManagerForClass($context_for);
 
         $context_conf = $this->container->getParameter('app.contexts');
         list($bundle, $object) = explode(":", $context_for);
