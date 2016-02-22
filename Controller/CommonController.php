@@ -25,9 +25,10 @@ class CommonController extends Controller
     public function contextGetAction(Request $request, $context_config, $access, $system, $object_name, $external_id)
     {
 
-        $em = $this->getDoctrine()->getManager();
+        $class = $context_config['entity'];
+        $em = $this->getDoctrine()->getManagerForClass($class);
 
-        $repo = $em->getRepository($context_config['entity']);
+        $repo = $em->getRepository($class);
 
         $entities = $repo->findByContext($system, $object_name, $external_id);
 
@@ -127,7 +128,7 @@ class CommonController extends Controller
     }
 
     public function updateContextForms($request, $context_for, $context_class, $owner) {
-        $em = $this->getDoctrine()->getManager();
+        $em = $this->getDoctrine()->getManagerForClass($context_class);
 
         $context_conf = $this->container->getParameter('app.contexts');
         list($bundle, $object) = explode(":", $context_for);
@@ -411,7 +412,7 @@ class CommonController extends Controller
      */
     public function showLogPage($request, $access, $entity_name, $id)
     {
-        $em = $this->getDoctrine()->getManager();
+        $em = $this->getDoctrine()->getManagerForClass($entity_name);
 
         $entity = $em->getRepository($entity_name)->find($id);
 

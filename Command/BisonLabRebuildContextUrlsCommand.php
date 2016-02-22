@@ -54,11 +54,8 @@ EOT
 
         gc_enable();
 
-        $this->entityManager = $this->getContainer()->get('doctrine')->getManager();
+        $this->entityManager = $this->getContainer()->get('doctrine')->getManagerForClass($this->context_object);
         $this->entityManager->getConnection()->getConfiguration()->setSQLLogger(null);
-        $stmt = $this->entityManager->getConnection()->prepare(' select name, number, item_id, count(*) from port group by item_id, number, name having count(*) > 1 order by item_id;');
-
-        $stmt->execute();
 
         $this->repo    = $this->entityManager
                 ->getRepository($this->context_object);
