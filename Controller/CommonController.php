@@ -313,7 +313,7 @@ class CommonController extends Controller
         $content_arr = array(
             'draw' => $request->get('draw'),
             // Cheating.
-            'recordsTotal' => $total_amount || count($data),
+            'recordsTotal' => $total_amount != null ? $total_amount : count($data),
             'recordsFiltered' => count($data),
             'data' => $data
         );
@@ -561,17 +561,20 @@ null)
 
     public function ajaxedIndexAction($request, $access, $em, $repo, $route)
     {
-        $datatables_criterias = $this->getDataTablesCriterias($request);
-        if (empty($datatables_criterias)) {
+        $criterias = $this->getDataTablesCriterias($request);
+        if (empty($criterias)) {
             return $this->returnRestData($request, $repo->findAll());
         }
 
-        $entities = $repo->findAll();
-        if (method_exists($repo, "countAll")) {
-            // $total_amount_entities = $repo->countAll($criteria);
+        if ($criterias['per_page'] && $criterias['per_page'] != -1) {
+            $entities = $repo->findBy(
+                $criterias['search'], $criterias['order_by'], $criterias['per_page'], $criterias['offset']);
+            $total_amount_entities = $repo->countAll($criterias['search']);
+        } else {
+            $entities = $repo->findAll();
+            $total_amount_entities = count($entities);
         }
-        $total_amount_entities = count($entities);
-        // $total_amount_entities = $repo->countAll($criteria);
+
         return $this->returnAsDataTablesJson($request, $entities, $total_amount_entities);
 
     }
@@ -677,12 +680,19 @@ null)
         // Can just as well use the old variables.
         $columns = $request->get('columns');
 
-        $criterias['per_page'] = $request->get('lenght');
+        // Guess the TODO:
+        if ($request->get('search')) {
+            $criterias['search'] = array();
+        } else {
+            $criterias['search'] = array();
+        }
+        $criterias['per_page'] = $request->get('length');
         $criterias['offset'] = $request->get('start');
+
         if ($request->get('order')) {
             // Lazy for now, just use the first order.
             $o = $request->get('order')[0];
-            $criterias['order_by'] = array($columns[$o['column']], $o['dir']);
+            $criterias['order_by'] = array($columns[$o['column']]['data'] => $o['dir']);
         }
 
         return $criterias;
