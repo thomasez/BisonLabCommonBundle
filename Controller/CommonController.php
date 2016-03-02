@@ -308,7 +308,7 @@ class CommonController extends Controller
      * talking 10K rows. Before that it's be better to push everything and let
      * the client side handle the sorting, paging and filtering.
      */
-    public function returnAsDataTableJson($request, $data, $total_amount = null) 
+    public function returnAsDataTablesJson($request, $data, $total_amount = null) 
     {
         $content_arr = array(
             'draw' => $request->get('draw'),
@@ -334,7 +334,7 @@ class CommonController extends Controller
     public function returnAsJson($request, $data) 
     {
         if ($request->get('draw'))
-            return $this->returnAsDataTableJson($request, $data);
+            return $this->returnAsDataTablesJson($request, $data);
 
         $serializer = $this->get('serializer');
         $content =  $serializer->serialize($data, 'json');
@@ -561,7 +561,7 @@ null)
 
     public function ajaxedIndexAction($request, $access, $em, $repo, $route)
     {
-        $datatables_criterias = $this->getDatatablesCriterias($request);
+        $datatables_criterias = $this->getDataTablesCriterias($request);
         if (empty($datatables_criterias)) {
             return $this->returnRestData($request, $repo->findAll());
         }
@@ -572,7 +572,7 @@ null)
         }
         $total_amount_entities = count($entities);
         // $total_amount_entities = $repo->countAll($criteria);
-        return $this->returnAsDataTableJson($request, $entities, $total_amount_entities);
+        return $this->returnAsDataTablesJson($request, $entities, $total_amount_entities);
 
     }
 
@@ -668,7 +668,7 @@ null)
         return $builder->getForm()->createView();
     }
 
-    public function getDatatablesCriterias($request) 
+    public function getDataTablesCriterias($request) 
     {
         $criterias = array();
         // Got something to do? 
