@@ -308,12 +308,12 @@ class CommonController extends Controller
      * talking 10K rows. Before that it's be better to push everything and let
      * the client side handle the sorting, paging and filtering.
      */
-    public function returnAsDataTableJson($request, $data) 
+    public function returnAsDataTableJson($request, $data, $total_amount = null) 
     {
         $content_arr = array(
-            'draw' => $request->query->get('draw'),
+            'draw' => $request->get('draw'),
             // Cheating.
-            'recordsTotal' => count($data),
+            'recordsTotal' => $total_amount || count($data),
             'recordsFiltered' => count($data),
             'data' => $data
         );
@@ -333,7 +333,7 @@ class CommonController extends Controller
 
     public function returnAsJson($request, $data) 
     {
-        if ($request->query->get('draw'))
+        if ($request->get('draw'))
             return $this->returnAsDataTableJson($request, $data);
 
         $serializer = $this->get('serializer');
@@ -514,17 +514,17 @@ null)
     /* TODO: Same as above. Render a template here. */
     public function pagedIndexAction($request, $access, $em, $repo, $route)
     {
+        if ($this->isRest($access, $request)) {
+            return $this->ajaxedIndexAction($request, $access, $em, $repo, $route);
+        }
 
         $order_by = $this->getOrderBy($request);
-
         $filter_by = $this->getFilterBy($request);
 
         $criteria = array();
         if ($filter_by) {
             $criteria = array_merge($criteria, $filter_by);
         }
-
-
         if ( "all" === $request->get('page') ) {
             $entities = $repo->findBy($criteria, $order_by, null, null);
             $page = 'all';
@@ -533,10 +533,6 @@ null)
                       ? (int)$request->get('page') : 1;
             $offset = ($page - 1) * $this->per_page;
             $entities = $repo->findBy($criteria, $order_by, $this->per_page, $offset);
-        }
-
-        if ($this->isRest($access, $request)) {
-            return $this->returnRestData($request, $entities);
         }
 
         // I am sure someone will, one day, pick me on the shoulder and tell
@@ -561,6 +557,23 @@ null)
             'routes'         => $routes,
             'total_entities' => $total_amount_entities,
         );
+    }
+
+    public function ajaxedIndexAction($request, $access, $em, $repo, $route)
+    {
+        $datatables_criterias = $this->getDatatablesCriterias($request);
+        if (empty($datatables_criterias)) {
+            return $this->returnRestData($request, $repo->findAll());
+        }
+
+        $entities = $repo->findAll();
+        if (method_exists($repo, "countAll")) {
+            // $total_amount_entities = $repo->countAll($criteria);
+        }
+        $total_amount_entities = count($entities);
+        // $total_amount_entities = $repo->countAll($criteria);
+        return $this->returnAsDataTableJson($request, $entities, $total_amount_entities);
+
     }
 
     /*
@@ -653,6 +666,26 @@ null)
         }
 
         return $builder->getForm()->createView();
+    }
+
+    public function getDatatablesCriterias($request) 
+    {
+        $criterias = array();
+        // Got something to do? 
+        if (!$request->get('draw')) return $criterias;
+
+        // Can just as well use the old variables.
+        $columns = $request->get('columns');
+
+        $criterias['per_page'] = $request->get('lenght');
+        $criterias['offset'] = $request->get('start');
+        if ($request->get('order')) {
+            // Lazy for now, just use the first order.
+            $o = $request->get('order')[0];
+            $criterias['order_by'] = array($columns[$o['column']], $o['dir']);
+        }
+
+        return $criterias;
     }
 
     /*
