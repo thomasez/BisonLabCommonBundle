@@ -308,13 +308,13 @@ class CommonController extends Controller
      * talking 10K rows. Before that it's be better to push everything and let
      * the client side handle the sorting, paging and filtering.
      */
-    public function returnAsDataTablesJson($request, $data, $total_amount = null) 
+    public function returnAsDataTablesJson($request, $data, $records_filtered = null, $total_amount = null) 
     {
         $content_arr = array(
             'draw' => $request->get('draw'),
             // Cheating.
             'recordsTotal' => $total_amount != null ? $total_amount : count($data),
-            'recordsFiltered' => count($data),
+            'recordsFiltered' => $records_filtered != null ? $records_filtered : count($data),
             'data' => $data
         );
         $serializer = $this->get('serializer');
@@ -569,13 +569,14 @@ null)
         if ($criterias['per_page'] && $criterias['per_page'] != -1) {
             $entities = $repo->findBy(
                 $criterias['search'], $criterias['order_by'], $criterias['per_page'], $criterias['offset']);
-            $total_amount_entities = $repo->countAll($criterias['search']);
+            $total_amount_entities = $repo->countAll();
+            $records_filtered = $repo->countAll($criterias['search']);
         } else {
             $entities = $repo->findAll();
-            $total_amount_entities = count($entities);
+            $total_amount_entities = $records_filtered = count($entities);
         }
 
-        return $this->returnAsDataTablesJson($request, $entities, $total_amount_entities);
+        return $this->returnAsDataTablesJson($request, $entities, $records_filtered, $total_amount_entities);
 
     }
 
