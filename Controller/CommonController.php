@@ -515,7 +515,7 @@ null)
     public function pagedIndexAction($request, $access, $em, $repo, $route)
     {
         if ($this->isRest($access, $request)) {
-            return $this->ajaxedIndexAction($request, $access, $em, $repo, $route);
+            return $this->ajaxedIndexAction($request, $access, $em, $repo);
         }
 
         $order_by = $this->getOrderBy($request);
@@ -559,7 +559,7 @@ null)
         );
     }
 
-    public function ajaxedIndexAction($request, $access, $em, $repo, $route)
+    public function ajaxedIndexAction($request, $access, $em, $repo)
     {
         $criterias = $this->getDataTablesCriterias($request);
         if (empty($criterias)) {
