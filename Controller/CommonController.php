@@ -683,6 +683,8 @@ null)
 
         // Guess the TODO:
         if ($request->get('search')) {
+            foreach ($columns as $c) {
+            }
             $criterias['search'] = array();
         } else {
             $criterias['search'] = array();
