@@ -68,7 +68,7 @@ class UserController extends Controller
     public function newAction()
     {
         $entity = new User();
-        $form   = $this->createForm(new UserType(), $entity);
+        $form   = $this->createForm(UserType::class, $entity);
 
         $params = array(
             'entity' => $entity,
@@ -86,7 +86,7 @@ class UserController extends Controller
     public function createAction(Request $request)
     {
         $entity  = new User();
-        $form = $this->createForm(new UserType());
+        $form = $this->createForm(UserType::class);
         $form->handleRequest($request);
 
         $post_data = $request->request->get('user');
@@ -126,7 +126,7 @@ class UserController extends Controller
             throw $this->createNotFoundException('Unable to find User entity.');
         }
 
-        $editForm = $this->createForm(new UserType(), $entity);
+        $editForm = $this->createForm(UserType::class, $entity);
         $deleteForm = $this->createDeleteForm($id);
 
         $params = array(
@@ -159,7 +159,7 @@ class UserController extends Controller
         $entity = $em->getRepository('BisonLabCommonBundle:User')->find($id);
 
         $deleteForm = $this->createDeleteForm($id);
-        $editForm = $this->createForm(new UserType());
+        $editForm = $this->createForm(UserType::class);
         $editForm->handleRequest($request);
 
         if ($editForm->isValid()) {
@@ -226,7 +226,7 @@ class UserController extends Controller
     private function createDeleteForm($id)
     {
         return $this->createFormBuilder(array('id' => $id))
-            ->add('id', 'hidden')
+            ->add('id', 'Symfony\Component\Form\Extension\Core\Type\HiddenType')
             ->getForm()
         ;
     }

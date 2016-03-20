@@ -11,12 +11,12 @@ class UserType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('username')
-            ->add('email')
-            ->add('enabled', 'checkbox', array('required' => false))
-            ->add('password', 'password', array('required' => false))
-            ->add('locked', 'checkbox', array('required' => false))
-            ->add('roles', 'choice', array('multiple' =>  true, 'choices' => 
+            ->add('username', 'Symfony\Component\Form\Extension\Core\Type\TextType', array('required' => true))
+            ->add('email', 'Symfony\Component\Form\Extension\Core\Type\EmailType', array('required' => false))
+            ->add('enabled', 'Symfony\Component\Form\Extension\Core\Type\CheckboxType', array('required' => false))
+            ->add('password', 'Symfony\Component\Form\Extension\Core\Type\PasswordType', array('required' => false))
+            ->add('locked', 'Symfony\Component\Form\Extension\Core\Type\CheckboxType', array('required' => false))
+            ->add('roles', 'Symfony\Component\Form\Extension\Core\Type\ChoiceType', array('multiple' =>  true, 'choices' => 
                     array(
                         'ROLE_USER'    => 'Read Only - user', 
                         'ROLE_USER_RW' => 'User with read/write',
@@ -31,10 +31,5 @@ class UserType extends AbstractType
         $resolver->setDefaults(array(
             'data_class' => 'BisonLab\CommonBundle\Entity\User'
         ));
-    }
-
-    public function getName()
-    {
-        return 'user';
     }
 }

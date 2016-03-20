@@ -100,11 +100,11 @@ class CommonController extends Controller
                     $c_object = $context_arr[$system_name][$object_name];
 
                     $form   = $form_factory->createNamedBuilder($form_name, 'form', $c_object)
-                        ->add('id', 'hidden', array('data' => $c_object->getId()))
-                        ->add('external_id', 'text', array('label' => 'External ID', 'required' => false));
+                        ->add('id', 'Symfony\Component\Form\Extension\Core\Type\HiddenType', array('data' => $c_object->getId()))
+                        ->add('external_id', 'Symfony\Component\Form\Extension\Core\Type\TextType', array('label' => 'External ID', 'required' => false));
                 } else {
                     $form   = $form_factory->createNamedBuilder($form_name, 'form')
-                        ->add('external_id', 'text', array('label' => 'External ID', 'required' => false));
+                        ->add('external_id', 'Symfony\Component\Form\Extension\Core\Type\TextType', array('label' => 'External ID', 'required' => false));
                 }
 
                 /* Only these two methods shall make it possible to edit/add a
@@ -115,7 +115,7 @@ class CommonController extends Controller
                 } else {
                     if ($context_object_config['url_from_method'] == "manual" 
                       || $context_object_config['url_from_method'] == "editable") {
-                        $form->add('url', 'text', 
+                        $form->add('url', 'Symfony\Component\Form\Extension\Core\Type\TextType', 
                             array('label' => 'URL', 'required' => false));
                     }
                 }
@@ -215,8 +215,8 @@ class CommonController extends Controller
         }
 
         return $this->createFormBuilder()
-            ->add('system__object_name', 'choice', array('choices' => $choices))
-            ->add('object_id', 'text')
+            ->add('system__object_name', 'Symfony\Component\Form\Extension\Core\Type\ChoiceType', array('choices' => $choices))
+            ->add('object_id', 'Symfony\Component\Form\Extension\Core\Type\TextType')
             ->getForm();
 
     }
@@ -660,7 +660,7 @@ null)
                 $choices[$key] = $value;
             }
             $name = "filter_by_" . $i;
-            $builder->add($name, 'choice', array(
+            $builder->add($name, 'Symfony\Component\Form\Extension\Core\Type\ChoiceType', array(
                 'choices'  => $choices,
                 'label'    => "Add filter",
                 'required' => false,
