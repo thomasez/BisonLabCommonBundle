@@ -664,7 +664,7 @@ null)
                 'choices'  => $choices,
                 'label'    => "Add filter",
                 'required' => false,
-                'empty_value' => ucfirst($prop)
+                'placeholder' => ucfirst($prop)
                 ));
             $i++;
         }
