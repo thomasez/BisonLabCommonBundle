@@ -225,12 +225,27 @@ class CommonController extends Controller
      * The REST stuff
      */
 
+    /* 
+     * I really wish there were a more or less standardized object for this.
+     * The closest without being too complex is Jsend.
+     * http://labs.omniti.com/labs/jsend
+     * Not really sure I agree with it, but it's close enough. 
+     * I will add a "meta" tag, where I can put a json shema or links or other
+     * stuff if I need it.
+     * 
+     * TODO: Switch to this "standard"
+     */
+
     /*
      * Basically, "rest" is the basic authen Web services, "ajax" is the 
      * same but from a web client with session data.
      *
      * I have not found any way to use two different firewalls on the
      * same path, alas, rest and ajax is the same, but different.
+     *
+     * It's also possible to argue that the Accept headers should decide.
+     * But that seems to not work properly in all situations. And if it's REST
+     * we return JSON by default, othervise HTML.
      */
     public function isRest($access, $request = null)
     {
@@ -241,7 +256,7 @@ class CommonController extends Controller
         }
     }
 
-    public function returnRestData($request, $data, $templates = array())
+    public function returnRestData($request, $data, $templates = array(), $status_code = 200)
     {
 
         // If the data has a toArray, I would consider it as wanted to be used
@@ -295,7 +310,7 @@ class CommonController extends Controller
         } else { // Json.
             return $this->returnAsJson($request, $data);
         }
-        $response = new Response($content, 200, $headers);
+        $response = new Response($content, $status_code, $headers);
         return $response;
     }
 
@@ -348,6 +363,62 @@ class CommonController extends Controller
         }
         $response = new Response($content, 200, $headers);
         return $response;
+    }
+
+    /* 
+     * Jsend:
+     *
+     * success:
+     *   All is A-OK.
+     * Returns: 
+     *    status - Set to "success")
+     *    data   - The data to return.
+     */
+    public function returnSuccess($request, $data = null, $code = 200) 
+    {
+        $jsend = array(
+            'status' => 'success',
+            'data' => $data
+        );
+        return $this->returnRestData($request, $data, array(), $code);
+    }
+
+    /* 
+     * Jsend:
+     *
+     * fail:
+     *      There was a problem with the data submitted, or some pre-condition
+     *      of the API call wasn't satisfied
+     * Returns: 
+     *    status (Set as "fail")
+     *    data ( Validation errors )
+     */
+    public function returnFail($request, $data = null, $code = 400) 
+    {
+        $jsend = array(
+            'status' => 'fail',
+            'data' => $data
+        );
+        return $this->returnRestData($request, $data, array(), $code);
+    }
+
+    /* 
+     * Jsend:
+     *
+     * fail:
+     *      There was a problem with the data submitted, or some pre-condition
+     *      of the API call wasn't satisfied
+     * Returns: 
+     *    status  - Set to "error")
+     *    message - A text with the error message.
+     */
+    public function returnError($request, $message = '', $code = 500) 
+    {
+        $jsend = array(
+            'status' => 'success',
+            'message' => $message
+        );
+        return $this->returnRestData($request, $message, array(), $code);
     }
 
     public function returnErrorResponse($message, $code, $errors = null) 
