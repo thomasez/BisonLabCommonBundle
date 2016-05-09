@@ -247,6 +247,10 @@ class CommonController extends Controller
      * But that seems to not work properly in all situations. And if it's REST
      * we return JSON by default, othervise HTML.
      */
+     /*
+      * TODO: Investigate changing this to find the web/rest access from
+      * within the request.
+      */
     public function isRest($access, $request = null)
     {
         if ('rest' == $access || 'ajax' == $access) {
@@ -399,18 +403,21 @@ class CommonController extends Controller
             'status' => 'fail',
             'data' => $data
         );
-        return $this->returnRestData($request, $data, array(), $code);
+        return $this->returnRestData($request, $jsend, array(), $code);
     }
 
     /* 
      * Jsend:
      *
-     * fail:
-     *      There was a problem with the data submitted, or some pre-condition
-     *      of the API call wasn't satisfied
-     * Returns: 
-     *    status  - Set to "error")
-     *    message - A text with the error message.
+     * Required keys:
+     *   status: Should always be set to "error".
+     *   message: A meaningful, end-user-readable (or at the least log-worthy)
+     *            message, explaining what went wrong. 
+     * 
+     * Optional keys:
+     *   code: A numeric code corresponding to the error, if applicable
+     *   data: A generic container for any other information about the error, 
+     *         i.e. the conditions that caused the error, stack traces, etc. 
      */
     public function returnError($request, $message = '', $code = 500) 
     {
@@ -418,7 +425,7 @@ class CommonController extends Controller
             'status' => 'success',
             'message' => $message
         );
-        return $this->returnRestData($request, $message, array(), $code);
+        return $this->returnRestData($request, $jsend, array(), $code);
     }
 
     public function returnErrorResponse($message, $code, $errors = null) 
@@ -856,38 +863,27 @@ null)
     }
 
     /* Masking stuff. */
+
     /* Or kinda. Right now I cannot just throw an exception in one case and not
      * in others. The way to do that would be to change all my controllers to
      * not throw the createNotFoundException, but return it. 
      * And I'm not prepared for that, yet at least.
+
+     * Name is kinda misleading though. It will return an error response if
+     * REST and throw the usual exception if the usual web/html stuff.
      */
     public function returnNotFound($request, $text, \Exception $previous = null)
     {
         $data = array('code' => 404, 'status' => 'Not Found', 'error_text' => $text);
-        $serializer = $this->get('serializer');
-        $response_text = '';
 
+        /* Since I never sent the $access to this (Should I move it from a
+         * function parameter in the isRest function  to using the $request
+         * object and check the path there? Might as well do I think.
+         */
         if (in_array('text/html', $request->getAcceptableContentTypes())) {
             throw parent::createNotFoundException($text, $previous);
-        } elseif (in_array('application/xml', $request->getAcceptableContentTypes()))
-{
-            header('Content-Type: application/xml');
-            $response_text .=  $serializer->serialize($data, 'xml');
-        } elseif (in_array('application/yml', $request->getAcceptableContentTypes())) {
-            header('Content-Type: text/yaml');
-            $response_text .=  $serializer->serialize($data, 'yml');
-        } elseif (in_array('text/plain', $request->getAcceptableContentTypes())) {
-            header('Content-Type: text/plain');
-            $response_text .=  $text;
-        } elseif (in_array('application/json', $request->getAcceptableContentTypes())) {
-            header('Content-Type: application/json');
-            $response_text .=  $serializer->serialize($data, 'json');
         } else {
-            // Guess I should default to html here.
-            throw parent::createNotFoundException($text, $previous);
+            return $this->returnFail($data, 404);
         }
-        return new Response($response_text, 404);
     }
-
 }
-
