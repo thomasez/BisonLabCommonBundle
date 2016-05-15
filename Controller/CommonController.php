@@ -11,6 +11,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Form\Extension\Core\Type\FormType;
 
 use Symfony\Component\Serializer\Encoder\XmlEncoder;
 
@@ -99,11 +100,11 @@ class CommonController extends Controller
                 if (isset($context_arr[$system_name][$object_name])) {
                     $c_object = $context_arr[$system_name][$object_name];
 
-                    $form   = $form_factory->createNamedBuilder($form_name, 'form', $c_object)
+                    $form   = $form_factory->createNamedBuilder($form_name, FormType::class, $c_object)
                         ->add('id', 'Symfony\Component\Form\Extension\Core\Type\HiddenType', array('data' => $c_object->getId()))
                         ->add('external_id', 'Symfony\Component\Form\Extension\Core\Type\TextType', array('label' => 'External ID', 'required' => false));
                 } else {
-                    $form   = $form_factory->createNamedBuilder($form_name, 'form')
+                    $form   = $form_factory->createNamedBuilder($form_name, FormType::class)
                         ->add('external_id', 'Symfony\Component\Form\Extension\Core\Type\TextType', array('label' => 'External ID', 'required' => false));
                 }
 
@@ -727,7 +728,7 @@ null)
         $qs = $request->getQueryString();
         $filters = array();
 
-        $builder = $this->get('form.factory')->createNamedBuilder('filters', 'form');
+        $builder = $this->get('form.factory')->createNamedBuilder('filters', FormType::class);
 
         $i = 1;
 
