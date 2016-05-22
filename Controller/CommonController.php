@@ -208,15 +208,15 @@ class CommonController extends Controller
         foreach ($config as $system => $system_config) {
             if (count($system_config) > 1) {
                 foreach ($system_config as $object_config) {
-                    $choices[$system . "__" .  $object_config['object_name']] = ucfirst($system) . " - " . $object_config['object_name'];
+                    $choices[ucfirst($system) . " - " . $object_config['object_name']] = $system . "__" .  $object_config['object_name'];
                 }
             } else {
-                $choices[$system . "__" .  $system_config[0]['object_name']] = ucfirst($system);
+                $choices[ucfirst($system)] = $system . "__" .  $system_config[0]['object_name'];
             }
         }
 
         return $this->createFormBuilder()
-            ->add('system__object_name', 'Symfony\Component\Form\Extension\Core\Type\ChoiceType', array('choices' => $choices))
+            ->add('system__object_name', 'Symfony\Component\Form\Extension\Core\Type\ChoiceType', array('choices_as_values' => true,'choices' => $choices))
             ->add('object_id', 'Symfony\Component\Form\Extension\Core\Type\TextType')
             ->getForm();
 
@@ -736,11 +736,12 @@ null)
             $choices = array();
             foreach ($values as $key => $value) {
                 $key = $prop . "," . $key;
-                $choices[$key] = $value;
+                $choices[$value] = $key;
             }
             $name = "filter_by_" . $i;
             $builder->add($name, 'Symfony\Component\Form\Extension\Core\Type\ChoiceType', array(
                 'choices'  => $choices,
+                'choices_as_values' => true,
                 'label'    => "Add filter",
                 'required' => false,
                 'placeholder' => ucfirst($prop)
