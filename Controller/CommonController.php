@@ -423,8 +423,9 @@ class CommonController extends Controller
     public function returnError($request, $message = '', $code = 500) 
     {
         $jsend = array(
-            'status' => 'success',
-            'message' => $message
+            'status' => 'error',
+            'message' => $message,
+            'code' => $code
         );
         return $this->returnRestData($request, $jsend, array(), $code);
     }
