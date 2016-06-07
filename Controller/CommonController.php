@@ -273,50 +273,77 @@ class CommonController extends Controller
          * (Comment kept for reminding myself and others on the descision)
          */
 
-        $content = '';
+        /* Accept headers works in mysterious ways, or rather the odd ones
+         * creating them. This is some examples: (the asterix/asterix at the
+         * end is removed, but all browsers seems to have it.)
 
-        /* If json is available, return Json (and at the bottom it's also the
-         * default) */
-        if (in_array('application/json', $request->getAcceptableContentTypes())) {
-            return $this->returnAsJson($request, $data);
-        /* JSONP */
-        } elseif (in_array('application/javascript', $request->getAcceptableContentTypes())) {
-            return $this->returnAsJson($request, $data);
-        } elseif (in_array('application/xml', $request->getAcceptableContentTypes()))
-{
-            $serializer = $this->get('serializer');
-            $headers["Content-Type"] = "application/xml";
-            $content .= $serializer->serialize($data, 'xml');
-        } elseif (in_array('application/yml;', $request->getAcceptableContentTypes())) {
-            $serializer = $this->get('serializer');
-            $headers["Content-Type"] = "text/yaml";
-            $content .= $serializer->serialize($data, 'yml');
-        } elseif (in_array('application/html', $request->getAcceptableContentTypes())) {
-            $headers["Content-Type"] = "application/html";
-            $serializer = $this->get('serializer');
-            // Reason for this is the extremely simple template for showing
-            // whatever as HTML. Just send it as an array and it can be dumped
-            // more easily.
-            $data_arr = json_decode($serializer->serialize($data, 'json'), true);
-            if (isset($templates['html'])) {
-                // But here we'll let the progreammer choose.
-                return $this->render($templates['html'],
-                    array('data_array' => $data_arr, 'data_entity' => $data));
-            } else {
-                return $this->render('BisonLabCommonBundle:Default:show.html.twig', 
-                    array('data' => $data_arr));
+Chromium, Linux:
+
+ text/html,application/xhtml+xml,application/xml;q=0.9,image/webp
+
+ [0] => text/html    [1] => application/xhtml+xml    [2] => image/webp    [3] => application/xml
+
+Firefox, Windows:
+
+ text/html,application/xhtml+xml,application/xml;q=0.9
+
+ [0] => text/html    [1] => application/xhtml+xml    [2] => application/xml
+
+Edge, Windows
+
+ text/html, application/xhtml+xml, image/jxr
+
+ [0] => text/html    [1] => application/xhtml+xml    [2] => image/jxr
+
+*/
+
+error_log(print_r($request->getAcceptableContentTypes(), true));
+error_log(print_r($request->headers->get('accept'), true));
+
+        foreach ($request->getAcceptableContentTypes() as $accept) {
+
+            switch ($accept) {
+                case 'application/json':
+                    return $this->returnAsJson($request, $data);
+
+                /* JSONP */
+                case 'application/javascript':
+                    return $this->returnAsJson($request, $data);
+
+                case 'application/xml':
+                    return $this->returnAsXml($request, $data);
+
+                case 'application/yml':
+                    return $this->returnAsYaml($request, $data);
+
+                case 'text/html':
+                case 'application/html':
+                    $headers["Content-Type"] = $accept;
+                    $serializer = $this->get('serializer');
+                    // Reason for this is the extremely simple template for
+                    // showing whatever as HTML. Just send it as an array and
+                    // it can be dumped
+                    // more easily.
+                    $data_arr = json_decode($serializer->serialize($data, 'json'), true);
+                    if (isset($templates['html'])) {
+                        // Here we'll let the programmer choose.
+                        return $this->render($templates['html'],
+                            array('data_array' => $data_arr, 'data_entity' => $data));
+                    } else {
+                        // And a fall back.
+                        return $this->render('BisonLabCommonBundle:Default:show.html.twig', 
+                            array('data' => $data_arr));
+                    }
+                case 'text/plain':
+                    // Can only send pure string/text.
+                    if (is_string($data)) {
+                        $headers["Content-Type"] = "text/plain";
+                        return new Response($data, $status_code, $headers);
+                    }
+                    break;
             }
-        } elseif (in_array('text/plain', $request->getAcceptableContentTypes())) {
-            if (!is_string($data)) {
-                throw new \InvalidArgumentException("Can not return non-string content as plain text.");
-            }
-            $headers["Content-Type"] = "text/plain";
-            $content .= $data;
-        } else { // Json.
-            return $this->returnAsJson($request, $data);
         }
-        $response = new Response($content, $status_code, $headers);
-        return $response;
+        throw new \InvalidArgumentException("No data returned because of no matching Accept header.");
     }
 
     /* This is more or less a hack. It does the job, but should probably be
@@ -368,6 +395,22 @@ class CommonController extends Controller
         }
         $response = new Response($content, 200, $headers);
         return $response;
+    }
+
+    public function returnAsXml($request, $data) 
+    {
+        $serializer = $this->get('serializer');
+        $headers["Content-Type"] = "application/xml";
+        $content .= $serializer->serialize($data, 'xml');
+        return new Response($content, 200, $headers);
+    }
+
+    public function returnAsYaml($request, $data) 
+    {
+        $serializer = $this->get('serializer');
+        $headers["Content-Type"] = "text/yaml";
+        $content .= $serializer->serialize($data, 'yml');
+        return new Response($content, 200, $headers);
     }
 
     /* 
