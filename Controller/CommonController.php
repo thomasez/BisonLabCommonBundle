@@ -297,9 +297,6 @@ Edge, Windows
 
 */
 
-error_log(print_r($request->getAcceptableContentTypes(), true));
-error_log(print_r($request->headers->get('accept'), true));
-
         foreach ($request->getAcceptableContentTypes() as $accept) {
 
             switch ($accept) {
