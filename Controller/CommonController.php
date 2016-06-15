@@ -926,7 +926,7 @@ null)
         if (in_array('text/html', $request->getAcceptableContentTypes())) {
             throw parent::createNotFoundException($text, $previous);
         } else {
-            return $this->returnFail($data, 404);
+            return $this->returnFail($request, $data, 404);
         }
     }
 }
