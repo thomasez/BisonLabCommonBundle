@@ -263,6 +263,7 @@ class CommonController extends Controller
 
     public function returnRestData($request, $data, $templates = array(), $status_code = 200)
     {
+error_log("Got code: " . $status_code);
 
         // If the data has a toArray, I would consider it as wanted to be used
         // instead of the jms serializer graph stuff.
@@ -301,17 +302,17 @@ Edge, Windows
 
             switch ($accept) {
                 case 'application/json':
-                    return $this->returnAsJson($request, $data);
+                    return $this->returnAsJson($request, $data, $status_code);
 
                 /* JSONP */
                 case 'application/javascript':
-                    return $this->returnAsJson($request, $data);
+                    return $this->returnAsJson($request, $data, $status_code);
 
                 case 'application/xml':
-                    return $this->returnAsXml($request, $data);
+                    return $this->returnAsXml($request, $data, $status_code);
 
                 case 'application/yml':
-                    return $this->returnAsYaml($request, $data);
+                    return $this->returnAsYaml($request, $data, $status_code);
 
                 case 'text/html':
                 case 'application/html':
@@ -375,7 +376,7 @@ Edge, Windows
         return $response;
     }
 
-    public function returnAsJson($request, $data) 
+    public function returnAsJson($request, $data, $status_code = 200) 
     {
         if ($request->get('draw'))
             return $this->returnAsDataTablesJson($request, $data);
@@ -390,24 +391,24 @@ Edge, Windows
         } else {
             $headers["Content-Type"] = "application/json";
         }
-        $response = new Response($content, 200, $headers);
+        $response = new Response($content, $status_code, $headers);
         return $response;
     }
 
-    public function returnAsXml($request, $data) 
+    public function returnAsXml($request, $data, $status_code = 200) 
     {
         $serializer = $this->get('serializer');
         $headers["Content-Type"] = "application/xml";
         $content .= $serializer->serialize($data, 'xml');
-        return new Response($content, 200, $headers);
+        return new Response($content, $status_code, $headers);
     }
 
-    public function returnAsYaml($request, $data) 
+    public function returnAsYaml($request, $data, $status_code = 200) 
     {
         $serializer = $this->get('serializer');
         $headers["Content-Type"] = "text/yaml";
         $content .= $serializer->serialize($data, 'yml');
-        return new Response($content, 200, $headers);
+        return new Response($content, $status_code, $headers);
     }
 
     /* 
@@ -425,7 +426,7 @@ Edge, Windows
             'status' => 'success',
             'data' => $data
         );
-        return $this->returnRestData($request, $data, array(), $code);
+        return $this->returnRestData($request, $jsend, array(), $code);
     }
 
     /* 
@@ -470,6 +471,9 @@ Edge, Windows
         return $this->returnRestData($request, $jsend, array(), $code);
     }
 
+    /* Problem here? No request object I can use to find the Accept headers and
+     * so on. This function should *not* be used. Use returnError or returnFail
+     * instead. */
     public function returnErrorResponse($message, $code, $errors = null) 
     {
         $msg = array('code' => $code, 'message' => $message);
