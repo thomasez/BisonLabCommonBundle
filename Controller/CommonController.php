@@ -263,8 +263,6 @@ class CommonController extends Controller
 
     public function returnRestData($request, $data, $templates = array(), $status_code = 200)
     {
-error_log("Got code: " . $status_code);
-
         // If the data has a toArray, I would consider it as wanted to be used
         // instead of the jms serializer graph stuff.
         // data can be both an array of objects and one object, aka test.
