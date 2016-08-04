@@ -75,8 +75,8 @@ class CommonController extends Controller
 
     }
 
-    public function createContextForms($context_for, $contexts) {
-
+    public function createContextForms($context_for, $contexts)
+    {
         // prepare the contexts, which is putting them in an array we can use
         $context_arr = array();
         foreach ($contexts as $c) {
@@ -91,6 +91,10 @@ class CommonController extends Controller
         list($bundle, $object) = explode(":", $context_for);
         $conf = $context_conf[$bundle][$object];
         $forms = array();
+
+        // There  might be no contexts at all.
+        if (!$conf) return $forms;
+
         foreach ($conf as $system_name => $object_info) {
             foreach ($object_info as $context_object_config) {
                 $object_name = $context_object_config['object_name'];
@@ -135,6 +139,8 @@ class CommonController extends Controller
         list($bundle, $object) = explode(":", $context_for);
         $conf = $context_conf[$bundle][$object];
         $forms = array();
+        // There  might be no contexts at all.
+        if (!$conf) return $forms;
         // Object_info was a bas choice, it's the context object listing per
         // system.
         foreach ($conf as $system_name => $object_info) {
@@ -203,8 +209,9 @@ class CommonController extends Controller
     
     public function createContextSearchForm($config)
     {
-
         $choices = array();
+        // There  might be no contexts at all.
+        if (!$config) return null;
         foreach ($config as $system => $system_config) {
             if (count($system_config) > 1) {
                 foreach ($system_config as $object_config) {
@@ -219,7 +226,6 @@ class CommonController extends Controller
             ->add('system__object_name', 'Symfony\Component\Form\Extension\Core\Type\ChoiceType', array('choices_as_values' => true,'choices' => $choices))
             ->add('object_id', 'Symfony\Component\Form\Extension\Core\Type\TextType')
             ->getForm();
-
     }
 
     /*
