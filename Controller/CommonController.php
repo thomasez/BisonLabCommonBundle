@@ -341,6 +341,9 @@ Edge, Windows
                     if (is_string($data)) {
                         $headers["Content-Type"] = "text/plain";
                         return new Response($data, $status_code, $headers);
+                    } else {
+                        $headers["Content-Type"] = "text/plain";
+                        return new Response('', $status_code, $headers);
                     }
                     break;
             }
