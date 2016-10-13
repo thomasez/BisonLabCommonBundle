@@ -13,9 +13,11 @@
     ],
     "require": {
         "symfony/framework-bundle": ">=2.8",
-        "friendsofsymfony/user-bundle": "2.0.*@dev",
+        "friendsofsymfony/user-bundle": "2.0.*@dev"
+    },
+    "suggest": {
         "robloach/component-installer": "*",
-        "components/jquery": "2.*",
+        "components/jquery": "^1.11.0",
         "components/normalize.css": "3.*",
         "components/bootstrap": "3.*"
     },
