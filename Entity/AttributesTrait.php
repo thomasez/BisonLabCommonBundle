@@ -21,10 +21,8 @@ trait AttributesTrait
     /**
      * @var json $attributes
      *
-     * @ORM\Column(name="attributes", type="json", nullable=true)
+     * @ORM\Column(name="attributes", type="json_array", nullable=true)
      * @Gedmo\Versioned
-     * @Expose
-     * @Accessor(getter="getAttributes", setter="setAttributes")
      */
     private $attributes;
 
