@@ -33,7 +33,5 @@
     },
     "autoload": {
         "psr-0": { "BisonLab\\CommonBundle": "" }
-    },
-    "target-dir": "BisonLab/CommonBundle"
+    }
 }
-
