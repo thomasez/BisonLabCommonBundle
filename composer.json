@@ -32,6 +32,6 @@
         }
     },
     "autoload": {
-        "psr-4": { "BisonLab\\CommonBundle": "" }
+        "psr-4": { "BisonLab\\CommonBundle\\": "" }
     }
 }
