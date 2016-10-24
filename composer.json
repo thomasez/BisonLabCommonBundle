@@ -33,6 +33,6 @@
     },
     "target-dir": "BisonLab/CommonBundle",
     "autoload": {
-        "psr-4": { "BisonLab\\CommonBundle\\": "" }
+        "psr-0": { "BisonLab\\CommonBundle\\": "" }
     }
 }
