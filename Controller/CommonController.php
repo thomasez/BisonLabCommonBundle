@@ -51,12 +51,15 @@ class CommonController extends Controller
             $classMethod = new \ReflectionMethod($this,"showAction");
             $argumentCount = count($classMethod->getParameters());
             if ($argumentCount == 3)
-                return $this->render($context_config['show_template'],
-                   $this->showAction($request, $access, $eid));
+                // There is always a showAction and it's better to use that one
+                // than just rendering a template.
+                return $this->showAction($request, $access, $eid);
             else
-                return $this->render($context_config['show_template'],
-                    $this->showAction($access, $eid));
+                return $this->showAction($access, $eid);
         } else {
+            // Should do that here aswell, but it's a tad longer story.
+            // (No action taking a list, they tend to create the list
+            // themsewlves.)
             return $this->render($context_config['list_template'],
                 array('entities' => $entities));
         }
