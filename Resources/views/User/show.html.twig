@@ -34,6 +34,7 @@
             <th>Locked</th>
             <td>{{ entity.locked }}</td>
         </tr>
+{#
         <tr>
             <th>Expired</th>
             <td>{{ entity.expired }}</td>
@@ -42,6 +43,15 @@
             <th>Expiresat</th>
             <td>{{ entity.expiresAt|date('Y-m-d H:i:s') }}</td>
         </tr>
+        <tr>
+            <th>Credentialsexpired</th>
+            <td>{{ entity.credentialsExpired }}</td>
+        </tr>
+        <tr>
+            <th>Credentialsexpireat</th>
+            <td>{{ entity.credentialsExpireAt|date('Y-m-d H:i:s') }}</td>
+        </tr>
+#}
         <tr>
             <th>Confirmationtoken</th>
             <td>{{ entity.confirmationToken }}</td>
@@ -53,14 +63,6 @@
         <tr>
             <th>Roles</th>
             <td>{{ entity.roles | prettyprint }}</td>
-        </tr>
-        <tr>
-            <th>Credentialsexpired</th>
-            <td>{{ entity.credentialsExpired }}</td>
-        </tr>
-        <tr>
-            <th>Credentialsexpireat</th>
-            <td>{{ entity.credentialsExpireAt|date('Y-m-d H:i:s') }}</td>
         </tr>
         <tr>
             <th>Id</th>
