@@ -28,8 +28,10 @@
             <th>Enabled</th>
             <th>Lastlogin</th>
             <th>Locked</th>
+{#
             <th>Expired</th>
             <th>Expiresat</th>
+#}
             <th>Roles</th>
             <th>Actions</th>
         </tr>
@@ -44,8 +46,8 @@
             <td>{{ entity.enabled }}</td>
             <td>{% if entity.lastLogin %}{{ entity.lastLogin|date('Y-m-d H:i:s') }}{% endif %}</td>
             <td>{{ entity.locked }}</td>
-            <td>{{ entity.expired }}</td>
 {#
+            <td>{{ entity.expired }}</td>
             <td>{% if entity.expiresAt %}{{ entity.expiresAt|date('Y-m-d H:i:s') }}{% endif %}</td>
 #}
             <td>{% if entity.passwordRequestedAt %}{{ entity.passwordRequestedAt|date('Y-m-d H:i:s') }}{% endif %}</td>
