@@ -226,7 +226,7 @@ class CommonController extends Controller
         }
 
         return $this->createFormBuilder()
-            ->add('system__object_name', 'Symfony\Component\Form\Extension\Core\Type\ChoiceType', array('choices_as_values' => true,'choices' => $choices))
+            ->add('system__object_name', 'Symfony\Component\Form\Extension\Core\Type\ChoiceType', array('choices' => array_flip($choices)))
             ->add('object_id', 'Symfony\Component\Form\Extension\Core\Type\TextType')
             ->getForm();
     }
@@ -795,8 +795,7 @@ null)
             }
             $name = "filter_by_" . $i;
             $builder->add($name, 'Symfony\Component\Form\Extension\Core\Type\ChoiceType', array(
-                'choices'  => $choices,
-                'choices_as_values' => true,
+                'choices'  => array_flip($choices),
                 'label'    => "Add filter",
                 'required' => false,
                 'placeholder' => ucfirst($prop)
