@@ -10,6 +10,19 @@ class Builder implements ContainerAwareInterface
 {
     use ContainerAwareTrait;
 
+    private $local_builder = null;
+
+    public function __construct()
+    {
+        // Both does not exist.
+        // (I use AppBundle and LocalBundle here and there..)
+        if (class_exists('LocalBundle\Menu\Builder')) {
+            $this->local_builder = new \LocalBundle\Menu\Builder();
+        } elseif (class_exists('AppBundle\Menu\Builder')) {
+            $this->local_builder = new \AppBundle\Menu\Builder();
+        }
+    }
+
     public function userMenu(FactoryInterface $factory, array $options)
     {
         $menu = $factory->createItem('root');
@@ -22,6 +35,9 @@ class Builder implements ContainerAwareInterface
         $menu[$username]->addChild('Change Password', array('route' => 'fos_user_change_password'));
         $menu[$username]->addChild('Log out', array('route' => 'fos_user_security_logout'));
 
+        if ($this->local_builder 
+                && method_exists($this->local_builder, "userMenu"))
+            return $this->local_builder->userMenu($factory, $options, $menu);
         return $menu;
     }
 }
