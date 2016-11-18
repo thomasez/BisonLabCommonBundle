@@ -43,14 +43,14 @@
             <td>{{ entity.usernameCanonical }}</td>
             <td>{{ entity.email }}</td>
             <td>{{ entity.emailCanonical }}</td>
-            <td>{{ entity.enabled }}</td>
+            <td>{% if entity.enabled %}Yes{% else %}No{% endif %}</td>
             <td>{% if entity.lastLogin %}{{ entity.lastLogin|date('Y-m-d H:i:s') }}{% endif %}</td>
-            <td>{{ entity.locked }}</td>
+            <td>{% if entity.locked %}Yes{% else %}No{% endif %}</td>
 {#
             <td>{{ entity.expired }}</td>
             <td>{% if entity.expiresAt %}{{ entity.expiresAt|date('Y-m-d H:i:s') }}{% endif %}</td>
-#}
             <td>{% if entity.passwordRequestedAt %}{{ entity.passwordRequestedAt|date('Y-m-d H:i:s') }}{% endif %}</td>
+#}
             <td>{{ entity.roles | prettyprint }}</td>
             <td>
                 <ul>
