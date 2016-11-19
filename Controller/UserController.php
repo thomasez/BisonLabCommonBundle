@@ -8,15 +8,16 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use BisonLab\CommonBundle\Entity\User;
 use BisonLab\CommonBundle\Form\UserType;
+use BisonLab\CommonBundle\Controller\CommonController as CommonController;
 
 use Symfony\Component\Validator\Constraints\NotBlank;
 
 /**
  * User controller.
  *
- * @Route("/user")
+ * @Route("/{access}/user", defaults={"access" = "web"}, requirements={"web|rest|ajax"})
  */
-class UserController extends Controller
+class UserController extends CommonController
 {
     /**
      * Lists all User entities.
@@ -26,7 +27,6 @@ class UserController extends Controller
     public function indexAction()
     {
         $em = $this->getDoctrine()->getManager();
-
         $entities = $em->getRepository('BisonLabCommonBundle:User')->findAll();
 
         $params = array(
@@ -223,6 +223,54 @@ class UserController extends Controller
         return $this->redirect($this->generateUrl('user'));
     }
 
+    /**
+     * @Route("/search", name="user_search")
+     * @Method("GET")
+     */
+    public function searchAddressAction(Request $request, $access)
+    {
+
+        if ($this->isRest($access))
+            $username = $request->query->get("term");
+        else 
+            $username = $request->query->get("username");
+
+        // Gotta be able to handle two-letter usernames.
+        if (strlen($username) > 1) {
+            /* No searching for users in the manager.
+            $userManager = $this->container->get('fos_user.user_manager');
+            $users = $userManager->findUserByUsername($username);
+            */
+            $em = $this->getDoctrine()->getManager();
+            $repo = $em->getRepository('BisonLabCommonBundle:User');
+            $result = array();
+            if ($users = $repo->createQueryBuilder('u')
+                ->where('u.usernameCanonical LIKE :username')
+                ->setParameter('username', $username . '%')
+                ->getQuery()->getResult()) {
+                    foreach ($users as $user) {
+                        // TODO: Add full name.
+                        $result[] = array(
+                            'username' => $user->getUserName(),
+                            'label' => $user->getUserName(),
+                            'value' => $user->getUserName(),
+                        );
+                    }        
+            }
+        } else {
+            $result = "Too little information provided for a viable search";
+        }
+
+        if ($this->isRest($access)) {
+            // Format for autocomplete.
+            return $this->returnRestData($request, $result);
+        }
+
+        $params = array(
+            'entities'      => $users,
+        );
+        return $this->render('BisonLabCommonBundle:User:index.html.twig', $params);
+    }
     private function createDeleteForm($id)
     {
         return $this->createFormBuilder(array('id' => $id))
