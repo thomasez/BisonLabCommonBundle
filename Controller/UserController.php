@@ -251,6 +251,7 @@ class UserController extends CommonController
                     foreach ($users as $user) {
                         // TODO: Add full name.
                         $result[] = array(
+                            'userid' => $user->getId(),
                             'username' => $user->getUserName(),
                             'label' => $user->getUserName(),
                             'value' => $user->getUserName(),
