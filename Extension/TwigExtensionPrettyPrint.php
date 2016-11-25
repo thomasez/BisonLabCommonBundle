@@ -10,6 +10,8 @@ namespace BisonLab\CommonBundle\Extension;
 
 class TwigExtensionPrettyPrint extends \Twig_Extension
 {
+    private $attributes;
+
     public function getFilters()
     {
         return array(
@@ -27,14 +29,34 @@ class TwigExtensionPrettyPrint extends \Twig_Extension
         return 'pretty_print';
     }
 
+    private function composeTag($tag, $default = array())
+    {
+        $res = "<" . $tag;
+        $attrs = array();
+
+        if (isset($this->attributes[$tag])) {
+            $attrs = $this->attributes[$tag];
+        } else {
+            $attrs = $default;
+        }
+        foreach ($attrs as $k => $v) {
+            $res .= ' ' . $k . '="' . $v . '"';
+        } 
+        return $res . ">\n";
+    }
+
     function pretty($data)
     {
         if (empty($data)) { return ""; }
+        echo $this->composeTag('table');
+        $tr = $this->composeTag('tr');
+        $th = $this->composeTag('th', array('valign' => 'top'));
+        $td = $this->composeTag('td');
 
-        echo "<table>\n";
         foreach($data as $key => $value) {
-
-            echo "<tr>\n<th valign='top'>$key</th>\n<td>";
+            echo $tr;
+            echo $th . $key . "</th>\n";
+            echo $td;
             if (is_array($value)) {
                 $this->pretty($value);
             } else {
@@ -42,15 +64,14 @@ class TwigExtensionPrettyPrint extends \Twig_Extension
                 $value = preg_replace("/\n/", "<br />", $value);
                 echo $value . "\n";
             }
-
             echo "</td>\n</tr>\n";
-
         }
         echo "</table>\n";
     }
 
-    function twig_pretty_print_filter(\Twig_Environment $env, $value, $length = 80, $separator = "\n", $preserve = false)
+    function twig_pretty_print_filter(\Twig_Environment $env, $value, $attributes = array())
     {
+        $this->attributes = $attributes;
         return $this->pretty($value);
     }
 }
