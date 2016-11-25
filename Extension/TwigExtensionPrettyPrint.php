@@ -10,21 +10,11 @@ namespace BisonLab\CommonBundle\Extension;
 
 class TwigExtensionPrettyPrint extends \Twig_Extension
 {
-
-   public function getFilters()
-   {
-
+    public function getFilters()
+    {
         return array(
             new \Twig_SimpleFilter('prettyprint',  array($this, 'twig_pretty_print_filter'), array('needs_environment' => true)),
         );
-
-        /* Deprecated 
-        return array(
-            'prettyprint' => new \Twig_SimpleFilter('\BisonLab\CommonBundle\Extension\twig_pretty_print_filter',
-                array('needs_environment' => true)),
-
-        );
-        */
     }
 
     /**
@@ -36,7 +26,6 @@ class TwigExtensionPrettyPrint extends \Twig_Extension
     {
         return 'pretty_print';
     }
-
 
     function pretty($data)
     {
@@ -58,12 +47,10 @@ class TwigExtensionPrettyPrint extends \Twig_Extension
 
         }
         echo "</table>\n";
-
     }
 
     function twig_pretty_print_filter(\Twig_Environment $env, $value, $length = 80, $separator = "\n", $preserve = false)
     {
         return $this->pretty($value);
     }
-
 }
