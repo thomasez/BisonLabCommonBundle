@@ -12,9 +12,11 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Form\Extension\Core\Type\FormType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 
 use Symfony\Component\Serializer\Encoder\XmlEncoder;
-
 
 class CommonController extends Controller
 {
@@ -25,7 +27,6 @@ class CommonController extends Controller
 
     public function contextGetAction(Request $request, $context_config, $access, $system, $object_name, $external_id)
     {
-
         $class = $context_config['entity'];
         $em = $this->getDoctrine()->getManagerForClass($class);
 
@@ -63,19 +64,16 @@ class CommonController extends Controller
             return $this->render($context_config['list_template'],
                 array('entities' => $entities));
         }
-
     }
 
     public function contextPostAction(Request $request, $context_config, $access)
     {
-
         $post_data = $request->request->get('form');
 
         list( $system, $object_name) = explode("__", $post_data['system__object_name']);
         $object_id = $post_data['object_id'];
 
         return $this->contextGetAction($request, $context_config, $access, $system, $object_name, $object_id);
-
     }
 
     public function createContextForms($context_for, $contexts)
@@ -108,11 +106,11 @@ class CommonController extends Controller
                     $c_object = $context_arr[$system_name][$object_name];
 
                     $form   = $form_factory->createNamedBuilder($form_name, FormType::class, $c_object)
-                        ->add('id', 'Symfony\Component\Form\Extension\Core\Type\HiddenType', array('data' => $c_object->getId()))
-                        ->add('external_id', 'Symfony\Component\Form\Extension\Core\Type\TextType', array('label' => 'External ID', 'required' => false));
+                        ->add('id', HiddenType::class, array('data' => $c_object->getId()))
+                        ->add('external_id', TextType::class, array('label' => 'External ID', 'required' => false));
                 } else {
                     $form   = $form_factory->createNamedBuilder($form_name, FormType::class)
-                        ->add('external_id', 'Symfony\Component\Form\Extension\Core\Type\TextType', array('label' => 'External ID', 'required' => false));
+                        ->add('external_id', TextType::class, array('label' => 'External ID', 'required' => false));
                 }
 
                 /* Only these two methods shall make it possible to edit/add a
@@ -123,7 +121,7 @@ class CommonController extends Controller
                 } else {
                     if ($context_object_config['url_from_method'] == "manual" 
                       || $context_object_config['url_from_method'] == "editable") {
-                        $form->add('url', 'Symfony\Component\Form\Extension\Core\Type\TextType', 
+                        $form->add('url', TextType::class, 
                             array('label' => 'URL', 'required' => false));
                     }
                 }
@@ -132,7 +130,6 @@ class CommonController extends Controller
             }
         } 
         return $forms;
-
     }
 
     public function updateContextForms($request, $context_for, $context_class, $owner) {
@@ -187,10 +184,8 @@ class CommonController extends Controller
                 } else {
                     continue;
                 }
-
             }
         }
-
     }
 
     static function createContextUrl($context_arr, $config)
@@ -210,7 +205,7 @@ class CommonController extends Controller
         }    
     }
     
-    public function createContextSearchForm($config)
+    public function createContextSearchForm($config, $options = array())
     {
         $choices = array();
         // There  might be no contexts at all.
@@ -225,10 +220,17 @@ class CommonController extends Controller
             }
         }
 
-        return $this->createFormBuilder()
-            ->add('system__object_name', 'Symfony\Component\Form\Extension\Core\Type\ChoiceType', array('choices' => $choices))
-            ->add('object_id', 'Symfony\Component\Form\Extension\Core\Type\TextType')
-            ->getForm();
+        $form =  $this->createFormBuilder()
+            ->add('system__object_name', ChoiceType::class, array('choices' => $choices, 'label' => 'System'))
+            ->add('object_id', TextType::class, array('label' => 'ID'))
+            ->add('submit', SubmitType::class, array('label' => "Search"));
+
+        if (isset($options['action']))
+            $form->setAction($options['action']);
+        if (isset($options['method']))
+            $form->setMethod($options['method']);
+
+        return $form->getForm();
     }
 
     /*
@@ -304,7 +306,6 @@ Edge, Windows
  [0] => text/html    [1] => application/xhtml+xml    [2] => image/jxr
 
 */
-
         foreach ($request->getAcceptableContentTypes() as $accept) {
 
             switch ($accept) {
@@ -521,7 +522,6 @@ Edge, Windows
         }
 
         return $form->handleRequest($request);
-        
     }
 
     /*
@@ -583,7 +583,6 @@ Edge, Windows
 $entity, $entity_obj, $route, $total_amount_items, $entity_identifier_name =
 null)
     {
-
         // Pagination with rest? 
         if ($this->isRest($access)) {
             $entities = $repo->findBy(
@@ -642,7 +641,6 @@ null)
                 'orderby'      => $order_by,
                 'total_items'  => $total_amount_items
                 );
-
     }
 
     /* TODO: Same as above. Render a template here. */
@@ -711,7 +709,6 @@ null)
         }
 
         return $this->returnAsDataTablesJson($request, $entities, $records_filtered, $total_amount_entities);
-
     }
 
     /*
@@ -719,7 +716,6 @@ null)
      */
     public function createPageRoutes($request, $pages, $base_route, $object_name, $object_id)
     {
-
         $routes = array();
         $router = $this->get('router');
 
@@ -745,16 +741,12 @@ null)
 
             $routes[] = array('num' => $i, 
                 'route' => $router->generate($base_route, $options));
-
         }
-
         return $routes;
-
     }
 
     public function createOrderByRoutes($request, $fields = array())
     {
-
         // I am not sure how future-proof PathInfo is here but we will find out.
         $path = $request->getPathInfo();
         $qs = $request->getQueryString();
@@ -769,13 +761,11 @@ null)
             $routes[] = array('route' => $path . "?" . $o_qs, 
                     'label' => ucfirst($field) , 'orderby' => $field);
         }
-
         return $routes;
     }
 
     public function createFilterByForm($request, $repo)
     {
-
         if (!method_exists($repo, "getFilterableProperties")) { return null; }
 
         // I am not sure how future-proof PathInfo is here but we will find out.
@@ -794,7 +784,7 @@ null)
                 $choices[$value] = $key;
             }
             $name = "filter_by_" . $i;
-            $builder->add($name, 'Symfony\Component\Form\Extension\Core\Type\ChoiceType', array(
+            $builder->add($name, ChoiceType::class, array(
                 'choices'  => $choices,
                 'label'    => "Add filter",
                 'required' => false,
@@ -802,7 +792,6 @@ null)
                 ));
             $i++;
         }
-
         return $builder->getForm()->createView();
     }
 
@@ -831,7 +820,6 @@ null)
             $o = $request->get('order')[0];
             $criterias['order_by'] = array($columns[$o['column']]['data'] => $o['dir']);
         }
-
         return $criterias;
     }
 
@@ -858,7 +846,6 @@ null)
      */
     public function getFilterBy($request) 
     {
-
         $filter_by = array();
         // Should check against what is allowed to order by. Searchable?
         if ($filter = $request->get('filter_by')) {
@@ -909,13 +896,12 @@ null)
         return $filter_by;
     }
 
-    private function _serialize($data, $format) {
-
+    private function _serialize($data, $format)
+    {
         if (method_exists($data, 'toArray')) {
             var_dump($data->toArray());
             $data = $data->toArray();
             }
-
     }
 
     /* Masking stuff. */
