@@ -237,12 +237,12 @@ class UserController extends CommonController
 
         // Gotta be able to handle two-letter usernames.
         if (strlen($username) > 1) {
-            /* No searching for users in the manager.
             $userManager = $this->container->get('fos_user.user_manager');
-            $users = $userManager->findUserByUsername($username);
-            */
+            /* No searching for users in the manager. */
+            // $users = $userManager->findUserByUsername($username);
+            $class = $userManager->getClass();
             $em = $this->getDoctrine()->getManager();
-            $repo = $em->getRepository('BisonLabCommonBundle:User');
+            $repo = $em->getRepository($class);
             $result = array();
             if ($users = $repo->createQueryBuilder('u')
                 ->where('u.usernameCanonical LIKE :username')
