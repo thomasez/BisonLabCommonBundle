@@ -15,7 +15,6 @@ class UserType extends AbstractType
             ->add('email', 'Symfony\Component\Form\Extension\Core\Type\EmailType', array('required' => false))
             ->add('enabled', 'Symfony\Component\Form\Extension\Core\Type\CheckboxType', array('required' => false))
             ->add('password', 'Symfony\Component\Form\Extension\Core\Type\PasswordType', array('required' => false))
-            ->add('locked', 'Symfony\Component\Form\Extension\Core\Type\CheckboxType', array('required' => false))
             ->add('roles', 'Symfony\Component\Form\Extension\Core\Type\ChoiceType', array('multiple' =>  true, 'choices' => 
                     array(
                         'Read Only - user' => 'ROLE_USER',

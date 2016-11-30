@@ -170,11 +170,6 @@ class UserController extends CommonController
             if (isset($post_data['password']))
                 $user->setPlainPassword($post_data['password']);
 
-            if (isset($post_data['locked'])) {
-                $user->setLocked(true);
-            } else {
-                $user->setLocked(false);
-            }
             if (isset($post_data['enabled'])) {
                 $user->setEnabled(true);
             } else {

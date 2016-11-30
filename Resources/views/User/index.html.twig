@@ -4,7 +4,6 @@
 
 <h1>User list</h1>
 
-
 {% if pages is defined and pages > 1 %}
     <p>Pages: 
     {% for route in routes %}
@@ -27,11 +26,6 @@
             <th>Emailcanonical</th>
             <th>Enabled</th>
             <th>Lastlogin</th>
-            <th>Locked</th>
-{#
-            <th>Expired</th>
-            <th>Expiresat</th>
-#}
             <th>Roles</th>
             <th>Actions</th>
         </tr>
@@ -45,12 +39,6 @@
             <td>{{ entity.emailCanonical }}</td>
             <td>{% if entity.enabled %}Yes{% else %}No{% endif %}</td>
             <td>{% if entity.lastLogin %}{{ entity.lastLogin|date('Y-m-d H:i:s') }}{% endif %}</td>
-            <td>{% if entity.locked %}Yes{% else %}No{% endif %}</td>
-{#
-            <td>{{ entity.expired }}</td>
-            <td>{% if entity.expiresAt %}{{ entity.expiresAt|date('Y-m-d H:i:s') }}{% endif %}</td>
-            <td>{% if entity.passwordRequestedAt %}{{ entity.passwordRequestedAt|date('Y-m-d H:i:s') }}{% endif %}</td>
-#}
             <td>{{ entity.roles | prettyprint }}</td>
             <td>
                 <ul>
