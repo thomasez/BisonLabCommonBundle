@@ -222,7 +222,7 @@ class UserController extends CommonController
             /* No searching for users in the manager. */
             // $users = $userManager->findUserByUsername($username);
             $class = $userManager->getClass();
-            $em = $this->getDoctrine()->getManager();
+            $em = $this->getDoctrine()->getManagerForClass($class);
             $repo = $em->getRepository($class);
             $result = array();
             if ($users = $repo->createQueryBuilder('u')
