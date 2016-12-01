@@ -19,8 +19,7 @@ class UserType extends AbstractType
                     array(
                         'Read Only - user' => 'ROLE_USER',
                         'User with read/write' => 'ROLE_USER_RW',
-                        'Admin' => 'ROLE_ADMIN',
-                        'Superadmin' => 'ROLE_SUPER_ADMIN',
+                        'Admin' => 'ROLE_ADMIN'
                         ))
             )
         ;
