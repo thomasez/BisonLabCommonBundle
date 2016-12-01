@@ -6,6 +6,8 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
+
 use BisonLab\CommonBundle\Entity\User;
 use BisonLab\CommonBundle\Form\UserType;
 use BisonLab\CommonBundle\Controller\CommonController as CommonController;
@@ -278,7 +280,7 @@ class UserController extends CommonController
     private function createDeleteForm($id)
     {
         return $this->createFormBuilder(array('id' => $id))
-            ->add('id', 'Symfony\Component\Form\Extension\Core\Type\HiddenType')
+            ->add('id', HiddenType::class)
             ->getForm()
         ;
     }
