@@ -49,7 +49,7 @@ class UserController extends CommonController
         $user = $userManager->findUserBy(array('id' => $id));
 
         if (!$user) {
-            throw $this->createNotFoundException('Unable to find User entity.');
+            throw $this->createNotFoundException('Unable to find User');
         }
 
         $deleteForm = $this->createDeleteForm($id);
@@ -69,13 +69,13 @@ class UserController extends CommonController
      */
     public function newAction()
     {
-        $entity = new User();
-        $form = $this->createForm(UserType::class, $entity,
+        $user = new User();
+        $form = $this->createForm(UserType::class, $user,
             array('action' =>
                 $this->generateUrl('user_update', array('id' => $id))));
 
         $params = array(
-            'entity' => $entity,
+            'entity' => $user,
             'form'   => $form->createView(),
         );
         return $this->render('BisonLabCommonBundle:User:new.html.twig',
@@ -90,8 +90,8 @@ class UserController extends CommonController
      */
     public function createAction(Request $request)
     {
-        $entity  = new User();
-        $form = $this->createForm(UserType::class, $entity,
+        $user  = new User();
+        $form = $this->createForm(UserType::class, $user,
             array('action' =>
                 $this->generateUrl('user_update', array('id' => $id))));
         $form->handleRequest($request);
@@ -112,7 +112,7 @@ class UserController extends CommonController
         }
 
         $params = array(
-            'entity' => $entity,
+            'entity' => $user,
             'form'   => $form->createView(),
         );
         return $this->render('BisonLabCommonBundle:User:new.html.twig',
@@ -163,7 +163,7 @@ class UserController extends CommonController
         }
 
         $deleteForm = $this->createDeleteForm($id);
-        $editForm = $this->createForm(UserType::class, $entity,
+        $editForm = $this->createForm(UserType::class, $user,
             array('action' =>
                 $this->generateUrl('user_update', array('id' => $id))));
         $editForm->handleRequest($request);
@@ -174,7 +174,7 @@ class UserController extends CommonController
         }
 
         $params = array(
-            'entity'      => $entity,
+            'entity'      => $user,
             'edit_form'   => $editForm->createView(),
             'delete_form' => $deleteForm->createView(),
         );
@@ -198,7 +198,7 @@ class UserController extends CommonController
             $user = $userManager->findUserBy(array('id' => $id));
 
             if (!$user) {
-                throw $this->createNotFoundException('Unable to find User entity.');
+                throw $this->createNotFoundException('Unable to find User');
             }
             $userManager->deleteUser($user);
         }
