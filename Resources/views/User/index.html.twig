@@ -21,12 +21,11 @@
     <thead>
         <tr>
             <th>Username</th>
-            <th>Usernamecanonical</th>
             <th>Email</th>
-            <th>Emailcanonical</th>
             <th>Enabled</th>
-            <th>Lastlogin</th>
+            <th>Groups</th>
             <th>Roles</th>
+            <th>Lastlogin</th>
             <th>Actions</th>
         </tr>
     </thead>
@@ -34,12 +33,11 @@
     {% for entity in entities %}
         <tr>
             <td><a href="{{ path('user_show', { 'id': entity.id }) }}">{{ entity.username }}</a></td>
-            <td>{{ entity.usernameCanonical }}</td>
             <td>{{ entity.email }}</td>
-            <td>{{ entity.emailCanonical }}</td>
             <td>{% if entity.enabled %}Yes{% else %}No{% endif %}</td>
+            <td>{% for group in entity.groups %}{{ group  }}<br>{% endfor %}</td>
+            <td>{% for role in  entity.roles %}{{ role  }}<br>{% endfor %}</td>
             <td>{% if entity.lastLogin %}{{ entity.lastLogin|date('Y-m-d H:i:s') }}{% endif %}</td>
-            <td>{{ entity.roles | prettyprint }}</td>
             <td>
                 <ul>
                     <li>

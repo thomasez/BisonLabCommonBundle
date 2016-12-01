@@ -30,11 +30,10 @@ class UserController extends CommonController
      */
     public function indexAction()
     {
-        $em = $this->getDoctrine()->getManager();
-        $entities = $em->getRepository('BisonLabCommonBundle:User')->findAll();
+        $userManager = $this->container->get('fos_user.user_manager');
 
         $params = array(
-            'entities' => $entities,
+            'entities' => $userManager->findUsers()
         );
         return $this->render('BisonLabCommonBundle:User:index.html.twig',
             $params);
@@ -49,16 +48,16 @@ class UserController extends CommonController
     {
         $em = $this->getDoctrine()->getManager();
 
-        $entity = $em->getRepository('BisonLabCommonBundle:User')->find($id);
+        $user = $userManager->findUserBy(array('id' => $id));
 
-        if (!$entity) {
+        if (!$user) {
             throw $this->createNotFoundException('Unable to find User entity.');
         }
 
         $deleteForm = $this->createDeleteForm($id);
 
         $params = array(
-            'entity'      => $entity,
+            'entity'      => $user,
             'delete_form' => $deleteForm->createView(),
         );
         return $this->render('BisonLabCommonBundle:User:show.html.twig',
@@ -73,7 +72,9 @@ class UserController extends CommonController
     public function newAction()
     {
         $entity = new User();
-        $form   = $this->createForm(UserType::class, $entity);
+        $form = $this->createForm(UserType::class, $entity,
+            array('action' =>
+                $this->generateUrl('user_update', array('id' => $id))));
 
         $params = array(
             'entity' => $entity,
@@ -92,13 +93,14 @@ class UserController extends CommonController
     public function createAction(Request $request)
     {
         $entity  = new User();
-        $form = $this->createForm(UserType::class);
+        $form = $this->createForm(UserType::class, $entity,
+            array('action' =>
+                $this->generateUrl('user_update', array('id' => $id))));
         $form->handleRequest($request);
 
         $post_data = $request->request->get('user');
 
         if ($form->isValid()) {
-
             $userManager = $this->container->get('fos_user.user_manager');
             $user = $userManager->createUser();
             $user->setUsername($post_data['username']);
@@ -127,17 +129,20 @@ class UserController extends CommonController
     public function editAction($id)
     {
         $em = $this->getDoctrine()->getManager();
-        $entity = $em->getRepository('BisonLabCommonBundle:User')->find($id);
+        $userManager = $this->container->get('fos_user.user_manager');
+        $user = $userManager->findUserBy(array('id' => $id));
 
-        if (!$entity) {
-            throw $this->createNotFoundException('Unable to find User entity.');
+        if (!$user) {
+            throw $this->createNotFoundException('Unable to find User.');
         }
 
-        $editForm = $this->createForm(UserType::class, $entity);
+        $editForm = $this->createForm(UserType::class, $user,
+            array('action' =>
+                $this->generateUrl('user_update', array('id' => $id))));
         $deleteForm = $this->createDeleteForm($id);
 
         $params = array(
-            'entity'      => $entity,
+            'entity'      => $user,
             'edit_form'   => $editForm->createView(),
             'delete_form' => $deleteForm->createView(),
         );
@@ -154,42 +159,21 @@ class UserController extends CommonController
     public function updateAction(Request $request, $id)
     {
         $userManager = $this->container->get('fos_user.user_manager');
-
-        $post_data = $request->request->get('user');
-
         $user = $userManager->findUserBy(array('id' => $id));
 
         if (!$user) {
-            throw $this->createNotFoundException('Unable to find User.');
+            throw $this->createNotFoundException('Unable to find User');
         }
 
-        $em = $this->getDoctrine()->getManager();
-        $entity = $em->getRepository('BisonLabCommonBundle:User')->find($id);
-
         $deleteForm = $this->createDeleteForm($id);
-        $editForm = $this->createForm(UserType::class);
+        $editForm = $this->createForm(UserType::class, $entity,
+            array('action' =>
+                $this->generateUrl('user_update', array('id' => $id))));
         $editForm->handleRequest($request);
 
         if ($editForm->isValid()) {
-            
-            $user->setEmail($post_data['email']);
-            $user->setUsername($post_data['username']);
-
-            if (isset($post_data['password']))
-                $user->setPlainPassword($post_data['password']);
-
-            if (isset($post_data['enabled'])) {
-                $user->setEnabled(true);
-            } else {
-                $user->setEnabled(false);
-            }
-
-            $user->setRoles(array_values($post_data['roles']));
-
             $userManager->updateUser($user);
-
             return $this->redirect($this->generateUrl('user'));
-
         }
 
         $params = array(
@@ -213,17 +197,14 @@ class UserController extends CommonController
         $form->handleRequest($request);
 
         if ($form->isValid()) {
-            $em = $this->getDoctrine()->getManager();
-            $entity = $em->getRepository('BisonLabCommonBundle:User')->find($id);
+            $userManager = $this->container->get('fos_user.user_manager');
+            $user = $userManager->findUserBy(array('id' => $id));
 
-            if (!$entity) {
+            if (!$user) {
                 throw $this->createNotFoundException('Unable to find User entity.');
             }
-
-            $em->remove($entity);
-            $em->flush();
+            $userManager->deleteUser($user);
         }
-
         return $this->redirect($this->generateUrl('user'));
     }
 
@@ -231,9 +212,8 @@ class UserController extends CommonController
      * @Route("/search", name="user_search")
      * @Method("GET")
      */
-    public function searchAddressAction(Request $request, $access)
+    public function searchUserAction(Request $request, $access)
     {
-
         if ($this->isRest($access))
             $username = $request->query->get("term");
         else 
@@ -277,6 +257,7 @@ class UserController extends CommonController
         return $this->render('BisonLabCommonBundle:User:index.html.twig',
             $params);
     }
+
     private function createDeleteForm($id)
     {
         return $this->createFormBuilder(array('id' => $id))

@@ -4,14 +4,9 @@
 
 <h1>User edit</h1>
 
-<div id="formstyle" class="myform">
-<form action="{{ path('user_update', { 'id': entity.id }) }}" method="post"}}>
-    {{ form_widget(edit_form) }}
-    <p>
-        <button type="submit">Save</button>
-    </p>
-</form>
-</div>
+{{ form_start(edit_form) }}
+{{ form_widget(edit_form) }}
+{{ form_end(edit_form) }}
 
 <ul class="record_actions">
     <li>

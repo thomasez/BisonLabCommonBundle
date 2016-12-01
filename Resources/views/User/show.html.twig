@@ -24,7 +24,15 @@
         </tr>
         <tr>
             <th>Enabled</th>
-            <td>{{ entity.enabled }}</td>
+            <td>{% if entity.enabled %}Yes{% else %}No{% endif %}</td>
+        </tr>
+        <tr>
+            <th>Groups</th>
+            <td>{% for group in entity.groups %}{{ group  }}<br>{% endfor %}</td>
+        </tr>
+        <tr>
+            <th>Roles</th>
+            <td>{% for role in  entity.roles %}{{ role  }}<br>{% endfor %}</td>
         </tr>
         <tr>
             <th>Lastlogin</th>
@@ -37,14 +45,6 @@
         <tr>
             <th>Passwordrequestedat</th>
             <td>{{ entity.passwordRequestedAt|date('Y-m-d H:i:s') }}</td>
-        </tr>
-        <tr>
-            <th>Roles</th>
-            <td>{{ entity.roles | prettyprint }}</td>
-        </tr>
-        <tr>
-            <th>Id</th>
-            <td>{{ entity.id }}</td>
         </tr>
     </tbody>
 </table>

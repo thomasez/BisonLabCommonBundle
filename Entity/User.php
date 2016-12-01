@@ -18,20 +18,22 @@ class User extends BaseUser
      */
     protected $id;
 
-    public function __construct()
-    {
-        parent::__construct();
-        // your own logic
-    }
+    /**
+     * @ORM\ManyToMany(targetEntity="Group")
+     * @ORM\JoinTable(name="bisoncommon_users_groups",
+     *   joinColumns={@ORM\JoinColumn(name="user_id", referencedColumnName="id")},
+     *   inverseJoinColumns={@ORM\JoinColumn(name="group_id", referencedColumnName="id")}
+     * )
+     */
+    protected $groups;
 
-    public function getExpiresAt() 
+    /*
+     * Somehow the User Form ends up with calling hasGroup without any argument.
+     * So I'll do it like this for now.
+     * TODO: Find out why, fix and remove this.
+     */
+    public function hasGroup($name = null)
     {
-        return $this->expiresAt;
+        if ($name) return parent::hasGroup($name);
     }
-
-    public function getCredentialsExpireAt() 
-    {
-        return $this->credentialsExpireAt;
-    }
-
 }
