@@ -46,8 +46,6 @@ class UserController extends CommonController
      */
     public function showAction($id)
     {
-        $em = $this->getDoctrine()->getManager();
-
         $user = $userManager->findUserBy(array('id' => $id));
 
         if (!$user) {
@@ -128,7 +126,6 @@ class UserController extends CommonController
      */
     public function editAction($id)
     {
-        $em = $this->getDoctrine()->getManager();
         $userManager = $this->container->get('fos_user.user_manager');
         $user = $userManager->findUserBy(array('id' => $id));
 
