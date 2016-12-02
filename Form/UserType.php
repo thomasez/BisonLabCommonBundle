@@ -23,16 +23,14 @@ class UserType extends AbstractType
             ->add('username', TextType::class, array('required' => true))
             ->add('email', EmailType::class, array('required' => false))
             ->add('enabled', CheckboxType::class, array('required' => false))
-            ->add('group', EntityType::class,
+            ->add('groups', EntityType::class,
                 array(
-                    'placeholder' => 'Choose a Group',
                     'required' => true,
                     'multiple' => true,
-                    'class' => 'BisonLabCommonBundle:Group',
-                    'query_builder' => function(EntityRepository $er) {
-                        return $er->createQueryBuilder('m')
-                         ->orderBy('m.name', 'ASC');
-                    },
+                    'multiple' => true,
+                    // TODO: This may actually also be wrong. Gotta find the
+                    // group class in a config or from the group manager.
+                    'class' => 'BisonLabCommonBundle:Group'
                 ))
             ->add('roles', ChoiceType::class,
                 array(
