@@ -7,6 +7,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
+use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 
 use BisonLab\CommonBundle\Entity\User;
 use BisonLab\CommonBundle\Form\UserType;
@@ -72,7 +73,8 @@ class UserController extends CommonController
         $user = new User();
         $form = $this->createForm(UserType::class, $user,
             array('action' =>
-                $this->generateUrl('user_update', array('id' => $id))));
+                $this->generateUrl('user_create')));
+        $form->add('plain_password', PasswordType::class, array('label' => 'Password', 'required' => true));
 
         $params = array(
             'entity' => $user,
@@ -90,24 +92,17 @@ class UserController extends CommonController
      */
     public function createAction(Request $request)
     {
-        $user  = new User();
+        $userManager = $this->container->get('fos_user.user_manager');
+        $user = $userManager->createUser();
         $form = $this->createForm(UserType::class, $user,
             array('action' =>
-                $this->generateUrl('user_update', array('id' => $id))));
+                $this->generateUrl('user_create')));
+        $form->add('plain_password', PasswordType::class, array('label' => 'Password', 'required' => true));
+
         $form->handleRequest($request);
 
-        $post_data = $request->request->get('user');
-
         if ($form->isValid()) {
-            $userManager = $this->container->get('fos_user.user_manager');
-            $user = $userManager->createUser();
-            $user->setUsername($post_data['username']);
-            $user->setEmail($post_data['email']);
-            $user->setPlainPassword($post_data['password']);
-            $user->setRoles(array_values($post_data['roles']));
-
             $userManager->updateUser($user);
-
             return $this->redirect($this->generateUrl('user'));
         }
 
