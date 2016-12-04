@@ -36,4 +36,13 @@ class User extends BaseUser
     {
         if ($name) return parent::hasGroup($name);
     }
+
+    public function getGroupsAsNamesArray()
+    {
+        $names = array();
+        foreach ($this->getGroups() as $g) {
+            $names[] = $g->getName();
+        }
+        return $names;
+    }
 }
