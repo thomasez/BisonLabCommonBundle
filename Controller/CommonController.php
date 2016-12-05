@@ -39,7 +39,7 @@ class CommonController extends Controller
         }
 
         if (!$entities) {
-            return $this->render('BisonLabCommonBundle::error.html.twig', 
+            return $this->render('BisonLabCommonBundle::message.html.twig', 
                 array('message' => 'Sorry, could not find what you were looking for'));
         }
 
