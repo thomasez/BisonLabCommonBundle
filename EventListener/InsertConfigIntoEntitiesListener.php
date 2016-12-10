@@ -5,20 +5,14 @@ namespace BisonLab\CommonBundle\EventListener;
 use Doctrine\ORM\Event\LifecycleEventArgs;
 
 /*
- * This is so wrong I am afraid I'll go mad.
+ * This one injects the context config into the entities so that they know
+ * what they are and can do, all from a simple config file.
+ * contexts.yml
  */
 
 class InsertConfigIntoEntitiesListener 
 {
-
     private $container;
-
-/*
-    public function __construct($container)
-    {
-         $this->container = $container;
-    }
-*/
 
     public function setContainer($container)
     {
@@ -27,24 +21,21 @@ class InsertConfigIntoEntitiesListener
 
     public function postLoad(LifecycleEventArgs $args)
     {
-
         $this->_insertConfig($args);
-
     }
 
     public function prePersist(LifecycleEventArgs $args)
     {
-
         $entity = $this->_insertConfig($args);
 
         if ($entity && !$entity->getUrl() 
                 && method_exists($entity, 'resetUrl')) {
             $entity->resetUrl();
         }
-
     }
 
-    private function _insertConfig($args) {
+    private function _insertConfig($args)
+    {
         $entity = $args->getEntity();
         if (preg_match("/Context/", get_class($entity))) {
             $context_conf = $this->container->getParameter('app.contexts');
@@ -74,9 +65,7 @@ class InsertConfigIntoEntitiesListener
                 return $entity;
             }
         }
-        
         // Had nothing to do.
         return false;
-
     }
 }
