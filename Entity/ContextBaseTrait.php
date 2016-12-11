@@ -6,7 +6,6 @@ use Doctrine\ORM\Mapping as ORM;
 
 trait ContextBaseTrait
 {
-
     /*
      * This is not for storage into the DB. So no, it should not have been here.
      */
@@ -64,6 +63,11 @@ trait ContextBaseTrait
             $this->setExternalId($options['external_id']);
         if (isset($options['url'])) 
             $this->setUrl($options['url']);
+    }
+
+    /* But for those using this trait fully, aka not having their own.: */
+    public function __construct($options = array()) {
+        return $this->traitConstruct($options);
     }
 
     /**
@@ -151,7 +155,6 @@ trait ContextBaseTrait
      */
     public function resetUrl()
     {
-
         // Good old one.
         if (isset($this->config['url_base'])) {
             $this->url = $this->config['url_base'] . $this->getExternalId();
@@ -257,6 +260,25 @@ trait ContextBaseTrait
             && $this->getExternalId()) ? false : true;
     }
 
+    /**
+     * Generic main object setting.
+     *
+     * @return object
+     */
+    public function setOwner($object)
+    {
+        $this->owner = $object;
+    }
+
+    /**
+     * Generic main object.
+     *
+     * @return object
+     */
+    public function getOwner()
+    {
+        return $this->owner;
+    }
 
     /*
      * Owner helpers.
@@ -269,5 +291,16 @@ trait ContextBaseTrait
     public function getOwnerClass()
     {
         return get_class($this->getOwner());
+    }
+
+    /*
+     * Looks stupid? I kinda agree. This is for BC. It used to be
+     * getOwnerEntity, but that does not explain what this actually does.
+     * If the traiting context object has getOwnerEntityAlias, that will be
+     * used, if it has getOwnerEntity. this will be used.
+     */
+    public function getOwnerEntityAlias()
+    {
+        return $this->getOwnerEntity();
     }
 }

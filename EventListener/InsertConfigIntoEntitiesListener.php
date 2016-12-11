@@ -39,7 +39,7 @@ class InsertConfigIntoEntitiesListener
         $entity = $args->getEntity();
         if (preg_match("/Context/", get_class($entity))) {
             $context_conf = $this->container->getParameter('app.contexts');
-            list($bundle, $object) = explode(":", $entity->getOwnerEntity());
+            list($bundle, $object) = explode(":", $entity->getOwnerEntityAlias());
             // do something with the Product
             $object_name = $entity->getObjectName();
             // Gotta be able to handle the case of no config at all..
