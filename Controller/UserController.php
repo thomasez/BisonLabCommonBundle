@@ -222,8 +222,8 @@ class UserController extends CommonController
             $repo = $em->getRepository($class);
             $result = array();
             if ($users = $repo->createQueryBuilder('u')
-                ->where('u.usernameCanonical LIKE :username')
-                ->setParameter('username', $username . '%')
+                ->where('lower(u.usernameCanonical) LIKE :username')
+                ->setParameter('username', strtolower($username) . '%')
                 ->getQuery()->getResult()) {
                     foreach ($users as $user) {
                         // TODO: Add full name.
