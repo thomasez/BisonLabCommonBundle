@@ -47,6 +47,7 @@ class UserController extends CommonController
      */
     public function showAction($id)
     {
+        $userManager = $this->container->get('fos_user.user_manager');
         $user = $userManager->findUserBy(array('id' => $id));
 
         if (!$user) {
