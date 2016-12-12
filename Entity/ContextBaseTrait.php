@@ -287,20 +287,4 @@ trait ContextBaseTrait
     {
         return $this->getOwner()->getid();
     }
-
-    public function getOwnerClass()
-    {
-        return get_class($this->getOwner());
-    }
-
-    /*
-     * Looks stupid? I kinda agree. This is for BC. It used to be
-     * getOwnerEntity, but that does not explain what this actually does.
-     * If the traiting context object has getOwnerEntityAlias, that will be
-     * used, if it has getOwnerEntity. this will be used.
-     */
-    public function getOwnerEntityAlias()
-    {
-        return $this->getOwnerEntity();
-    }
 }
