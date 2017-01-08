@@ -35,7 +35,8 @@ class CommonController extends Controller
         $entities = $repo->findByContext($system, $object_name, $external_id);
 
         if ($access == 'rest' || $access == 'ajax') {
-            return $this->returnRestData($request, $entities);
+            return $this->returnRestData($request, $entities, 
+                array('html' => $context_config['list_template']));
         }
 
         if (!$entities) {
@@ -334,7 +335,12 @@ Edge, Windows
                     if (isset($templates['html'])) {
                         // Here we'll let the programmer choose.
                         return $this->render($templates['html'],
-                            array('data_array' => $data_arr, 'data_entity' => $data));
+                            array(
+                                'data_array' => $data_arr,
+                                // That name is so wrong, but can I remove it?
+                                'data_entity' => $data,
+                                'data' => $data,
+                                ));
                     } else {
                         // And a fall back.
                         return $this->render('BisonLabCommonBundle:Default:show.html.twig', 
@@ -504,11 +510,13 @@ Edge, Windows
     {
         if ($data = json_decode($request->getContent(), true)) {
             foreach($data as $key => $value) {
+error_log("K:" . $key);
                 $request->request->set($key, $value);
             }
         }
         // Both ajax and rest - calls have to be CSRF hacked unfortunately.
-        if ($this->isRest($access)) {
+        // TODO: Just get rid of this somehow. It's ugly and has to be wrong.
+        if (!isset($data['_token']) && $this->isRest($access)) {
             $tm = $this->container->get('security.csrf.token_manager');
             // This is kinda bad (but it's all a hack anyway) since I
             // should rather get the CsrfFieldName (defaultFieldName in the
