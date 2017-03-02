@@ -34,8 +34,7 @@ class CommonController extends Controller
         $repo = $em->getRepository($class);
 
         $entities = $repo->findByContext($system, $object_name, $external_id);
-
-        if ($this->isRest($access)) {
+        if ($this->isRest($request)) {
             return $this->returnRestData($request, $entities, 
                 array('html' => $context_config['list_template']));
         }
@@ -47,7 +46,7 @@ class CommonController extends Controller
 
         if (count($entities) == 1) {
             // Need to do this for BC.
-            $eid = is_array($entities) 
+            $eid = (is_array($entities) || $entities instanceof \ArrayAccess)
                 ? $entities[0]->getId() 
                 : $entities->getId();
 
@@ -264,9 +263,16 @@ class CommonController extends Controller
      /*
       * TODO: Investigate changing this to find the web/rest access from
       * within the request.
+      * And this is how stupendously simple it is:
+      * $request->get('access');
       */
-    public function isRest($access, $request = null)
+    public function isRest($check)
     {
+        if ($check instanceof Request)
+            $access = $check->get('access');
+        else
+            $access = $check;
+
         if ('rest' == $access || 'ajax' == $access) {
             return true;
         } else {
