@@ -35,7 +35,7 @@ class CommonController extends Controller
 
         $entities = $repo->findByContext($system, $object_name, $external_id);
 
-        if ($access == 'rest' || $access == 'ajax') {
+        if ($this->isRest($access)) {
             return $this->returnRestData($request, $entities, 
                 array('html' => $context_config['list_template']));
         }
