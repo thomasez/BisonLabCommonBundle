@@ -2,7 +2,6 @@
 
 namespace BisonLab\CommonBundle\Service;
 
-
 /*
  * Absurdly simple. This is the single point for retrieving external data from 
  * a context. Aka, the main point with the context system.
@@ -14,7 +13,6 @@ namespace BisonLab\CommonBundle\Service;
 
 class ExternalRetriever
 {
-
     private $container;
 
     public function __construct($container)
@@ -24,11 +22,8 @@ class ExternalRetriever
 
     public function getExternalDataFromContext($context) 
     {
-
         $rname = strtolower($context->getSystem() . "_retriever");
         $retriever = $this->container->get($rname);
         return $retriever->getExternalDataFromContext($context);
-
     }
-
 }
