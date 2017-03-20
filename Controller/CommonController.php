@@ -517,7 +517,6 @@ Edge, Windows
     {
         if ($data = json_decode($request->getContent(), true)) {
             foreach($data as $key => $value) {
-error_log("K:" . $key);
                 $request->request->set($key, $value);
             }
         }
