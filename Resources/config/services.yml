@@ -1,7 +1,7 @@
 services:
     my.listener:
         class: BisonLab\CommonBundle\EventListener\InsertConfigIntoEntitiesListener
-        calls: 
+        calls:
             - [ setContainer, ['@service_container'] ]
         tags:
             - { name: doctrine.event_listener, event: postLoad  }
