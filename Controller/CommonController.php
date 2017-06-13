@@ -46,15 +46,25 @@ class CommonController extends Controller
 
         if (count($entities) == 1) {
             // Need to do this for BC.
-            $eid = (is_array($entities) || $entities instanceof \ArrayAccess)
-                ? $entities[0]->getId() 
-                : $entities->getId();
+            $entity = (is_array($entities) || $entities instanceof \ArrayAccess)
+                ? $entities[0]
+                : $entities;
+
+            $eid = $entity->getId();
 
             $classMethod = new \ReflectionMethod($this,"showAction");
-            $argumentCount = count($classMethod->getParameters());
-            if ($argumentCount == 3)
-                // There is always a showAction and it's better to use that one
-                // than just rendering a template.
+            $classParams = $classMethod->getParameters();
+            $argumentCount = count($classParams);
+            /*
+             *  Symfony now also handles Entity injection if the class is stype
+             *  hinted. I have to handle that while not having to be bothered
+             *  with the class. Ans also be backwards compatible with sending
+             *  "ID".
+             * TODO: Ponder about using redirect instead.
+             */
+            if ($argumentCount == 3 && $classParams[2]->__toString())
+                return $this->showAction($request, $access, $entity);
+            elseif ($argumentCount == 3)
                 return $this->showAction($request, $access, $eid);
             else
                 return $this->showAction($access, $eid);
