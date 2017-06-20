@@ -722,6 +722,7 @@ null)
             return $this->returnRestData($request, $repo->findAll());
         }
 
+error_log("Criterias: " . print_r($criterias, true));
         if ($criterias['per_page'] && $criterias['per_page'] != -1) {
             $entities = $repo->findBy(
                 $criterias['search'], $criterias['order_by'], $criterias['per_page'], $criterias['offset']);
@@ -842,7 +843,12 @@ null)
         if ($request->get('order')) {
             // Lazy for now, just use the first order.
             $o = $request->get('order')[0];
-            $criterias['order_by'] = array($columns[$o['column']]['data'] => $o['dir']);
+            $column_num = $o['column'];
+            if ($col = $columns[$column_num]['data']) {
+                $criterias['order_by'] = array($col => $o['dir']);
+            } else {
+                $criterias['order_by'] = null;
+            }
         }
         return $criterias;
     }
