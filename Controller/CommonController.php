@@ -722,7 +722,6 @@ null)
             return $this->returnRestData($request, $repo->findAll());
         }
 
-error_log("Criterias: " . print_r($criterias, true));
         if ($criterias['per_page'] && $criterias['per_page'] != -1) {
             $entities = $repo->findBy(
                 $criterias['search'], $criterias['order_by'], $criterias['per_page'], $criterias['offset']);
