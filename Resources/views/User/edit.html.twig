@@ -4,20 +4,30 @@
 
 <h1>User edit</h1>
 
-{{ form(edit_form) }}
+{{ form_start(edit_form) }}
+    {{ form_widget(edit_form) }}
+    <input type="submit" value="Save" />
+{{ form_end(edit_form) }}
 
 <ul class="record_actions">
     <li>
-        <a href="{{ path('user') }}">
-            Back to the list
+        <a href="{{ path('user_show', { 'id': entity.id }) }}">
+            Back to the User
         </a>
     </li>
+    <li>
+        <a href="{{ path('user') }}">
+            Back to the User list
+        </a>
+    </li>
+{% if delete_form is not null %}
     <li>
         <form action="{{ path('user_delete', { 'id': entity.id }) }}" method="post">
             {{ form_widget(delete_form) }}
             <button type="submit">Delete</button>
         </form>
     </li>
+{% endif %}
 </ul>
 
 {% endblock %}

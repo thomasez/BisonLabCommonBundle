@@ -179,6 +179,32 @@ class UserController extends CommonController
     }
 
     /**
+     * Change password on a User.
+     *
+     * @Route("/{id}/change_password", name="user_change_password")
+     */
+    public function changePasswordAction(Request $request, User $user)
+    {
+        $form = $this->createChangePasswordForm($user);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $userManager = $this->get('fos_user.user_manager');
+            $password = $form->getData()['plainpassword'];
+            $user->setPlainPassword($password);
+            $userManager->updateUser($user);
+            return $this->redirectToRoute('user_show', array('id' => $user->getId()));
+        } else {
+            return $this->render('BisonLabCommonBundle:User:edit.html.twig',
+                array(
+                'entity' => $user,
+                'edit_form' => $form->createView(),
+                'delete_form' => null,
+            ));
+        }
+    }
+
+    /**
      * Deletes a User entity.
      *
      * @Route("/{id}/delete", name="user_delete")
@@ -255,6 +281,23 @@ class UserController extends CommonController
     {
         return $this->createFormBuilder(array('id' => $id))
             ->add('id', HiddenType::class)
+            ->getForm()
+        ;
+    }
+
+    /**
+     * Creates a form to edit a password.
+     *
+     * @param User $user The user entity
+     *
+     * @return \Symfony\Component\Form\Form The form
+     */
+    private function createChangePasswordForm(User $user)
+    {
+        return $this->createFormBuilder()
+            ->add('plainpassword')
+            ->setAction($this->generateUrl('user_change_password', array('id' => $user->getId())))
+            ->setMethod('POST')
             ->getForm()
         ;
     }
