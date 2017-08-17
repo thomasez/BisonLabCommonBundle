@@ -717,11 +717,45 @@ null)
 
     public function ajaxedIndexAction($request, $access, $em, $repo)
     {
+        if (!$request->get('draw'))
+            return $this->returnRestData($request, $repo->findAll());
+
+        $qb = $repo->createQueryBuilder('s');
+        // Cheating, and should rather hack the DataTYables\Builder instead.
+        // But later.
+        $columns = $request->get('columns');
+        $aliases = array();
+        foreach ($columns as $c) {
+            $aliases[$c['data']] = 's.' . $c['data'];
+        }
+        $datatables = (new \Doctrine\DataTables\Builder())
+            ->withColumnAliases($aliases)
+            ->withIndexColumn('s.id')
+            ->withQueryBuilder($qb)
+            ->withReturnCollection(true)
+            ->withRequestParams($_GET);
+        $result = $datatables->getResponse();
+        return $this->returnAsDataTablesJson($request,
+            $result['data'],
+            $result['recordsFiltered'],
+            $result['recordsTotal']
+            );
+        // What we do to not have to do it ourselves:
+        // Aka, "Get rid of the alias 
+        $result = json_encode($datatables->getResponse());
+        if ($request->get('callback')) { 
+            $headers["Content-Type"] = "application/javascript";
+            $content = $request->get('callback') . "(" . $content . ");";
+        } else {
+            $headers["Content-Type"] = "application/json";
+        }
+        $response = new Response($result, 200, $headers);
+        return $response;
+
         $criterias = $this->getDataTablesCriterias($request);
         if (empty($criterias)) {
             return $this->returnRestData($request, $repo->findAll());
         }
-
         if ($criterias['per_page'] && $criterias['per_page'] != -1) {
             $entities = $repo->findBy(
                 $criterias['search'], $criterias['order_by'], $criterias['per_page'], $criterias['offset']);
@@ -825,19 +859,29 @@ null)
         // Got something to do? 
         if (!$request->get('draw')) return $criterias;
 
+        $criterias['search'] = array();
+        $criterias['per_page'] = $request->get('length');
+        $criterias['offset'] = $request->get('start');
+
         // Can just as well use the old variables.
         $columns = $request->get('columns');
 
         // Guess the TODO:
-        if ($request->get('search')) {
-            foreach ($columns as $c) {
+        // For now I will take for granted there is only one value to search
+        // for. And that there is no regexp, just a value.
+        if ($search = $request->get('search')) {
+            if ($value = trim($search['value'])) {
+                $criterias['search'] = array();
+                foreach ($columns as $c) {
+                    if (isset($c['searchable']) 
+                        && $c['searchable'] == "true") {
+                        $key = empty($c['name']) ? $c['data'] : $c['name'];
+                        if (!$key) continue;
+                        $criterias['search'][$key] = $value;
+                    }
+                }
             }
-            $criterias['search'] = array();
-        } else {
-            $criterias['search'] = array();
         }
-        $criterias['per_page'] = $request->get('length');
-        $criterias['offset'] = $request->get('start');
 
         if ($request->get('order')) {
             // Lazy for now, just use the first order.
