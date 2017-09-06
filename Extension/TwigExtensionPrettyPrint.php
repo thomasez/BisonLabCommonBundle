@@ -4,8 +4,8 @@ namespace BisonLab\CommonBundle\Extension;
 
 /*
  * This was (and stil is) a Pretty printer for the NoSqlBundle arrays / objects.
+ * It works on all arrays basically.
  * Aka I've nicked it from there.
- * 
  */
 
 class TwigExtensionPrettyPrint extends \Twig_Extension
@@ -17,16 +17,6 @@ class TwigExtensionPrettyPrint extends \Twig_Extension
         return array(
             new \Twig_SimpleFilter('prettyprint',  array($this, 'twig_pretty_print_filter'), array('needs_environment' => true)),
         );
-    }
-
-    /**
-     * Returns the name of the extension.
-     *
-     * @return string The extension name
-     */
-    public function getName()
-    {
-        return 'pretty_print';
     }
 
     private function composeTag($tag, $default = array())
