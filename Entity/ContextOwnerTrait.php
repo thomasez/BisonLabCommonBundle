@@ -7,6 +7,8 @@ use Doctrine\ORM\Mapping as ORM;
 /*
  * Remember to put this in the owner Entity:
  * use You\YourBundle\Entity\WhateverContext as Context;
+ * (Would be nice if it worked, but had to remove the class check in add and
+ * remove. TODO: Find out if this is possible.)
  */
 
 trait ContextOwnerTrait
@@ -46,8 +48,10 @@ trait ContextOwnerTrait
      *
      * @param Context $context;
      * @return Message
+     * Can't do a class check since it's different context classes and aliasing
+     * in the main owner class seems noe to be working.
      */
-    public function addContext(Context $context)
+    public function addContext($context)
     {
         $this->contexts[] = $context;
         $context->setOwner($this);
@@ -59,7 +63,7 @@ trait ContextOwnerTrait
      *
      * @param Context $context;
      */
-    public function removeContext(Context $context)
+    public function removeContext($context)
     {
         $this->contexts->removeElement($context);
     }
