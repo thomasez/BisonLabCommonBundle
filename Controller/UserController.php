@@ -233,9 +233,7 @@ class UserController extends CommonController
      */
     public function searchUserAction(Request $request, $access)
     {
-        if ($this->isRest($access))
-            $username = $request->query->get("term");
-        else 
+        if (!$username = $request->query->get("term"))
             $username = $request->query->get("username");
 
         // Gotta be able to handle two-letter usernames.
