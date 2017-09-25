@@ -343,7 +343,7 @@ Edge, Windows
                 case 'text/html':
                 case 'application/html':
                     $headers["Content-Type"] = $accept;
-                    $serializer = $this->get('serializer');
+                    $serializer = $this->get('jms_serializer');
                     // Reason for this is the extremely simple template for
                     // showing whatever as HTML. Just send it as an array and
                     // it can be dumped
@@ -396,7 +396,7 @@ Edge, Windows
             'recordsFiltered' => $records_filtered != null ? $records_filtered : count($data),
             'data' => $data
         );
-        $serializer = $this->get('serializer');
+        $serializer = $this->get('jms_serializer');
         $content = $serializer->serialize($content_arr, 'json');
         $headers = array();
 
@@ -415,7 +415,7 @@ Edge, Windows
         if ($request->get('draw'))
             return $this->returnAsDataTablesJson($request, $data);
 
-        $serializer = $this->get('serializer');
+        $serializer = $this->get('jms_serializer');
         $content =  $serializer->serialize($data, 'json');
         $headers = array();
 
@@ -431,7 +431,7 @@ Edge, Windows
 
     public function returnAsXml($request, $data, $status_code = 200) 
     {
-        $serializer = $this->get('serializer');
+        $serializer = $this->get('jms_serializer');
         $headers["Content-Type"] = "application/xml";
         $content .= $serializer->serialize($data, 'xml');
         return new Response($content, $status_code, $headers);
@@ -439,7 +439,7 @@ Edge, Windows
 
     public function returnAsYaml($request, $data, $status_code = 200) 
     {
-        $serializer = $this->get('serializer');
+        $serializer = $this->get('jms_serializer');
         $headers["Content-Type"] = "text/yaml";
         $content .= $serializer->serialize($data, 'yml');
         return new Response($content, $status_code, $headers);
