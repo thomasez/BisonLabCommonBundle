@@ -33,8 +33,7 @@
             "\\Assetic\\Filter\\CssImportFilter": []
         }
     },
-    "target-dir": "BisonLab/CommonBundle",
     "autoload": {
-        "psr-0": { "BisonLab\\CommonBundle\\": "" }
+        "psr-4": { "BisonLab\\CommonBundle\\": "" }
     }
 }
