@@ -110,10 +110,19 @@ class CommonController extends Controller
 
         foreach ($conf as $system_name => $object_info) {
             foreach ($object_info as $context_object_config) {
+                // If it's not supposed to be editable, do not make it editable.
+                // (But should it be addable? No. If so, create "write_once" or
+                // something.
+                if ($context_object_config['type'] == "readonly")
+                    continue;
+
                 $object_name = $context_object_config['object_name'];
                 $form_name  = "context__" . $system_name . "__" . $object_name;
                 $form_label = $context_object_config['label'];
 
+                // TODO: Use types more active. Like EternalId should be
+                // compulsary in more or less all cases except
+                // "informal_url_only".
                 if (isset($context_arr[$system_name][$object_name])) {
                     $c_object = $context_arr[$system_name][$object_name];
 
