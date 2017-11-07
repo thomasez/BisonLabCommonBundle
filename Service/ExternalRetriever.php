@@ -36,7 +36,6 @@ class ExternalRetriever
 
     public function getExternalDataFromContext($context) 
     {
-dump($context);
         $rname = strtolower($context->getSystem() . "_retriever");
         $retriever = $this->container->get($rname);
         if (is_object($retriever)
