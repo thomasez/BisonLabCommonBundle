@@ -196,6 +196,12 @@ trait ContextBaseTrait
      */
     public function getUrl()
     {
+        /*
+         * May be overkill, but if the config has changed it may be useful to
+         * try again. 
+         */
+        if (empty($this->url))
+            $this->resetUrl();
         return $this->url;
     }
 
