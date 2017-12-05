@@ -13,9 +13,9 @@ class JsonValidator extends ConstraintValidator
 {
     public function validate($value, Constraint $constraint)
     {
-        if (empty($json)) { return true; }
+        if (empty($value)) { return true; }
 
-        if (!is_array(json_decode($json, true))) {
+        if (!is_array(json_decode($value, true))) {
             $this->context->buildViolation("Not proper Json")
                 ->addViolation();
         }
