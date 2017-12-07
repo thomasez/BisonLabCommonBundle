@@ -19,7 +19,7 @@ services:
             - { name: 'twig.extension' }
 
     my.validator.twigvalidator:
-        class: BisonLab\CommonBundle\Form\Validator\TwigValidator
+        class: BisonLab\CommonBundle\Form\Validator\TwigValidatorService
         public: true
         tags:
             - { name: 'validator.constraint_validator' }
