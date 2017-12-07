@@ -9,15 +9,25 @@ services:
 
     external_retriever:
         class: BisonLab\CommonBundle\Service\ExternalRetriever
+        public: true
         arguments: ['@service_container' ]
 
     twig.extension.pretty_print:
         class: BisonLab\CommonBundle\Extension\TwigExtensionPrettyPrint
+        public: true
         tags:
             - { name: 'twig.extension' }
 
+    my.validator.twigvalidator:
+        class: BisonLab\CommonBundle\Form\Validator\TwigValidator
+        public: true
+        tags:
+            - { name: 'validator.constraint_validator' }
+        arguments: ['@twig' ]
+
 #    twig.extension.csv2html:
 #        class: BisonLab\CommonBundle\Extension\TwigExtensionCsv2Html
+#        public: true
 #        tags:
 #            - { name: 'twig.extension' }
 
