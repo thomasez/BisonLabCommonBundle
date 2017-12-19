@@ -619,6 +619,8 @@ null)
     {
         // Pagination with rest? 
         if ($this->isRest($access)) {
+            return $this->ajaxedIndexAction($request, $access, $em, $repo, $field_name, $entity_obj);
+
             $entities = $repo->findBy(
                 array($field_name => $entity_obj));
             return $this->returnRestData($request, $entities);
@@ -725,12 +727,24 @@ null)
         );
     }
 
-    public function ajaxedIndexAction($request, $access, $em, $repo)
+    public function ajaxedIndexAction($request, $access, $em, $repo, $field_name = null, $entity_obj = null)
     {
-        if (!$request->get('draw'))
-            return $this->returnRestData($request, $repo->findAll());
+        if (!$request->get('draw')) {
+            if ($field_name && $entity_obj) {
+                $entities = $repo->findBy(
+                    array($field_name => $entity_obj));
+                return $this->returnRestData($request, $entities);
+            } else {
+                return $this->returnRestData($request, $repo->findAll());
+            }
+        }
 
         $qb = $repo->createQueryBuilder('s');
+        if ($field_name && $entity_obj) {
+            $qb->andWhere('s.'.$field_name .' = :entity_obj');
+            $qb->setParameter('entity_obj', $entity_obj);
+        }
+        
         // Cheating, and should rather hack the DataTYables\Builder instead.
         // But later.
         $columns = $request->get('columns');
@@ -744,12 +758,16 @@ null)
             ->withQueryBuilder($qb)
             ->withReturnCollection(true)
             ->withRequestParams($_GET);
+
         $result = $datatables->getResponse();
         return $this->returnAsDataTablesJson($request,
             $result['data'],
             $result['recordsFiltered'],
             $result['recordsTotal']
             );
+
+
+
         // What we do to not have to do it ourselves:
         // Aka, "Get rid of the alias 
         $result = json_encode($datatables->getResponse());
