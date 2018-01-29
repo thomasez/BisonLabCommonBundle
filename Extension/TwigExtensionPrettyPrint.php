@@ -49,6 +49,8 @@ class TwigExtensionPrettyPrint extends \Twig_Extension
             echo $td;
             if (is_array($value)) {
                 $this->pretty($value);
+            } elseif ($value instanceof \DateTime) {
+                echo $value->format('Y-m-d H:i') . "\n";
             } else {
                 // I want to change \n to <br />. Not perfect but I need it.
                 $value = preg_replace("/\n/", "<br />", $value);
