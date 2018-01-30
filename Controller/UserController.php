@@ -245,19 +245,32 @@ class UserController extends CommonController
             $em = $this->getDoctrine()->getManagerForClass($class);
             $repo = $em->getRepository($class);
             $result = array();
-            if ($users = $repo->createQueryBuilder('u')
+            $q = $repo->createQueryBuilder('u')
                 ->where('lower(u.usernameCanonical) LIKE :username')
-                ->setParameter('username', strtolower($username) . '%')
-                ->getQuery()->getResult()) {
-                    foreach ($users as $user) {
-                        // TODO: Add full name.
-                        $result[] = array(
-                            'userid' => $user->getId(),
-                            'username' => $user->getUserName(),
-                            'label' => $user->getUserName(),
-                            'value' => $user->getUserName(),
-                        );
-                    }        
+                ->setParameter('username', strtolower($username) . '%');
+            if (property_exists($class, 'full_name')) {
+                $q->orWhere('lower(u.full_name) LIKE :full_name')
+                ->setParameter('full_name', '%' . strtolower($username) . '%');
+            }
+
+            if ($users = $q->getQuery()->getResult()) {
+                foreach ($users as $user) {
+                    // TODO: Add full name.
+                    $res = array(
+                        'userid' => $user->getId(),
+                        'value' => $user->getUserName(),
+                        'label' => $user->getUserName(),
+                        'username' => $user->getUserName(),
+                    );
+                    // Override if full name exists.
+                    if (property_exists($user, 'full_name') 
+                            && $user->getFullName()) {
+                        $res['username'] = $user->getFullName();
+                        $res['label'] = $user->getFullName();
+                        $res['value'] = $user->getFullName();
+                    }
+                    $result[] = $res;
+                }        
             }
         } else {
             $result = "Too little information provided for a viable search";
