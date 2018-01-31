@@ -27,7 +27,6 @@ class UserType extends AbstractType
                 array(
                     'required' => true,
                     'multiple' => true,
-                    'multiple' => true,
                     // TODO: This may actually also be wrong. Gotta find the
                     // group class in a config or from the group manager.
                     'class' => 'BisonLabCommonBundle:Group'
