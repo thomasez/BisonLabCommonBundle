@@ -351,6 +351,7 @@ Edge, Windows
                     return $this->returnAsYaml($request, $data, $status_code);
 
                 case 'text/html':
+                case '*/*':
                 case 'application/html':
                     $headers["Content-Type"] = $accept;
                     $serializer = $this->get('jms_serializer');
