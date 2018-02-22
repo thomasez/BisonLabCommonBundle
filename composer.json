@@ -4,7 +4,7 @@
     "description": "This bundle includes some of the typical stuff the author needs for his projects, like a user object, generic REST stuff and the context system.",
     "keywords": ["common symfony user context rest"],
     "homepage": "https://github.com/thomasez/BisonLabCommonBundle",
-    "license": "GPLv2",
+    "license": "LGPL-3.0-or-later",
     "authors": [
         {
             "name": "Thomas Lundquist",

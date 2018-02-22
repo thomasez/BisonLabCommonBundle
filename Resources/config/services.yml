@@ -1,5 +1,5 @@
 services:
-    my.listener:
+    my.inject_context_config:
         class: BisonLab\CommonBundle\EventListener\InsertConfigIntoEntitiesListener
         calls:
             - [ setContainer, ['@service_container'] ]
