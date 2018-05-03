@@ -7,6 +7,11 @@ services:
             - { name: doctrine.event_listener, event: postLoad  }
             - { name: doctrine.event_listener, event: prePersist  }
 
+    bisonlabcommon.changetracker:
+        class: BisonLab\CommonBundle\EventListener\ChangeTracker
+        tags:
+            - { name: doctrine.event_listener, event: preUpdate  }
+
     external_retriever:
         class: BisonLab\CommonBundle\Service\ExternalRetriever
         public: true
@@ -30,5 +35,3 @@ services:
 #        public: true
 #        tags:
 #            - { name: 'twig.extension' }
-
-
