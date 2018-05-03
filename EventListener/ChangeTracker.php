@@ -2,7 +2,7 @@
 
 namespace BisonLab\CommonBundle\EventListener;
 
-use Doctrine\ORM\Event\LifecycleEventArgs;
+use Doctrine\ORM\Event\PreUpdateEventArgs;
 
 /*
  * Does as little as possible.
