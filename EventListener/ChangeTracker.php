@@ -20,4 +20,15 @@ class ChangeTracker
             }
         }
     }
+
+    public function array_change_key_case_recursive($arr, $case = MB_CASE_LOWER)
+    {
+        $ret = array();
+        foreach ($arr as $k => $v) {
+            if(is_array($v))
+                $v = $this->array_change_key_case_recursive($v, $case);
+            $ret[mb_convert_case($k, $case, "UTF-8")] = $v;
+        }
+        return $ret;
+    }
 }
