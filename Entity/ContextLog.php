@@ -5,7 +5,7 @@ namespace BisonLab\CommonBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity(repositoryClass="BisonLab\CommonBundle\Entity\Repository\ContextLogRepository")
+ * @ORM\Entity(repositoryClass="BisonLab\CommonBundle\Entity\ContextLogRepository")
  *
  * @ORM\Table(
  *     name="bisoncommon_context_log",
@@ -93,6 +93,7 @@ class ContextLog
 
     public function __construct($context, $action)
     {
+        $this->action = $action;
         $this->logged_at = new \DateTime();
         $this->owner_class = $context->getOwnerEntityAlias();
         $owner_entity = $context->getOwner();
@@ -101,12 +102,81 @@ class ContextLog
         $this->object_name = $context->getObjectName();
         $this->external_id = $context->getExternalId();
         $this->url = $context->getUrl();
-        $this->action = $action;
         return $this;
     }
 
     public function setUserId($user_id)
     {
         $this->user_id = $user_id;
+    }
+
+    /**
+     * Get action
+     *
+     * @return string 
+     */
+    public function getAction()
+    {
+        return $this->action;
+    }
+
+    /**
+     * Get logged_at
+     *
+     * @return string 
+     */
+    public function getLoggedAt()
+    {
+        return $this->logged_at;
+    }
+
+    /**
+     * Get user_id
+     *
+     * @return string 
+     */
+    public function getUserId()
+    {
+        return $this->user_id;
+    }
+
+    /**
+     * Get system
+     *
+     * @return string 
+     */
+    public function getSystem()
+    {
+        return $this->system;
+    }
+
+    /**
+     * Get object_name
+     *
+     * @return string 
+     */
+    public function getObjectName()
+    {
+        return $this->object_name;
+    }
+
+    /**
+     * Get external_id
+     *
+     * @return string 
+     */
+    public function getExternalId()
+    {
+        return $this->external_id;
+    }
+
+    /**
+     * Get url
+     *
+     * @return string 
+     */
+    public function getUrl()
+    {
+        return $this->url;
     }
 }

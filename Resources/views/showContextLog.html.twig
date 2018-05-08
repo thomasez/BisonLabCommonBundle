@@ -1,0 +1,34 @@
+{% extends "::base.html.twig" %}
+
+{% block content %}
+
+<h1>Context history for {{ entity }}</h1>
+
+<table class="records_list" id="sortable_table">
+    <thead>
+        <tr>
+            <th>Username</th>
+            <th>Logged at</th>
+            <th>Action</th>
+            <th>System</th>
+            <th>Object Name</th>
+            <th>External ID</th>
+            <th>Url</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for log in logs %}
+        <tr>
+            <td>{{ bisonlab_commonstuff.getusernamefromuserid(log.userid) }}</td>
+            <td>{{ log.loggedat|date('Y-m-d H:i:s') }}</td>
+            <td>{{ log.action }}</td>
+            <td>{{ log.system }}</td>
+            <td>{{ log.objectname }}</td>
+            <td>{{ log.externalid }}</td>
+            <td>{{ log.url }}</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+
+{% endblock %}

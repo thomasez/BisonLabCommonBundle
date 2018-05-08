@@ -579,10 +579,13 @@ Edge, Windows
     /* 
      * Common controller actions
      */
+
+    /* 
+     * Showing the log from gedmo Loggable.
+     */
     public function showLogPage($request, $access, $entity_name, $id)
     {
         $em = $this->getDoctrine()->getManagerForClass($entity_name);
-
         $entity = $em->getRepository($entity_name)->find($id);
 
         if (!$entity) {
@@ -605,6 +608,35 @@ Edge, Windows
             )
         );
     }
+
+    /* 
+     * Showing the context logs.
+     */
+    public function showContextLogPage($request, $access, $entity_name, $id)
+    {
+        $em = $this->getDoctrine()->getManagerForClass($entity_name);
+        $log_repo = $em->getRepository('BisonLab\CommonBundle\Entity\ContextLog');
+        $entity = $em->getRepository($entity_name)->find($id);
+        if (!$entity) {
+            throw $this->createNotFoundException('Unable to find '
+                . $entity_name . ' entity.');
+        }
+
+        $logs = $log_repo->findBy(array('owner_class' => $entity_name,
+            'owner_id' => $id));
+
+        if ($access == 'rest') {
+            return $this->returnRestData($request, $logs);
+        }
+
+        return $this->render('BisonLabCommonBundle::showContextLog.html.twig', 
+            array(
+                'entity' => $entity,
+                'logs'   => $logs,
+            )
+        );
+    }
+
 
     /*
      * Generic paged list actions.
