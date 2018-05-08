@@ -37,7 +37,7 @@ class InsertConfigIntoEntitiesListener
     private function _insertConfig($args)
     {
         $entity = $args->getEntity();
-        if (preg_match("/Context/", get_class($entity))) {
+        if (in_array("BisonLab\CommonBundle\Entity\ContextBaseTrait", class_uses($entity))) {
             $context_conf = $this->container->getParameter('app.contexts');
             list($bundle, $object) = explode(":", $entity->getOwnerEntityAlias());
             // do something with the Product

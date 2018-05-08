@@ -70,6 +70,17 @@ trait ContextBaseTrait
         return $this->traitConstruct($options);
     }
 
+    /*
+     * I'll have this one before all those setters and getters.
+     * It's a default and if yyou do not want logging, copy this to your
+     * context and return true.
+     * Alas, default behaviour is to log context changes.
+     */
+    public function doNotLog()
+    {
+        return false;
+    }
+
     /**
      * Get id
      *
