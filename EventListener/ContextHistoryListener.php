@@ -15,9 +15,10 @@ class ContextHistoryListener
     private $em;
     private $token_storage;
 
-    public function __construct($token_storage)
+    public function __construct($token_storage, $doctrine)
     {
         $this->token_storage = $token_storage;
+        $this->doctrine      = $doctrine;
     }
 
     public function onFlush(EventArgs $eventArgs)
@@ -45,8 +46,9 @@ class ContextHistoryListener
         if ($context->doNotLog())
             return;
         // Then, check if the owner is set for removal. 
-        $owner = $context->getOwner();
-        if ($this->ouw->isScheduledForDelete($owner)) {
+        // It may even be disconnected already, so if there are no owner,
+        // these has to go.
+        if (!$owner = $context->getOwner() || $this->ouw->isScheduledForDelete($owner)) {
             // TODO: Get all logged contexts and remove'm. 
             // error:logging is to see if it even will work.
 error_log("Nag nag gotta add removal for contexts on " . get_class($owner));
@@ -57,8 +59,10 @@ error_log("Nag nag gotta add removal for contexts on " . get_class($owner));
 
         $clog = new ContextLog($context, $action);
         $clog->setUserId($user->getid());
-        $this->em->persist($clog);
-        $metadata = $this->em->getClassMetadata('BisonLab\CommonBundle\Entity\ContextLog');
+        // $bcomm_em = $this->doctrine->getManagerForClass($clog);
+        $bcomm_em = $this->doctrine->getManagerForClass("BisonLabCommonBundle:ContextLog");
+        $bcomm_em->persist($clog);
+        $metadata = $bcomm_em->getClassMetadata('BisonLab\CommonBundle\Entity\ContextLog');
         $this->uow->computeChangeSet($metadata, $clog);
         return;
     }

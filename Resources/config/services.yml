@@ -20,7 +20,7 @@ services:
         class: BisonLab\CommonBundle\EventListener\ContextHistoryListener
         tags:
             - { name: doctrine.event_listener, event: onFlush  }
-        arguments: ['@security.token_storage' ]
+        arguments: ['@security.token_storage', '@doctrine' ]
 
     external_retriever:
         class: BisonLab\CommonBundle\Service\ExternalRetriever
