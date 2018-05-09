@@ -594,8 +594,10 @@ Edge, Windows
 
         $log_repo = $em->getRepository('Gedmo\Loggable\Entity\LogEntry');
 
-        $logs = $log_repo->findBy(array('objectClass' => get_class($entity),
-            'objectId' => $entity->getId()));
+        $logs = $log_repo->findBy(array(
+            'objectClass' => get_class($entity),
+            'objectId'    => $entity->getId())
+            , array('loggedAt' => 'DESC'));
 
         if ($access == 'rest') {
             return $this->returnRestData($request, $logs);
@@ -615,16 +617,18 @@ Edge, Windows
     public function showContextLogPage($request, $access, $entity_name, $id)
     {
         $em = $this->getDoctrine()->getManagerForClass($entity_name);
-        $bcomm_em = $this->getDoctrine()->getManagerForClass("BisonLabCommonBundle:ContextLog");
-        $log_repo = $bcomm_em->getRepository('BisonLab\CommonBundle\Entity\ContextLog');
         $entity = $em->getRepository($entity_name)->find($id);
         if (!$entity) {
             throw $this->createNotFoundException('Unable to find '
                 . $entity_name . ' entity.');
         }
 
-        $logs = $log_repo->findBy(array('owner_class' => $entity_name,
-            'owner_id' => $id));
+        $bcomm_em = $this->getDoctrine()->getManagerForClass("BisonLabCommonBundle:ContextLog");
+        $log_repo = $bcomm_em->getRepository('BisonLab\CommonBundle\Entity\ContextLog');
+        $logs = $log_repo->findBy(array(
+            'owner_class' => $entity_name,
+            'owner_id' => $id)
+            , array('logged_at' => 'DESC'));
 
         if ($access == 'rest') {
             return $this->returnRestData($request, $logs);

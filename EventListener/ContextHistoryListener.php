@@ -45,7 +45,9 @@ class ContextHistoryListener
         // First, ignore if it's meant to be ignored.
         if ($context->doNotLog())
             return;
+        // Gotta use the correct entity manager
         $bcomm_em = $this->doctrine->getManagerForClass("BisonLabCommonBundle:ContextLog");
+
         // Then, check if the owner is set for removal. 
         // It may even be disconnected already, so if there are no owner,
         // these has to go.
@@ -68,6 +70,9 @@ error_log("Nag nag gotta add removal for contexts on " . get_class($owner));
         $bcomm_em->persist($clog);
         $metadata = $bcomm_em->getClassMetadata('BisonLab\CommonBundle\Entity\ContextLog');
         $this->uow->computeChangeSet($metadata, $clog);
+        if ($bcomm_em !== $this->em) {
+            $bcomm_em->flush($clog);
+        }
         return;
     }
 }
