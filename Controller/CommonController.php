@@ -615,7 +615,8 @@ Edge, Windows
     public function showContextLogPage($request, $access, $entity_name, $id)
     {
         $em = $this->getDoctrine()->getManagerForClass($entity_name);
-        $log_repo = $em->getRepository('BisonLab\CommonBundle\Entity\ContextLog');
+        $bcomm_em = $this->getDoctrine()->getManagerForClass("BisonLabCommonBundle:ContextLog");
+        $log_repo = $bcomm_em->getRepository('BisonLab\CommonBundle\Entity\ContextLog');
         $entity = $em->getRepository($entity_name)->find($id);
         if (!$entity) {
             throw $this->createNotFoundException('Unable to find '
