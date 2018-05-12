@@ -59,11 +59,25 @@ class ContextHistoryListener
         // But this may not work out properly. If the relation has been
         // disconnected before we are here, which may be the case, we do not
         // have an owner even if the owner exists.
-        if (!$owner = $context->getOwner()
-                || $this->ouw->isScheduledForDelete($owner)) {
+        $owner = $context->getOwner();
+        if ($action == "delete" && 
+                (!$owner 
+                  || $this->uow->isScheduledForDelete($owner))) {
             // TODO: Get all logged contexts and remove'm. 
             // error:logging is to see if it even will work.
-error_log("Nag nag gotta add removal for contexts on " . get_class($owner));
+            $log_repo = $bcomm_em->getRepository('BisonLab\CommonBundle\Entity\ContextLog');
+            foreach ($log_repo->findBy(array(
+                    'owner_class' => $context->getOwnerEntityAlias(),
+                    'owner_id' => $owner->getId())) as $clog) {
+                $bcomm_em->remove($clog);
+                $this->uow->computeChangeSets();
+                if (!in_array('BisonLabCommonBundle', array_keys(
+                    $this->em->getConfiguration()
+                        ->getEntityNamespaces()))) {
+                            $bcomm_em->flush();
+                }
+            }
+            return;
         }
 
         // Does it have a user?
