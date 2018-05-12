@@ -27,15 +27,18 @@ class ContextHistoryListener
         $this->uow = $this->em->getUnitOfWork();
 
         foreach ($this->uow->getScheduledEntityInsertions() as $entity) {
-            if (in_array("BisonLab\CommonBundle\Entity\ContextBaseTrait", class_uses($entity)))
+            if (in_array("BisonLab\CommonBundle\Entity\ContextBaseTrait",
+                    class_uses($entity)))
                 $this->logContext($entity, 'create');
         }
         foreach ($this->uow->getScheduledEntityUpdates() as $entity) {
-            if (in_array("BisonLab\CommonBundle\Entity\ContextBaseTrait", class_uses($entity)))
+            if (in_array("BisonLab\CommonBundle\Entity\ContextBaseTrait",
+                    class_uses($entity)))
                 $this->logContext($entity, 'update');
         }
         foreach ($this->uow->getScheduledEntityDeletions() as $entity) {
-            if (in_array("BisonLab\CommonBundle\Entity\ContextBaseTrait", class_uses($entity)))
+            if (in_array("BisonLab\CommonBundle\Entity\ContextBaseTrait",
+                    class_uses($entity)))
                 $this->logContext($entity, 'delete');
         }
     }
@@ -45,8 +48,10 @@ class ContextHistoryListener
         // First, ignore if it's meant to be ignored.
         if ($context->doNotLog())
             return;
+
         // Gotta use the correct entity manager
-        $bcomm_em = $this->doctrine->getManagerForClass("BisonLabCommonBundle:ContextLog");
+        $bcomm_em = $this->doctrine->getManagerForClass(
+            "BisonLabCommonBundle:ContextLog");
 
         // Then, check if the owner is set for removal. 
         // It may even be disconnected already, so if there are no owner,
@@ -66,12 +71,16 @@ error_log("Nag nag gotta add removal for contexts on " . get_class($owner));
 
         $clog = new ContextLog($context, $action);
         $clog->setUserId($user->getid());
-        // $bcomm_em = $this->doctrine->getManagerForClass($clog);
         $bcomm_em->persist($clog);
         $metadata = $bcomm_em->getClassMetadata('BisonLab\CommonBundle\Entity\ContextLog');
         $this->uow->computeChangeSet($metadata, $clog);
-        if ($bcomm_em !== $this->em) {
-            $bcomm_em->flush($clog);
+
+        // We may be using the same entitiy manager as the object we logged
+        // (which is way more common than not). If we then tried to flush it
+        // would be an endless loop.
+        if (!in_array('BisonLabCommonBundle', array_keys(
+            $this->em->getConfiguration()->getEntityNamespaces()))) {
+                $bcomm_em->flush($clog);
         }
         return;
     }
