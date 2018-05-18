@@ -49,6 +49,9 @@ class ContextHistoryListener
         if ($context->doNotLog())
             return;
 
+        // Do I have to check if we've already made a log context for this?
+        // I was hoping we didn't and it really should not be like that.
+
         // Gotta use the correct entity manager
         $bcomm_em = $this->doctrine->getManagerForClass(
             "BisonLabCommonBundle:ContextLog");
