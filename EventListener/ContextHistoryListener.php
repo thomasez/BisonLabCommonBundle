@@ -14,6 +14,7 @@ class ContextHistoryListener
     private $uow;
     private $em;
     private $token_storage;
+    private $gotta_flush = array();
 
     public function __construct($token_storage, $doctrine)
     {
@@ -40,6 +41,11 @@ class ContextHistoryListener
             if (in_array("BisonLab\CommonBundle\Entity\ContextBaseTrait",
                     class_uses($entity)))
                 $this->logContext($entity, 'delete');
+        }
+        while ($clog = array_shift($this->gotta_flush)) {
+            $bcomm_em = $this->doctrine->getManagerForClass(
+                "BisonLabCommonBundle:ContextLog");
+            $bcomm_em->flush($clog);
         }
     }
 
@@ -97,7 +103,7 @@ class ContextHistoryListener
         // would be an endless loop.
         if (!in_array('BisonLabCommonBundle', array_keys(
             $this->em->getConfiguration()->getEntityNamespaces()))) {
-                $bcomm_em->flush($clog);
+                $this->gotta_flush[] = $clog;
         }
         return;
     }
