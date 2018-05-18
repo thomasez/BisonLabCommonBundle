@@ -14,7 +14,6 @@ class ContextHistoryListener
     private $uow;
     private $em;
     private $token_storage;
-    private $gotta_flush = array();
 
     public function __construct($token_storage, $doctrine)
     {
@@ -42,11 +41,7 @@ class ContextHistoryListener
                     class_uses($entity)))
                 $this->logContext($entity, 'delete');
         }
-        while ($clog = array_shift($this->gotta_flush)) {
-            $bcomm_em = $this->doctrine->getManagerForClass(
-                "BisonLabCommonBundle:ContextLog");
-            $bcomm_em->flush($clog);
-        }
+        return;
     }
 
     private function logContext($context, $action)
@@ -72,20 +67,14 @@ class ContextHistoryListener
         if ($action == "delete" && 
                 (!$owner 
                   || $this->uow->isScheduledForDelete($owner))) {
-            // TODO: Get all logged contexts and remove'm. 
-            // error:logging is to see if it even will work.
-            $log_repo = $bcomm_em->getRepository('BisonLab\CommonBundle\Entity\ContextLog');
-            foreach ($log_repo->findBy(array(
-                    'owner_class' => $context->getOwnerEntityAlias(),
-                    'owner_id' => $owner->getId())) as $clog) {
-                $bcomm_em->remove($clog);
-                $this->uow->computeChangeSets();
-                if (!in_array('BisonLabCommonBundle', array_keys(
-                    $this->em->getConfiguration()
-                        ->getEntityNamespaces()))) {
-                            $bcomm_em->flush();
-                }
-            }
+            $qb = $bcomm_em
+                ->createQueryBuilder()
+                ->delete('BisonLab\CommonBundle\Entity\ContextLog', 'cl')
+                ->where('cl.owner_class = :owner_class')
+                ->andWhere('cl.owner_id = :owner_id')
+                ->setParameter('owner_class', $context->getOwnerEntityAlias())
+                ->setParameter('owner_id', $owner->getId());
+            $qb->getQuery()->execute();
             return;
         }
 
@@ -97,14 +86,6 @@ class ContextHistoryListener
         $bcomm_em->persist($clog);
         $metadata = $bcomm_em->getClassMetadata('BisonLab\CommonBundle\Entity\ContextLog');
         $this->uow->computeChangeSet($metadata, $clog);
-
-        // We may be using the same entitiy manager as the object we logged
-        // (which is way more common than not). If we then tried to flush it
-        // would be an endless loop.
-        if (!in_array('BisonLabCommonBundle', array_keys(
-            $this->em->getConfiguration()->getEntityNamespaces()))) {
-                $this->gotta_flush[] = $clog;
-        }
         return;
     }
 }
