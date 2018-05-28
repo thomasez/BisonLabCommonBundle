@@ -190,26 +190,32 @@ class CommonController extends Controller
                 if (empty($context_arr)) { continue; }
 
                 if (isset($context_arr['id']) ) {
-                    $context = $em->getRepository($context_class)->find($context_arr['id']);
-                    if (empty($context_arr['external_id'])) { 
+                    $context = $em->getRepository($context_class)
+                        ->find($context_arr['id']);
+                    if (empty($context_arr['external_id']) 
+                            && empty($context_arr['url'])) { 
                         // No need for an empty context.
+                        $owner->removeContext($context);
                         $em->remove($context);
                     } else {
                         $context->setExternalId($context_arr['external_id']);
-                    if (empty($context_arr['url']) ) {
-                        $context->setUrl(self::createContextUrl($context_arr, $context_object_config));
-                    } else {
-                        $context->setUrl($context_arr['url']);
-                    }
+                        if (empty($context_arr['url']) ) {
+                            $context->setUrl(self::createContextUrl(
+                                $context_arr, $context_object_config));
+                        } else {
+                            $context->setUrl($context_arr['url']);
+                        }
                         $em->persist($context);
                     }
-                } elseif (!empty($context_arr['external_id'])) { 
+                } elseif (!empty($context_arr['external_id']) 
+                        || !empty($context_arr['url'])) { 
                     $context = new $context_class;
                     $context->setSystem($system_name);
                     $context->setObjectName($object_name);
                     $context->setExternalId($context_arr['external_id']);
                     if (empty($context_arr['url'])) {
-                        $context->setUrl(self::createContextUrl($context_arr, $context_object_config));
+                        $context->setUrl(self::createContextUrl($context_arr,
+                            $context_object_config));
                     } else {
                         $context->setUrl($context_arr['url']);
                     }
