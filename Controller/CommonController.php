@@ -103,16 +103,20 @@ class CommonController extends Controller
         $context_conf = $this->container->getParameter('app.contexts');
         list($bundle, $object) = explode(":", $context_for);
         $conf = $context_conf[$bundle][$object];
-        $forms = array();
 
+        $forms = array();
         // There  might be no contexts at all.
-        if (!$conf) return $forms;
+        if (!$conf)
+            if ($version == 1)
+                return $forms;
+            else
+                return $forms_v2;
 
         foreach ($conf as $system_name => $object_info) {
             foreach ($object_info as $context_object_config) {
-                // If it's not supposed to be editable, do not make it editable.
-                // (But should it be addable? No. If so, create "write_once" or
-                // something.
+                // If it's not supposed to be editable, do not make it
+                // editable.  (But should it be addable? No. If so, create
+                // "write_once" or something.
                 if ($context_object_config['type'] == "readonly")
                     continue;
 
@@ -123,22 +127,30 @@ class CommonController extends Controller
                 // TODO: Use types more active. Like EternalId should be
                 // compulsary in more or less all cases except
                 // "informal_url_only".
+                $has_value = false;
                 if (isset($context_arr[$system_name][$object_name])) {
+                    $has_value = true;
                     $c_object = $context_arr[$system_name][$object_name];
 
-                    $form   = $form_factory->createNamedBuilder($form_name, FormType::class, $c_object)
-                        ->add('id', HiddenType::class, array('data' => $c_object->getId()))
-                        ->add('external_id', TextType::class, array('label' => 'External ID', 'required' => false));
+                    $form = $form_factory->createNamedBuilder($form_name,
+                            FormType::class, $c_object)
+                        ->add('id', HiddenType::class, array(
+                            'data' => $c_object->getId()))
+                        ->add('external_id', TextType::class, array(
+                            'label' => 'External ID', 'required' => false));
                 } else {
-                    $form   = $form_factory->createNamedBuilder($form_name, FormType::class)
-                        ->add('external_id', TextType::class, array('label' => 'External ID', 'required' => false));
+                    $form = $form_factory->createNamedBuilder($form_name,
+                            FormType::class)
+                        ->add('external_id', TextType::class, array(
+                            'label' => 'External ID', 'required' => false));
                 }
 
                 /* Only these two methods shall make it possible to edit/add a
                  * URL in the forms. The rest will be calculated
                  * automatically.*/
                 if (!isset($context_object_config['url_from_method'])) {
-                    error_log("No url_from_method for " . $systen_name . "::" . $object_name);
+                    error_log("No url_from_method for " . $systen_name
+                            . "::" . $object_name);
                 } else {
                     if ($context_object_config['url_from_method'] == "manual" 
                       || $context_object_config['url_from_method'] == "editable") {
@@ -146,8 +158,11 @@ class CommonController extends Controller
                             array('label' => 'URL', 'required' => false));
                     }
                 }
-                $forms[] = array('label' => $form_label,
-                        'form' => $form->getForm()->createView());
+                $forms[] = array(
+                    'label'     => $form_label,
+                    'name'      => $form_name,
+                    'has_value' => $has_value,
+                    'form'      => $form->getForm()->createView());
             }
         } 
         return $forms;

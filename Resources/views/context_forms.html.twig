@@ -1,0 +1,41 @@
+{% macro select_contextform_list(cforms) %}
+<select id="context_add_select">
+{% for cform in cforms %}
+{% if not cform.has_value %}
+<option value="{{ cform.name }}">{{ cform.label }}</option>
+{% endif %}
+{% endfor %}
+</select>
+<button onClick="return addContextForm();">Add</button>
+{% endmacro select_contextform_list %}
+{% import _self as cmacros %}
+<script>
+jQuery(document).ready(function() {
+    $( ".hide_me" ).hide();
+});
+
+function addContextForm() {
+    var o = $( "#context_add_select" ).val();
+    $( "#" + o ).show();
+    return false;
+}
+</script>
+
+{% for cform in context_forms %}
+{% if cform.has_value %}
+<div id="{{ cform.name }}">
+    <li>
+    <strong>{{ cform.label }}</strong>
+    {{ form_widget(cform.form) }}
+    </li>
+</div>
+{% else %}
+<div id="{{ cform.name }}" class="hide_me">
+    <li>
+    <strong>{{ cform.label }}</strong>
+    {{ form_widget(cform.form) }}
+    </li>
+</div>
+{% endif %}
+{% endfor %}
+{{ cmacros.select_contextform_list(context_forms) }}
