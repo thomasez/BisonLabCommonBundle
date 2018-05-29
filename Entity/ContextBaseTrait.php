@@ -72,7 +72,7 @@ trait ContextBaseTrait
 
     /*
      * I'll have this one before all those setters and getters.
-     * It's a default and if yyou do not want logging, copy this to your
+     * It's a default and if you do not want logging, copy this to your
      * context and return true.
      * Alas, default behaviour is to log context changes.
      */
@@ -256,9 +256,9 @@ trait ContextBaseTrait
      *
      * @return boolean 
      */
-    public function getDefault()
+    public function getRequired()
     {
-        return $this->getConfig()['default'];
+        return isset($this->config['required']);
     }
 
     /*

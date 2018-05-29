@@ -128,6 +128,7 @@ class CommonController extends Controller
                 // compulsary in more or less all cases except
                 // "informal_url_only".
                 $has_value = false;
+                $required  = isset($context_object_config['required']);
                 if (isset($context_arr[$system_name][$object_name])) {
                     $has_value = true;
                     $c_object = $context_arr[$system_name][$object_name];
@@ -135,14 +136,14 @@ class CommonController extends Controller
                     $form = $form_factory->createNamedBuilder($form_name,
                             FormType::class, $c_object)
                         ->add('id', HiddenType::class, array(
-                            'data' => $c_object->getId()))
+                          'data' => $c_object->getId()))
                         ->add('external_id', TextType::class, array(
-                            'label' => 'External ID', 'required' => false));
+                          'label' => 'External ID', 'required' => $required));
                 } else {
                     $form = $form_factory->createNamedBuilder($form_name,
                             FormType::class)
                         ->add('external_id', TextType::class, array(
-                            'label' => 'External ID', 'required' => false));
+                          'label' => 'External ID', 'required' => $required));
                 }
 
                 /* Only these two methods shall make it possible to edit/add a
@@ -162,6 +163,7 @@ class CommonController extends Controller
                     'label'     => $form_label,
                     'name'      => $form_name,
                     'has_value' => $has_value,
+                    'required'  => isset($context_object_config['required']),
                     'form'      => $form->getForm()->createView());
             }
         } 

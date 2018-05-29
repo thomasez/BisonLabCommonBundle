@@ -22,7 +22,7 @@ function addContextForm() {
 </script>
 
 {% for cform in context_forms %}
-{% if cform.has_value %}
+{% if cform.has_value or cform.required %}
 <div id="{{ cform.name }}">
     <li>
     <strong>{{ cform.label }}</strong>
