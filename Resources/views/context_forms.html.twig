@@ -1,7 +1,7 @@
 {% macro select_contextform_list(cforms) %}
 <select id="context_add_select">
 {% for cform in cforms %}
-{% if not cform.has_value %}
+{% if not cform.has_value and not cform.required %}
 <option value="{{ cform.name }}">{{ cform.label }}</option>
 {% endif %}
 {% endfor %}
