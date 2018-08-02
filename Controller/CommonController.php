@@ -1064,6 +1064,8 @@ Edge, Windows
                 $filters[$farr[0]] = $value;
             }
             return $filters;
+        } elseif (count($filters_list) > 0)  {
+            return $filters_list;
         } else {
             $filter_by = null;
         }
