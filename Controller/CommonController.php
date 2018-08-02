@@ -834,42 +834,13 @@ Edge, Windows
             $result['recordsFiltered'],
             $result['recordsTotal']
             );
-
-
-
-        // What we do to not have to do it ourselves:
-        // Aka, "Get rid of the alias 
-        $result = json_encode($datatables->getResponse());
-        if ($request->get('callback')) { 
-            $headers["Content-Type"] = "application/javascript";
-            $content = $request->get('callback') . "(" . $content . ");";
-        } else {
-            $headers["Content-Type"] = "application/json";
-        }
-        $response = new Response($result, 200, $headers);
-        return $response;
-
-        $criterias = $this->getDataTablesCriterias($request);
-        if (empty($criterias)) {
-            return $this->returnRestData($request, $repo->findAll());
-        }
-        if ($criterias['per_page'] && $criterias['per_page'] != -1) {
-            $entities = $repo->findBy(
-                $criterias['search'], $criterias['order_by'], $criterias['per_page'], $criterias['offset']);
-            $total_amount_entities = $repo->countAll();
-            $records_filtered = $repo->countAll($criterias['search']);
-        } else {
-            $entities = $repo->findAll();
-            $total_amount_entities = $records_filtered = count($entities);
-        }
-
-        return $this->returnAsDataTablesJson($request, $entities, $records_filtered, $total_amount_entities);
     }
 
     /*
      * Generic helpers. (And I don't even like Unclean Bobs "Clean code")
      */
-    public function createPageRoutes($request, $pages, $base_route, $object_name, $object_id)
+    public function createPageRoutes($request, $pages, $base_route,
+            $object_name, $object_id)
     {
         $routes = array();
         $router = $this->get('router');
