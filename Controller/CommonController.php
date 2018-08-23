@@ -813,12 +813,39 @@ null)
         foreach ($columns as $c) {
             $aliases[$c['data']] = 's.' . $c['data'];
         }
+        /*
+         * Gonna build the request params here. Not liking giving out _GET to
+         * the bundle. Better run it through some sanitizing in the symfony
+         * component handling Request object. (At least I hope there is some
+         * of it there) 
+         *
+         * * columns
+         * * order
+         * * start
+         * * length
+         * * search
+         * * draw
+         */
+        $request_params = array();
+        if ($d = $request->get('columns'))
+            $request_params['columns'] = $request->get('columns');
+        if ($d = $request->get('order'))
+            $request_params['order'] = $request->get('order');
+        if ($d = $request->get('start'))
+            $request_params['start'] = $request->get('start');
+        if ($d = $request->get('length'))
+            $request_params['length'] = $request->get('length');
+        if ($d = $request->get('search'))
+            $request_params['search'] = $request->get('search');
+        if ($d = $request->get('draw'))
+            $request_params['draw'] = $request->get('draw');
+
         $datatables = (new \Doctrine\DataTables\Builder())
             ->withColumnAliases($aliases)
             ->withIndexColumn('s.id')
             ->withQueryBuilder($qb)
             ->withReturnCollection(true)
-            ->withRequestParams($_GET);
+            ->withRequestParams($request_params);
 
         $result = $datatables->getResponse();
         return $this->returnAsDataTablesJson($request,
