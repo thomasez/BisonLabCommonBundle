@@ -128,7 +128,7 @@ class CommonController extends Controller
                 // compulsary in more or less all cases except
                 // "informal_url_only".
                 $has_value = false;
-                $required  = isset($context_object_config['required']);
+                $required  = count($contexts) > 0 && isset($context_object_config['required']);
                 if (isset($context_arr[$system_name][$object_name])) {
                     $has_value = true;
                     $c_object = $context_arr[$system_name][$object_name];
@@ -665,7 +665,6 @@ Edge, Windows
         );
     }
 
-
     /*
      * Generic paged list actions.
      */
@@ -674,17 +673,15 @@ Edge, Windows
      * it here and always return whatever comes from this one in the
      * controllers.  Right now the controller using this one has to check on
      * response or array to know what to do. That's not a good thing. */
-    public function pagedListByEntityAction($request, $access, $em, $repo, $field_name,
-$entity, $entity_obj, $route, $total_amount_items, $entity_identifier_name =
-null)
+    public function pagedListByEntityAction($request, $access, $em, $repo,
+            $field_name, $entity, $entity_obj, $route, $total_amount_items,
+            $entity_identifier_name = null)
     {
+
         // Pagination with rest? 
         if ($this->isRest($access)) {
-            return $this->ajaxedIndexAction($request, $access, $em, $repo, $field_name, $entity_obj);
-
-            $entities = $repo->findBy(
-                array($field_name => $entity_obj));
-            return $this->returnRestData($request, $entities);
+            return $this->ajaxedIndexAction($request, $access, $em, $repo,
+                $field_name, $entity_obj);
         }
 
         $order_by  = $this->getOrderBy($request);
@@ -788,8 +785,12 @@ null)
         );
     }
 
-    public function ajaxedIndexAction($request, $access, $em, $repo, $field_name = null, $entity_obj = null)
+    public function ajaxedIndexAction($request, $access, $em, $repo,
+        $field_name = null, $entity_obj = null)
     {
+        $order_by = $this->getOrderBy($request);
+        $filter_by = $this->getFilterBy($request);
+
         if (!$request->get('draw')) {
             if ($field_name && $entity_obj) {
                 $entities = $repo->findBy(
@@ -805,8 +806,15 @@ null)
             $qb->andWhere('s.'.$field_name .' = :entity_obj');
             $qb->setParameter('entity_obj', $entity_obj);
         }
+
+        if ($filter_by) {
+            foreach ($filter_by as $key => $value) {
+                $qb->andWhere('s.'.$key .' = :value');
+                $qb->setParameter('value', $value);
+            }
+        }
         
-        // Cheating, and should rather hack the DataTYables\Builder instead.
+        // Cheating, and should rather hack the DataTables\Builder instead.
         // But later.
         $columns = $request->get('columns');
         $aliases = array();
@@ -853,42 +861,13 @@ null)
             $result['recordsFiltered'],
             $result['recordsTotal']
             );
-
-
-
-        // What we do to not have to do it ourselves:
-        // Aka, "Get rid of the alias 
-        $result = json_encode($datatables->getResponse());
-        if ($request->get('callback')) { 
-            $headers["Content-Type"] = "application/javascript";
-            $content = $request->get('callback') . "(" . $content . ");";
-        } else {
-            $headers["Content-Type"] = "application/json";
-        }
-        $response = new Response($result, 200, $headers);
-        return $response;
-
-        $criterias = $this->getDataTablesCriterias($request);
-        if (empty($criterias)) {
-            return $this->returnRestData($request, $repo->findAll());
-        }
-        if ($criterias['per_page'] && $criterias['per_page'] != -1) {
-            $entities = $repo->findBy(
-                $criterias['search'], $criterias['order_by'], $criterias['per_page'], $criterias['offset']);
-            $total_amount_entities = $repo->countAll();
-            $records_filtered = $repo->countAll($criterias['search']);
-        } else {
-            $entities = $repo->findAll();
-            $total_amount_entities = $records_filtered = count($entities);
-        }
-
-        return $this->returnAsDataTablesJson($request, $entities, $records_filtered, $total_amount_entities);
     }
 
     /*
      * Generic helpers. (And I don't even like Unclean Bobs "Clean code")
      */
-    public function createPageRoutes($request, $pages, $base_route, $object_name, $object_id)
+    public function createPageRoutes($request, $pages, $base_route,
+            $object_name, $object_id)
     {
         $routes = array();
         $router = $this->get('router');
@@ -1032,6 +1011,7 @@ null)
      * Sorry folks, this looks odd and stupid. And maybe it is.
      * It has to handle both POSt and GEt and two ways of defining a filter,
      * list and string.
+     * Yes, it should and could be simplified.
      */
     public function getFilterBy($request) 
     {
@@ -1049,7 +1029,6 @@ null)
         if ($filters = $request->get('filters'))
             if (is_array($filters))
                 $filters_list = $filters;
-
         
         if ($filters = $request->request->get('filters'))
             if (is_array($filters))
@@ -1066,11 +1045,15 @@ null)
         if (count($filter_by) > 0) {
             $filters = array();
             if (is_array($filter_by)) {
-                foreach ($filter_by as $filter) {
-                    $farr = explode(",", $filter);
-                    $value = isset($farr[1]) ? $farr[1] : null;
-                    if (!$value) { return null; }
-                    $filters[$farr[0]] = $value;
+                foreach ($filter_by as $idx => $filter) {
+                    if (is_numeric($idx)) {
+                        $farr = explode(",", $filter);
+                        $value = isset($farr[1]) ? $farr[1] : null;
+                        if (!$value) { return null; }
+                        $filters[$farr[0]] = $value;
+                    } else {
+                        $filters[$idx] = $filter;
+                    }
                 }
             } else {
                 $farr = explode(",", $filter_by);
@@ -1079,6 +1062,8 @@ null)
                 $filters[$farr[0]] = $value;
             }
             return $filters;
+        } elseif (count($filters_list) > 0)  {
+            return $filters_list;
         } else {
             $filter_by = null;
         }
