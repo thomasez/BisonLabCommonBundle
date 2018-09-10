@@ -4,7 +4,6 @@ namespace BisonLab\CommonBundle\Controller;
 
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
@@ -20,14 +19,14 @@ use Symfony\Component\Validator\Constraints\NotBlank;
  * The stuff users can change themselves is hopefully handled by the
  * FOS User Bundle.
  *
- * @Route("/{access}/useradmin", defaults={"access" = "web"}, requirements={"web|rest|ajax"})
+ * @Route("/{access}/useradmin", defaults={"access" = "web"}, requirements={"web|rest|ajax"}, methods={"GET"})
  */
 class UserController extends CommonController
 {
     /**
      * Lists all User entities.
      *
-     * @Route("/", name="user")
+     * @Route("/", name="user", methods={"GET"})
      */
     public function indexAction()
     {
@@ -43,7 +42,7 @@ class UserController extends CommonController
     /**
      * Finds and displays a User entity.
      *
-     * @Route("/{id}/show", name="user_show")
+     * @Route("/{id}/show", name="user_show", methods={"GET"})
      */
     public function showAction($id)
     {
@@ -67,7 +66,7 @@ class UserController extends CommonController
     /**
      * Displays a form to create a new User entity.
      *
-     * @Route("/new", name="user_new")
+     * @Route("/new", name="user_new", methods={"GET"})
      */
     public function newAction()
     {
@@ -88,8 +87,7 @@ class UserController extends CommonController
     /**
      * Creates a new User entity.
      *
-     * @Route("/create", name="user_create")
-     * @Method("POST")
+     * @Route("/create", name="user_create", methods={"POST"})
      */
     public function createAction(Request $request)
     {
@@ -118,7 +116,7 @@ class UserController extends CommonController
     /**
      * Displays a form to edit an existing User entity.
      *
-     * @Route("/{id}/edit", name="user_edit")
+     * @Route("/{id}/edit", name="user_edit", methods={"GET"})
      */
     public function editAction($id)
     {
@@ -146,8 +144,7 @@ class UserController extends CommonController
     /**
      * Edits an existing User entity.
      *
-     * @Route("/{id}/update", name="user_update")
-     * @Method("POST")
+     * @Route("/{id}/update", name="user_update", methods={"POST"})
      */
     public function updateAction(Request $request, $id)
     {
@@ -181,7 +178,7 @@ class UserController extends CommonController
     /**
      * Change password on a User.
      *
-     * @Route("/{id}/change_password", name="user_change_password")
+     * @Route("/{id}/change_password", name="user_change_password", methods={"GET"})
      */
     public function changePasswordAction(Request $request, User $user)
     {
@@ -207,8 +204,7 @@ class UserController extends CommonController
     /**
      * Deletes a User entity.
      *
-     * @Route("/{id}/delete", name="user_delete")
-     * @Method("POST")
+     * @Route("/{id}/delete", name="user_delete", methods={"POST", "DELETE"})
      */
     public function deleteAction(Request $request, $id)
     {
@@ -228,8 +224,7 @@ class UserController extends CommonController
     }
 
     /**
-     * @Route("/search", name="user_search")
-     * @Method("GET")
+     * @Route("/search", name="user_search", methods={"GET"})
      */
     public function searchUserAction(Request $request, $access)
     {
