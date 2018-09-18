@@ -78,11 +78,13 @@ class ContextHistoryListener
             return;
         }
 
-        // Does it have a user?
-        $user = $this->token_storage->getToken()->getUser();
-
         $clog = new ContextLog($context, $action);
-        $clog->setUserId($user->getid());
+        // Does it have a user?
+        // Not always even a security token (It's hopefully running in console)
+        if ($this->token_storage->getToken()) {
+            $user = $this->token_storage->getToken()->getUser();
+            $clog->setUserId($user->getid());
+        }
         $bcomm_em->persist($clog);
         $metadata = $bcomm_em->getClassMetadata('BisonLab\CommonBundle\Entity\ContextLog');
         $this->uow->computeChangeSet($metadata, $clog);
