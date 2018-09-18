@@ -25,7 +25,8 @@ class TwigValidator extends ConstraintValidator
         $twig->addExtension(new \Twig_Extension_StringLoader());
         
         try {
-            $nodeTree = $twig->parse($twig->tokenize($value));
+            $tokens = $twig->tokenize(new \Twig_Source($value, 'validation'));
+            $nodeTree  = $twig->parse($tokens);
         } catch (\Twig_Error $e) {
             $this->context->buildViolation($e->getMessage())
                 ->addViolation();
