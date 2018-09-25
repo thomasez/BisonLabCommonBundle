@@ -852,6 +852,7 @@ Edge, Windows
             ->withIndexColumn('s.id')
             ->withQueryBuilder($qb)
             ->withReturnCollection(true)
+            ->withCaseInsensitive(true)
             ->withRequestParams($request_params);
 
         $result = $datatables->getResponse();
