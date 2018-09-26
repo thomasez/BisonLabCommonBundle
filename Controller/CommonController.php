@@ -6,6 +6,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Serializer\Normalizer\GetSetMethodNormalizer;
 use Symfony\Component\Serializer\Serializer;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
+use JMS\Serializer\SerializationContext;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\HttpFoundation\Response;
@@ -381,7 +382,7 @@ Edge, Windows
                     // showing whatever as HTML. Just send it as an array and
                     // it can be dumped
                     // more easily.
-                    $data_arr = json_decode($serializer->serialize($data, 'json'), true);
+                    $data_arr = json_decode($serializer->serialize($data, 'json', SerializationContext::create()->enableMaxDepthChecks()), true);
                     if (isset($templates['html'])) {
                         // Here we'll let the programmer choose.
                         return $this->render($templates['html'],
@@ -430,7 +431,7 @@ Edge, Windows
             'data' => $data
         );
         $serializer = $this->get('jms_serializer');
-        $content = $serializer->serialize($content_arr, 'json');
+        $content = $serializer->serialize($content_arr, 'json', SerializationContext::create()->enableMaxDepthChecks());
         $headers = array();
 
         if ($request->get('callback')) { 
@@ -449,7 +450,7 @@ Edge, Windows
             return $this->returnAsDataTablesJson($request, $data);
 
         $serializer = $this->get('jms_serializer');
-        $content =  $serializer->serialize($data, 'json');
+        $content =  $serializer->serialize($data, 'json', SerializationContext::create()->enableMaxDepthChecks());
         $headers = array();
 
         if ($request->get('callback')) { 
@@ -466,7 +467,7 @@ Edge, Windows
     {
         $serializer = $this->get('jms_serializer');
         $headers["Content-Type"] = "application/xml";
-        $content .= $serializer->serialize($data, 'xml');
+        $content .= $serializer->serialize($data, 'xml', SerializationContext::create()->enableMaxDepthChecks());
         return new Response($content, $status_code, $headers);
     }
 
@@ -474,7 +475,7 @@ Edge, Windows
     {
         $serializer = $this->get('jms_serializer');
         $headers["Content-Type"] = "text/yaml";
-        $content .= $serializer->serialize($data, 'yml');
+        $content .= $serializer->serialize($data, 'yml', SerializationContext::create()->enableMaxDepthChecks());
         return new Response($content, $status_code, $headers);
     }
 
