@@ -377,12 +377,11 @@ Edge, Windows
                 case '*/*':
                 case 'application/html':
                     $headers["Content-Type"] = $accept;
-                    $serializer = $this->get('jms_serializer');
                     // Reason for this is the extremely simple template for
                     // showing whatever as HTML. Just send it as an array and
                     // it can be dumped
                     // more easily.
-                    $data_arr = json_decode($serializer->serialize($data, 'json', SerializationContext::create()->enableMaxDepthChecks()), true);
+                    $data_arr = json_decode($this->_serialize($data, 'json'), true);
                     if (isset($templates['html'])) {
                         // Here we'll let the programmer choose.
                         return $this->render($templates['html'],
@@ -430,8 +429,7 @@ Edge, Windows
             'recordsFiltered' => $records_filtered != null ? $records_filtered : count($data),
             'data' => $data
         );
-        $serializer = $this->get('jms_serializer');
-        $content = $serializer->serialize($content_arr, 'json', SerializationContext::create()->enableMaxDepthChecks());
+        $content = $this->_serialize($content_arr, 'json');
         $headers = array();
 
         if ($request->get('callback')) { 
@@ -449,8 +447,7 @@ Edge, Windows
         if ($request->get('draw'))
             return $this->returnAsDataTablesJson($request, $data);
 
-        $serializer = $this->get('jms_serializer');
-        $content =  $serializer->serialize($data, 'json', SerializationContext::create()->enableMaxDepthChecks());
+        $content = $this->_serialize($data, 'json');
         $headers = array();
 
         if ($request->get('callback')) { 
@@ -465,17 +462,15 @@ Edge, Windows
 
     public function returnAsXml($request, $data, $status_code = 200) 
     {
-        $serializer = $this->get('jms_serializer');
         $headers["Content-Type"] = "application/xml";
-        $content .= $serializer->serialize($data, 'xml', SerializationContext::create()->enableMaxDepthChecks());
+        $content .= $this->serializer->_serialize($data, 'xml');
         return new Response($content, $status_code, $headers);
     }
 
     public function returnAsYaml($request, $data, $status_code = 200) 
     {
-        $serializer = $this->get('jms_serializer');
         $headers["Content-Type"] = "text/yaml";
-        $content .= $serializer->serialize($data, 'yml', SerializationContext::create()->enableMaxDepthChecks());
+        $content .= $this->_serialize($data, 'yml');
         return new Response($content, $status_code, $headers);
     }
 
@@ -1075,8 +1070,12 @@ Edge, Windows
     {
         if (method_exists($data, 'toArray')) {
             var_dump($data->toArray());
-            $data = $data->toArray();
-            }
+            $serialized = $data->toArray();
+        } else {
+            $serializer = $this->get('jms_serializer');
+            $serialized = $serializer->serialize($data, $format, SerializationContext::create()->enableMaxDepthChecks());
+        }
+        return $serialized;
     }
 
     /* Masking stuff. */
