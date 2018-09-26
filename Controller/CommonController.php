@@ -1068,9 +1068,8 @@ Edge, Windows
 
     private function _serialize($data, $format)
     {
-        if (method_exists($data, 'toArray')) {
-            var_dump($data->toArray());
-            $serialized = $data->toArray();
+        if (method_exists($data, '__toArray')) {
+            $serialized = $data->__toArray();
         } else {
             $serializer = $this->get('jms_serializer');
             $serialized = $serializer->serialize($data, $format, SerializationContext::create()->enableMaxDepthChecks());
