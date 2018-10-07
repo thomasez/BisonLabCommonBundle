@@ -19,7 +19,7 @@ use Symfony\Component\Validator\Constraints\NotBlank;
  * The stuff users can change themselves is hopefully handled by the
  * FOS User Bundle.
  *
- * @Route("/{access}/useradmin", defaults={"access" = "web"}, requirements={"web|rest|ajax"}, methods={"GET"})
+ * @Route("/{access}/useradmin", defaults={"access" = "web"}, requirements={"web|rest|ajax"})
  */
 class UserController extends CommonController
 {
@@ -178,7 +178,7 @@ class UserController extends CommonController
     /**
      * Change password on a User.
      *
-     * @Route("/{id}/change_password", name="user_change_password", methods={"GET"})
+     * @Route("/{id}/change_password", name="user_change_password", methods={"POST"})
      */
     public function changePasswordAction(Request $request, User $user)
     {
