@@ -601,7 +601,7 @@ Edge, Windows
     /* 
      * Showing the log from gedmo Loggable.
      */
-    public function showLogPage($request, $access, $entity_name, $id)
+    public function showLogPage($request, $access, $entity_name, $id, $options = array())
     {
         $em = $this->getDoctrine()->getManagerForClass($entity_name);
         $entity = $em->getRepository($entity_name)->find($id);
@@ -617,8 +617,8 @@ Edge, Windows
             'objectId'    => $entity->getId())
             , array('loggedAt' => 'DESC'));
 
-        if ($access == 'rest') {
-            return $this->returnRestData($request, $logs);
+        if ($this->isRest($access)) {
+            return $this->returnRestData($request, $logs, $options);
         }
 
         return $this->render('BisonLabCommonBundle::showLog.html.twig', 
