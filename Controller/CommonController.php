@@ -107,10 +107,7 @@ class CommonController extends Controller
         $forms = array();
         // There  might be no contexts at all.
         if (!$conf)
-            if ($version == 1)
-                return $forms;
-            else
-                return $forms_v2;
+            return $forms;
 
         foreach ($conf as $system_name => $object_info) {
             foreach ($object_info as $context_object_config) {
