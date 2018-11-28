@@ -13,7 +13,6 @@ use Doctrine\ORM\Mapping as ORM;
 
 trait ContextOwnerTrait
 {
-
     /*
      * This has to be pasted into the owner object, since it's a good thing  to
      * keep the naming correct.
@@ -47,7 +46,7 @@ trait ContextOwnerTrait
      * Add contexts
      *
      * @param Context $context;
-     * @return Message
+     * @return $this
      * Can't do a class check since it's different context classes and aliasing
      * in the main owner class seems noe to be working.
      */
@@ -67,5 +66,4 @@ trait ContextOwnerTrait
     {
         $this->contexts->removeElement($context);
     }
-
 }
