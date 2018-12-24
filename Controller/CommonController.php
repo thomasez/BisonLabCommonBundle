@@ -387,11 +387,15 @@ Edge, Windows
                                 // That name is so wrong, but can I remove it?
                                 'data_entity' => $data,
                                 'data' => $data,
-                                ));
+                                ),
+                                new Response('', $status_code)
+                                );
                     } else {
                         // And a fall back.
                         return $this->render('BisonLabCommonBundle:Default:show.html.twig', 
-                            array('data' => $data_arr));
+                            array('data' => $data_arr),
+                            new Response('', $status_code)
+                            );
                     }
                 case 'text/plain':
                     // Can only send pure string/text.
