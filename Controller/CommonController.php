@@ -552,6 +552,7 @@ Edge, Windows
     /* 
      * This hacks forms into accept Json.. Kinda.
      * It also tackels CSRF-protection when doing rest stuff.
+     * But it's time to let this one go. It's plainly wrong to use it.
      */
     public function handleForm(&$form, &$request, $access = null)
     {
