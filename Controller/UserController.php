@@ -178,7 +178,7 @@ class UserController extends CommonController
     /**
      * Change password on a User.
      *
-     * @Route("/{id}/change_password", name="user_change_password", methods={"POST"})
+     * @Route("/{id}/change_password", name="user_change_password", methods={"GET", "POST"})
      */
     public function changePasswordAction(Request $request, User $user)
     {
