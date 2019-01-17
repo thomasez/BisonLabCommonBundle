@@ -258,10 +258,11 @@ class UserController extends CommonController
                         'username' => $user->getUserName(),
                     );
                     // Override if full name exists.
+                    // Use userid if you want uniqueness..
                     if (property_exists($user, 'full_name') 
                             && $user->getFullName()) {
                         $res['label'] = $user->getFullName();
-                        $res['value'] = $user->getUserName();
+                        $res['value'] = $user->getFullName();
                     }
                     $result[] = $res;
                 }        
