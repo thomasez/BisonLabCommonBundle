@@ -261,7 +261,7 @@ class UserController extends CommonController
                     if (property_exists($user, 'full_name') 
                             && $user->getFullName()) {
                         $res['label'] = $user->getFullName();
-                        $res['value'] = $user->getFullName();
+                        $res['value'] = $user->getUserName();
                     }
                     $result[] = $res;
                 }        
