@@ -228,24 +228,25 @@ class UserController extends CommonController
      */
     public function searchUserAction(Request $request, $access)
     {
-        if (!$username = $request->query->get("term"))
-            $username = $request->query->get("username");
+        if (!$term = $request->query->get("term"))
+            $term = $request->query->get("username");
 
         // Gotta be able to handle two-letter usernames.
-        if (strlen($username) > 1) {
+        if (strlen($term) > 1) {
             $userManager = $this->container->get('fos_user.user_manager');
             /* No searching for users in the manager. */
-            // $users = $userManager->findUserByUsername($username);
+            // $users = $userManager->findUserByUsername($term);
             $class = $userManager->getClass();
             $em = $this->getDoctrine()->getManagerForClass($class);
             $repo = $em->getRepository($class);
             $result = array();
             $q = $repo->createQueryBuilder('u')
-                ->where('lower(u.usernameCanonical) LIKE :username')
-                ->setParameter('username', strtolower($username) . '%');
+                ->where('lower(u.usernameCanonical) LIKE :term')
+                ->orWhere('lower(u.emailCanonical) LIKE :term')
+                ->setParameter('term', strtolower($term) . '%');
             if (property_exists($class, 'full_name')) {
                 $q->orWhere('lower(u.full_name) LIKE :full_name')
-                ->setParameter('full_name', '%' . strtolower($username) . '%');
+                ->setParameter('full_name', '%' . strtolower($term) . '%');
             }
 
             if ($users = $q->getQuery()->getResult()) {
@@ -254,11 +255,11 @@ class UserController extends CommonController
                     $res = array(
                         'userid' => $user->getId(),
                         'value' => $user->getUserName(),
+                        'email' => $user->getEmail(),
                         'label' => $user->getUserName(),
                         'username' => $user->getUserName(),
                     );
                     // Override if full name exists.
-                    // Use userid if you want uniqueness..
                     if (property_exists($user, 'full_name') 
                             && $user->getFullName()) {
                         $res['label'] = $user->getFullName();
