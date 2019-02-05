@@ -549,36 +549,6 @@ Edge, Windows
         return new Response(json_encode($msg), $code);
     }
 
-    /* 
-     * This hacks forms into accept Json.. Kinda.
-     * It also tackels CSRF-protection when doing rest stuff.
-     * But it's time to let this one go. It's plainly wrong to use it.
-     */
-    public function handleForm(&$form, &$request, $access = null)
-    {
-        if ($data = json_decode($request->getContent(), true)) {
-            foreach($data as $key => $value) {
-                $request->request->set($key, $value);
-            }
-        }
-        // Both ajax and rest - calls have to be CSRF hacked unfortunately.
-        // TODO: Just get rid of this somehow. It's ugly and has to be wrong.
-        if (!isset($data['_token']) && $this->isRest($access)) {
-            $tm = $this->container->get('security.csrf.token_manager');
-            // This is kinda bad (but it's all a hack anyway) since I
-            // should rather get the CsrfFieldName (defaultFieldName in the
-            // FormType. Yes, odd name).
-            $token = $tm->getToken($form->getName());
-            // Odd it is, but seems to be the suggested way if you Google it.
-            // (Neither add nor set work deep.
-            $form_data = $request->request->get($form->getName());
-            $form_data['_token'] = $token;
-            $form_data = $request->request->set($form->getName(), $form_data);
-        }
-
-        return $form->handleRequest($request);
-    }
-
     /*
      * Grabbing validation errors isn't as simple as I believe it should.
      * (On top of the fact that it's not always validating..)
