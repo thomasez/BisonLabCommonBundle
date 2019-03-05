@@ -83,7 +83,6 @@ class ContextHistoryListener
         // Not always even a security token (It's hopefully running in console)
         if ($this->token_storage->getToken()) {
             $user = $this->token_storage->getToken()->getUser();
-print_r($user);
             $clog->setUserId($user->getid());
         }
         $bcomm_em->persist($clog);
