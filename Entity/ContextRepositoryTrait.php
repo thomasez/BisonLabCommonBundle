@@ -8,6 +8,12 @@ trait ContextRepositoryTrait
 {
     public function getOneByContext($system, $object_name, $external_id)
     {
+        return $this->findOneByContext($system, $object_name, $external_id);
+    }
+
+    // This is the correct name accortding to many.
+    public function findOneByContext($system, $object_name, $external_id)
+    {
         return current($this->findByContext($system, $object_name, $external_id));
     }
 
