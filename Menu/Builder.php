@@ -31,10 +31,10 @@ class Builder implements ContainerAwareInterface
         $user = $container->get('security.token_storage')->getToken()->getUser();
         $username = $user->getUserName();
 
-        $menu->addChild($username);
-        $menu[$username]->addChild('Profile', array('route' => 'fos_user_profile_show'));
-        $menu[$username]->addChild('Change Password', array('route' => 'fos_user_change_password'));
-        $menu[$username]->addChild('Log out', array('route' => 'fos_user_security_logout'));
+        $usermenu = $menu->addChild($username);
+        $usermenu->addChild('Profile', array('route' => 'fos_user_profile_show'));
+        $usermenu->addChild('Change Password', array('route' => 'fos_user_change_password'));
+        $usermenu->addChild('Log out', array('route' => 'fos_user_security_logout'));
         return $menu;
     }
 }
