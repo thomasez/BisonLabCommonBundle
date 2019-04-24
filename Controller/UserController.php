@@ -265,6 +265,10 @@ class UserController extends CommonController
                         $res['label'] = $user->getFullName();
                         $res['value'] = $user->getFullName();
                     }
+                    if ($request->get("value_with_email")) {
+                        $res['value'] = $res['value'] . " - " . $user->getEmail();
+                        $res['label'] = $res['label'] . " - " . $user->getEmail();
+                    }
                     $result[] = $res;
                 }        
             }
