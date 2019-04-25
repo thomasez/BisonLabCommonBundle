@@ -248,6 +248,14 @@ class UserController extends CommonController
                 $q->orWhere('lower(u.full_name) LIKE :full_name')
                 ->setParameter('full_name', '%' . strtolower($term) . '%');
             }
+            if (property_exists($class, 'mobile_phone_number')) {
+                $q->orWhere('lower(u.mobile_phone_number) LIKE :mobile_phone_number')
+                ->setParameter('mobile_phone_number', '%' . strtolower($term) . '%');
+            }
+            if (property_exists($class, 'phone_number')) {
+                $q->orWhere('lower(u.phone_number) LIKE :phone_number')
+                ->setParameter('phone_number', '%' . strtolower($term) . '%');
+            }
 
             if ($users = $q->getQuery()->getResult()) {
                 foreach ($users as $user) {
