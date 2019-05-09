@@ -261,8 +261,9 @@ class UserController extends CommonController
                     $states = [];
                 if ($state = $request->query->get("state"))
                     $states[] = $state;
-                $q->andWhere('u.state) in (:states)')
-                    ->setParameter('states', $states);
+                if (count($states) > 0)
+                    $q->andWhere('u.state) in (:states)')
+                        ->setParameter('states', $states);
             }
 
             if ($users = $q->getQuery()->getResult()) {
