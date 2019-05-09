@@ -256,6 +256,14 @@ class UserController extends CommonController
                 $q->orWhere('lower(u.phone_number) LIKE :phone_number')
                 ->setParameter('phone_number', '%' . strtolower($term) . '%');
             }
+            if (property_exists($class, 'state')) {
+                if (!$states = $request->query->get("states"))
+                    $states = [];
+                if ($state = $request->query->get("state"))
+                    $states[] = $state;
+                $q->andWhere('u.state) in (:states)')
+                    ->setParameter('states', $states);
+            }
 
             if ($users = $q->getQuery()->getResult()) {
                 foreach ($users as $user) {
