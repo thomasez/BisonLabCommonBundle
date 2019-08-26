@@ -12,17 +12,15 @@
         }
     ],
     "require": {
-        "symfony/framework-bundle": ">=3.0",
-        "friendsofsymfony/user-bundle": "^2.0"
+        "symfony/framework-bundle": "^3.4",
+        "friendsofsymfony/user-bundle": "^2.1"
     },
     "suggest": {
         "robloach/component-installer": "dev-master",
         "components/jquery": "^3.3",
         "components/jqueryui": "^1.12",
-        "components/normalize.css": "3.*",
         "vaibhavpandeyvpz/doctrine-datatables": "dev-master",
-        "datatables/datatables": "^1.10",
-        "components/bootstrap": "3.*"
+        "datatables/datatables": "^1.10"
     },
     "config": {
         "component-dir": "web/public",
