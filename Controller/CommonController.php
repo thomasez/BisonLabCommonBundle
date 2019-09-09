@@ -28,6 +28,28 @@ class CommonController extends Controller
      */
 
     /* 
+     * Generic update of attributes on an entity
+     * I could drop the "attributes" and make it all flat, but this give me and
+     * the poster/patcher more control.
+     *
+     * Really simple now, but may end up being worth being here.
+     */
+    public function updateAttributes(Request $request, &$entity)
+    {
+        if ($data = json_decode($request->getContent(), true)) {
+            if (isset($data['attributes']))
+                $attributes = $data['attributes'];
+            else
+                return false;
+        } else {
+            $attributes = $request->request->get('attributes');
+        }
+        foreach ($attributes as $a => $v) {
+            $entity->setAttribute($a, $v);
+        }
+    }
+
+    /* 
      * Showing the log from gedmo Loggable.
      */
     public function showLogPage($request, $access, $entity_name, $id, $options = array())
