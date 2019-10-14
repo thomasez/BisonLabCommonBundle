@@ -190,7 +190,7 @@ trait ContextTrait
                         $owner->removeContext($context);
                         $em->remove($context);
                     } else {
-                        $context->setExternalId($context_arr['external_id']);
+                        $context->setExternalId(trim($context_arr['external_id']));
                         if (empty($context_arr['url']) ) {
                             $context->setUrl(self::createContextUrl(
                                 $context_arr, $context_object_config));
@@ -204,7 +204,7 @@ trait ContextTrait
                     $context = new $context_class;
                     $context->setSystem($system_name);
                     $context->setObjectName($object_name);
-                    $context->setExternalId($context_arr['external_id']);
+                    $context->setExternalId(trim($context_arr['external_id']));
                     if (empty($context_arr['url'])) {
                         $context->setUrl(self::createContextUrl($context_arr,
                             $context_object_config));
