@@ -116,16 +116,10 @@ Edge, Windows
                 case '*/*':
                 case 'application/html':
                     $headers["Content-Type"] = $accept;
-                    // Reason for this is the extremely simple template for
-                    // showing whatever as HTML. Just send it as an array and
-                    // it can be dumped
-                    // more easily.
-                    $data_arr = json_decode($this->_serialize($data, 'json'), true);
                     if (isset($templates['html'])) {
                         // Here we'll let the programmer choose.
                         return $this->render($templates['html'],
                             array(
-                                'data_array' => $data_arr,
                                 // That name is so wrong, but can I remove it?
                                 'data_entity' => $data,
                                 'data' => $data,
@@ -134,6 +128,11 @@ Edge, Windows
                                 );
                     } else {
                         // And a fall back.
+                        // Reason for this is the extremely simple template for
+                        // showing whatever as HTML. Just send it as an array and
+                        // it can be dumped
+                        // more easily.
+                        $data_arr = json_decode($this->_serialize($data, 'json'), true);
                         return $this->render('BisonLabCommonBundle:Default:show.html.twig', 
                             array('data' => $data_arr),
                             new Response('', $status_code)
