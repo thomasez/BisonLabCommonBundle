@@ -4,7 +4,7 @@
 
 <h1>History for {{ entity }}</h1>
 
-<table class="records_list" id="sortable_table">
+<table class="records_list sortable_table" id="sortable_table" data-order='[[ 1, "asc" ]]'>
     <thead>
         <tr>
             <th>Username</th>
@@ -18,7 +18,7 @@
     {% for log in logs %}
         <tr>
             <td>{{ log.username }}</td>
-            <td>{{ log.loggedat|date('Y-m-d H:i:s') }}</td>
+            <td data-order="{{ log.loggedat | date('U')}}">{{ log.loggedat|date('Y-m-d H:i:s') }}</td>
             <td>{{ log.version }}</td>
             <td>{{ log.action }}</td>
             <td>{{ log.data | prettyprint }}</td>

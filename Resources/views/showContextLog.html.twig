@@ -4,7 +4,7 @@
 
 <h1>Context history for {{ entity }}</h1>
 
-<table class="records_list" id="sortable_table">
+<table class="records_list sortable_table" id="sortable_table" data-order='[[ 1, "asc" ]]'>
     <thead>
         <tr>
             <th>Username</th>
@@ -20,12 +20,18 @@
     {% for log in logs %}
         <tr>
             <td>{{ bisonlab_commonstuff.getusernamefromuserid(log.userid) }}</td>
-            <td>{{ log.loggedat|date('Y-m-d H:i:s') }}</td>
+            <td data-order="{{ log.loggedat | date('U')}}">{{ log.loggedat|date('Y-m-d H:i:s') }}</td>
             <td>{{ log.action }}</td>
             <td>{{ log.system }}</td>
             <td>{{ log.objectname }}</td>
             <td>{{ log.externalid }}</td>
-            <td>{{ log.url }}</td>
+            <td>
+{% if "http" in log.url %}
+            <a href="{{ log.url }}">{{ log.url }}</a>
+{% else %}
+            <a href="{{ app.request.baseurl }}{{ log.url }}">{{ log.url }}</a>
+{% endif %}
+            </td>
         </tr>
     {% endfor %}
     </tbody>
