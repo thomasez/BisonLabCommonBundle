@@ -12,15 +12,14 @@
         }
     ],
     "require": {
-        "symfony/framework-bundle": "^3.4",
+        "symfony/symfony": "^5.0",
         "friendsofsymfony/user-bundle": "^2.1"
     },
     "suggest": {
         "robloach/component-installer": "dev-master",
         "components/jquery": "^3.3",
         "components/jqueryui": "^1.12",
-        "vaibhavpandeyvpz/doctrine-datatables": "dev-master",
-        "datatables/datatables": "^1.10"
+        "vaibhavpandeyvpz/doctrine-datatables": "dev-master"
     },
     "config": {
         "component-dir": "web/public",
