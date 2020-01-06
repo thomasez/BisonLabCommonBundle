@@ -100,7 +100,7 @@ class UserController extends CommonController
 
         $form->handleRequest($request);
 
-        if ($form->isValid()) {
+        if ($form->isSubmitted() && $form->isValid()) {
             $userManager->updateUser($user);
             return $this->redirect($this->generateUrl('user'));
         }
@@ -161,7 +161,7 @@ class UserController extends CommonController
                 $this->generateUrl('user_update', array('id' => $id))));
         $editForm->handleRequest($request);
 
-        if ($editForm->isValid()) {
+        if ($editForm->isSubmitted() && $editForm->isValid()) {
             $userManager->updateUser($user);
             return $this->redirect($this->generateUrl('user'));
         }
@@ -211,7 +211,7 @@ class UserController extends CommonController
         $form = $this->createDeleteForm($id);
         $form->handleRequest($request);
 
-        if ($form->isValid()) {
+        if ($form->isSubmitted() && $form->isValid()) {
             $userManager = $this->container->get('fos_user.user_manager');
             $user = $userManager->findUserBy(array('id' => $id));
 
