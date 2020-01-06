@@ -4,6 +4,8 @@ namespace BisonLab\CommonBundle\Form\Validation;
 
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
+use Twig\Source as TwigSource;
+use Twig\Error\Error as TwigError;
 
 /**
  * @Annotation
@@ -23,9 +25,9 @@ class TwigValidatorService extends ConstraintValidator
     public function validate($value, Constraint $constraint)
     {
         try {
-            $tokens = $this->twig->tokenize(new \Twig_Source($value, 'validation'));
+            $tokens = $this->twig->tokenize(new TwigSource($value, 'validation'));
             $nodeTree  = $this->twig->parse($tokens);
-        } catch (\Twig_Error $e) {
+        } catch (TwigError $e) {
             $this->context->buildViolation($e->getMessage())
                 ->addViolation();
         }
