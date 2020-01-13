@@ -1,23 +1,25 @@
 <?php
 
 namespace BisonLab\CommonBundle\Extension;
+
+use Twig\Extension\AbstractExtension;
+use Twig\TwigFunction;
+use Twig\Environment as TwigEnvironment;
   
 /*
  * This takes a csv file and make a html table from it.
  * 
  */
 
-class TwigExtensionCsv2Html extends \Twig_Extension
+class TwigExtensionCsv2Html extends AbstractExtension
 {
    
    public function getFilters()
    {
-  
-        return array(
-            'csv2html' => new \Twig_Filter_Function('\BisonLab\CommonBundle\Extension\twig_csv2html', 
-                array('needs_environment' => true)),
-
-        );
+        return [ new TwigFunction('csv2html',
+                    [$this, 'twig_csv2html'],
+                    ['needs_environment' => true])
+        ];
     }
   
     /**
@@ -30,33 +32,29 @@ class TwigExtensionCsv2Html extends \Twig_Extension
         return 'csv2html';
     }
 
-}  
+    public function c2v2html($filename) 
+    {
+        if (empty($value)) { return ""; }
 
-function c2v2html($filename) 
-{
-    if (empty($value)) { return ""; }
-
-    echo "<table>\n";
-    foreach($value as $key => $value) {
-        
-        echo "<tr>\n<th valign='top'>$key</th>\n<td>";
-        if (is_array($value)) { 
-            pretty($value); 
-        } else {
-            // I want to change \n to <br />. Not perfect but I need it.
-            $value = preg_replace("/\n/", "<br />", $value);
-            echo $value . "\n";
+        echo "<table>\n";
+        foreach($value as $key => $value) {
+            
+            echo "<tr>\n<th valign='top'>$key</th>\n<td>";
+            if (is_array($value)) { 
+                pretty($value); 
+            } else {
+                // I want to change \n to <br />. Not perfect but I need it.
+                $value = preg_replace("/\n/", "<br />", $value);
+                echo $value . "\n";
+            }
+            echo "</td>\n</tr>\n";
         }
-
-        echo "</td>\n</tr>\n";
-
+        echo "</table>\n";
     }
-    echo "</table>\n";
-    
-}
 
-function twig_csv2html(\Twig_Environment $env, $value, $length = 80, $separator = "\n", $preserve = false)
-{
-    return;
-}
+    public function twig_csv2html(TwigEnvironment $env, $value, $length = 80, $separator = "\n", $preserve = false)
+    {
+        return;
+    }
 
+}  

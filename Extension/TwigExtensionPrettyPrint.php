@@ -2,21 +2,27 @@
 
 namespace BisonLab\CommonBundle\Extension;
 
+use Twig\Extension\AbstractExtension;
+use Twig\TwigFilter;
+use Twig\Environment as TwigEnvironment;
+
 /*
  * This was (and stil is) a Pretty printer for the NoSqlBundle arrays / objects.
  * It works on all arrays basically.
  * Aka I've nicked it from there.
  */
 
-class TwigExtensionPrettyPrint extends \Twig_Extension
+class TwigExtensionPrettyPrint extends AbstractExtension
 {
     private $attributes;
 
     public function getFilters()
     {
-        return array(
-            new \Twig_SimpleFilter('prettyprint',  array($this, 'twig_pretty_print_filter'), array('needs_environment' => true)),
-        );
+        return [
+            new TwigFilter('prettyprint',
+                    [$this, 'twig_pretty_print_filter'],
+                    ['needs_environment' => true])
+        ];
     }
 
     private function composeTag($tag, $default = array())
@@ -61,7 +67,7 @@ class TwigExtensionPrettyPrint extends \Twig_Extension
         echo "</table>\n";
     }
 
-    function twig_pretty_print_filter(\Twig_Environment $env, $value, $attributes = array())
+    function twig_pretty_print_filter(TwigEnvironment $env, $value, $attributes = array())
     {
         $this->attributes = $attributes;
         return $this->pretty($value);
