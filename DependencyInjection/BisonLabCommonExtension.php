@@ -14,26 +14,22 @@ use Symfony\Component\DependencyInjection\Loader;
  */
 class BisonLabCommonExtension extends Extension
 {
-
     /**
      * {@inheritDoc}
      */
     public function load(array $configs, ContainerBuilder $container)
     {
-//        $configuration = new Configuration();
-//        $config = $this->processConfiguration($configuration, $configs);
-
         $config = $this->processConfiguration($this->getConfiguration($configs, $container), $configs);
 
         $loader = new Loader\YamlFileLoader($container,
             new FileLocator(array(
                 __DIR__.'/../Resources/config',
-                $container->getParameter('kernel.root_dir').'/config/'
+                $container->getParameter('kernel.root_dir').'/config/',
+                // Kinda forward compatibility.
+                $container->getParameter('kernel.root_dir').'/../config/packages'
                 )
                 ));
         $loader->load('services.yml');
         $loader->load('contexts.yml');
-        // $loader->load('reports.yml');
-
     }
 }
