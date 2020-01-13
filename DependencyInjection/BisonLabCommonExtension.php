@@ -24,9 +24,7 @@ class BisonLabCommonExtension extends Extension
         $loader = new Loader\YamlFileLoader($container,
             new FileLocator(array(
                 __DIR__.'/../Resources/config',
-                $container->getParameter('kernel.root_dir').'/config/',
-                // Kinda forward compatibility.
-                $container->getParameter('kernel.root_dir').'/../config/packages'
+                $container->getParameter('kernel.root_dir').'/config/'
                 )
                 ));
         $loader->load('services.yml');
