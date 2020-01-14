@@ -10,7 +10,6 @@ use Symfony\Component\DependencyInjection\Loader;
 /**
  * This is the class that loads and manages your bundle configuration
  *
- * To learn more see {@link http://symfony.com/doc/current/cookbook/bundles/extension.html}
  */
 class BisonLabCommonExtension extends Extension
 {
@@ -24,11 +23,11 @@ class BisonLabCommonExtension extends Extension
         $loader = new Loader\YamlFileLoader($container,
             new FileLocator(array(
                 __DIR__.'/../Resources/config',
-                $container->getParameter('kernel.root_dir').'/config/',
+                $container->getParameter('kernel.project_dir').'/app/config/',
                 // Kinda forward compatibility.
-                $container->getParameter('kernel.root_dir').'/../config/packages'
+                $container->getParameter('kernel.project_dir').'/config/packages'
                 )
-                ));
+            ));
         $loader->load('services.yml');
         $loader->load('contexts.yml');
     }
