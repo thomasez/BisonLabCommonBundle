@@ -33,7 +33,7 @@ trait ContextTrait
         }
 
         if (!$entities) {
-            return $this->render('BisonLabCommonBundle::message.html.twig', 
+            return $this->render('@BisonLabCommon/message.html.twig', 
                 array('message' => 'Sorry, could not find what you were looking for'));
         }
 
@@ -290,7 +290,7 @@ trait ContextTrait
             return $this->returnRestData($request, $logs);
         }
 
-        return $this->render('BisonLabCommonBundle::showContextLog.html.twig', 
+        return $this->render('@BisonLabCommon/showContextLog.html.twig', 
             array(
                 'entity' => $entity,
                 'logs'   => $logs,

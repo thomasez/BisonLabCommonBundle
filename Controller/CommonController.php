@@ -72,7 +72,7 @@ class CommonController extends Controller
             return $this->returnRestData($request, $logs, $options);
         }
 
-        return $this->render('BisonLabCommonBundle::showLog.html.twig', 
+        return $this->render('@BisonLabCommon/showLog.html.twig', 
             array(
                 'entity'      => $entity,
                 'logs'    => $logs,

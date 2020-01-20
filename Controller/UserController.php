@@ -19,7 +19,7 @@ use Symfony\Component\Validator\Constraints\NotBlank;
  * The stuff users can change themselves is hopefully handled by the
  * FOS User Bundle.
  *
- * @Route("/{access}/useradmin", defaults={"access" = "web"}, requirements={"web|rest|ajax"})
+ * @Route("/{access}/useradmin", defaults={"access": "web"}, requirements={"access": "web|rest|ajax"})
  */
 class UserController extends CommonController
 {
@@ -35,7 +35,7 @@ class UserController extends CommonController
         $params = array(
             'entities' => $userManager->findUsers()
         );
-        return $this->render('BisonLabCommonBundle:User:index.html.twig',
+        return $this->render('@BisonLabCommon/User/index.html.twig',
             $params);
     }
 
@@ -59,7 +59,7 @@ class UserController extends CommonController
             'entity'      => $user,
             'delete_form' => $deleteForm->createView(),
         );
-        return $this->render('BisonLabCommonBundle:User:show.html.twig',
+        return $this->render('@BisonLabCommon/User/show.html.twig',
             $params);
     }
 
@@ -80,7 +80,7 @@ class UserController extends CommonController
             'entity' => $user,
             'form'   => $form->createView(),
         );
-        return $this->render('BisonLabCommonBundle:User:new.html.twig',
+        return $this->render('@BisonLabCommon/User/new.html.twig',
             $params);
     }
 
@@ -109,7 +109,7 @@ class UserController extends CommonController
             'entity' => $user,
             'form'   => $form->createView(),
         );
-        return $this->render('BisonLabCommonBundle:User:new.html.twig',
+        return $this->render('@BisonLabCommon/User/new.html.twig',
             $params);
     }
 
@@ -137,7 +137,7 @@ class UserController extends CommonController
             'edit_form'   => $editForm->createView(),
             'delete_form' => $deleteForm->createView(),
         );
-        return $this->render('BisonLabCommonBundle:User:edit.html.twig',
+        return $this->render('@BisonLabCommon/User/edit.html.twig',
             $params);
     }
 
@@ -171,7 +171,7 @@ class UserController extends CommonController
             'edit_form'   => $editForm->createView(),
             'delete_form' => $deleteForm->createView(),
         );
-        return $this->render('BisonLabCommonBundle:User:edit.html.twig',
+        return $this->render('@BisonLabCommon/User/edit.html.twig',
             $params);
     }
 
@@ -192,7 +192,7 @@ class UserController extends CommonController
             $userManager->updateUser($user);
             return $this->redirectToRoute('user_show', array('id' => $user->getId()));
         } else {
-            return $this->render('BisonLabCommonBundle:User:edit.html.twig',
+            return $this->render('@BisonLabCommon/User/edit.html.twig',
                 array(
                 'entity' => $user,
                 'edit_form' => $form->createView(),
@@ -301,7 +301,7 @@ class UserController extends CommonController
         $params = array(
             'entities'      => $users,
         );
-        return $this->render('BisonLabCommonBundle:User:index.html.twig',
+        return $this->render('@BisonLabCommon/User/index.html.twig',
             $params);
     }
 

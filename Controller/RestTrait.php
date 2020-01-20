@@ -133,7 +133,7 @@ Edge, Windows
                         // it can be dumped
                         // more easily.
                         $data_arr = json_decode($this->_serialize($data, 'json'), true);
-                        return $this->render('BisonLabCommonBundle:Default:show.html.twig', 
+                        return $this->render('@BisonLabCommon/Default/show.html.twig', 
                             array('data' => $data_arr),
                             new Response('', $status_code)
                             );
