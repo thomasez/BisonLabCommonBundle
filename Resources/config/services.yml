@@ -1,6 +1,7 @@
 services:
     BisonLab\CommonBundle\Command\:
         resource: '../../Command/*'
+        autowire: true
         tags: ['console.command']
 
     bisonlabcommon.commonstuff:
@@ -9,8 +10,7 @@ services:
 
     my.inject_context_config:
         class: BisonLab\CommonBundle\EventListener\InsertConfigIntoEntitiesListener
-        calls:
-            - [ setContainer, ['@service_container'] ]
+        autowire: true
         tags:
             - { name: doctrine.event_listener, event: postLoad  }
             - { name: doctrine.event_listener, event: prePersist  }
@@ -29,7 +29,7 @@ services:
     external_retriever:
         class: BisonLab\CommonBundle\Service\ExternalRetriever
         public: true
-        arguments: ['@service_container' ]
+        arguments: ['@service_container']
 
     twig.extension.pretty_print:
         class: BisonLab\CommonBundle\Extension\TwigExtensionPrettyPrint
@@ -42,7 +42,7 @@ services:
         public: true
         tags:
             - { name: 'validator.constraint_validator' }
-        arguments: ['@twig' ]
+        arguments: ['@twig']
 
 #    twig.extension.csv2html:
 #        class: BisonLab\CommonBundle\Extension\TwigExtensionCsv2Html

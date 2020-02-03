@@ -3,6 +3,7 @@
 namespace BisonLab\CommonBundle\EventListener;
 
 use Doctrine\ORM\Event\LifecycleEventArgs;
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 
 /*
  * This one injects the context config into the entities so that they know
@@ -12,11 +13,11 @@ use Doctrine\ORM\Event\LifecycleEventArgs;
 
 class InsertConfigIntoEntitiesListener 
 {
-    private $container;
+    private $params;
 
-    public function setContainer($container)
+    public function __construct(ParameterBagInterface $params)
     {
-         $this->container = $container;
+        $this->params = $params;
     }
 
     public function postLoad(LifecycleEventArgs $args)
@@ -38,7 +39,7 @@ class InsertConfigIntoEntitiesListener
     {
         $entity = $args->getEntity();
         if (in_array("BisonLab\CommonBundle\Entity\ContextBaseTrait", class_uses($entity))) {
-            $context_conf = $this->container->getParameter('app.contexts');
+            $context_conf = $this->params->get('app.contexts');
             list($bundle, $object) = explode(":", $entity->getOwnerEntityAlias());
             // do something with the Product
             $object_name = $entity->getObjectName();

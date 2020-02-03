@@ -29,9 +29,14 @@ class ExternalRetriever
 {
     private $container;
 
+    /*
+     * I wonder if this service is even close to possible without the
+     * container.  For now I'll just keep it, but I have to have a TODO: Get
+     * rid of container.
+     */
     public function __construct($container)
     {
-        $this->container         = $container;
+        $this->container = $container;
     }
 
     public function getExternalDataFromContext($context) 
