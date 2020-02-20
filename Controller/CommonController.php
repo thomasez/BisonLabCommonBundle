@@ -2,7 +2,7 @@
 
 namespace BisonLab\CommonBundle\Controller;
 
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Serializer\Normalizer\GetSetMethodNormalizer;
 use Symfony\Component\Serializer\Serializer;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
@@ -18,7 +18,7 @@ use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 
 use Symfony\Component\Serializer\Encoder\XmlEncoder;
 
-class CommonController extends Controller
+class CommonController extends AbstractController
 {
     use ContextTrait;
     use RestTrait;
