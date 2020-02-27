@@ -16,9 +16,10 @@ namespace BisonLab\CommonBundle\Menu;
  */
 trait StylingTrait
 {
-    public function styleMenuBootstrapTabs($menu, $options)
+    public function styleMenuBootstrap($menu, $options)
     {
-        $menu->setChildrenAttribute('class', 'nav nav-tabs');
+        $style_class = $options['style'] ?? '';
+        $menu->setChildrenAttribute('class', 'nav ' . $style_class);
         foreach ($menu->getChildren() as $child) {
             // Why is this not working?
             // Solution:
@@ -27,7 +28,6 @@ trait StylingTrait
             }
             if (count($child->getChildren()) > 0) {
                 $child
-                    ->setLabel($child->getLabel() . '<b class="caret"></b>')
                     ->setExtra('safe_label', true)
                     ->setUri('#')
                     ->setLinkAttribute('class', 'nav-link dropdown-toggle')
