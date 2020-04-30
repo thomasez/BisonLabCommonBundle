@@ -1,11 +1,11 @@
 services:
     BisonLab\CommonBundle\Command\:
-        resource: '../../Command/*'
+        resource: '../Command/*'
         autowire: true
         tags: ['console.command']
 
     BisonLab\CommonBundle\Controller\:
-        resource: '../../Controller/*'
+        resource: '../Controller/*'
         tags: ['controller.service_arguments']
         # AbstractController still needs this!
         calls:
