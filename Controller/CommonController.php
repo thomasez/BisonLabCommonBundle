@@ -152,54 +152,6 @@ class CommonController extends AbstractController
                 );
     }
 
-    /* TODO: Same as above. Render a template here. */
-    public function pagedIndexAction($request, $access, $em, $repo, $route)
-    {
-        if ($this->isRest($access, $request)) {
-            return $this->ajaxedIndexAction($request, $access, $em, $repo);
-        }
-
-        $order_by = $this->getOrderBy($request);
-        $filter_by = $this->getFilterBy($request);
-
-        $criteria = array();
-        if ($filter_by) {
-            $criteria = array_merge($criteria, $filter_by);
-        }
-        if ( "all" === $request->get('page') ) {
-            $entities = $repo->findBy($criteria, $order_by, null, null);
-            $page = 'all';
-        } else {
-            $page     = (int)$request->get('page') 
-                      ? (int)$request->get('page') : 1;
-            $offset = ($page - 1) * $this->per_page;
-            $entities = $repo->findBy($criteria, $order_by, $this->per_page, $offset);
-        }
-
-        // I am sure someone will, one day, pick me on the shoulder and tell
-        // me Doctrine has a function for this..
-        if (method_exists($repo, "countAll")) {
-            $total_amount_entities = $repo->countAll($criteria);
-        } else {
-            // It is so stupid I want to scream.
-            $total_entities = $repo->findAll();
-            $total_amount_entities = count($total_entities);
-        }
-        $pages = ceil($total_amount_entities / $this->per_page);
-
-        $routes = $this->createPageRoutes($request, $pages, $route, null, null);
-        $filters = $this->createFilterByForm($request, $repo);
-
-        return array(
-            'entities' => $entities,
-            'pages'          => $pages,
-            'filters'        => $filters,
-            'pagenum'        => $page,
-            'routes'         => $routes,
-            'total_entities' => $total_amount_entities,
-        );
-    }
-
     public function ajaxedIndexAction($request, $access, $em, $repo,
         $field_name = null, $entity_obj = null)
     {
@@ -282,57 +234,6 @@ class CommonController extends AbstractController
     /*
      * Generic helpers. (And I don't even like Unclean Bobs "Clean code")
      */
-    public function createPageRoutes($request, $pages, $base_route,
-            $object_name, $object_id)
-    {
-        $routes = array();
-        $router = $this->get('router');
-
-        $options['page'] = 'all';
-        if ($order_by = $this->getOrderBy($request)) {
-            $options['order_by'] = current(array_keys($order_by));
-        }
-
-        $routes[] = array('num' => 'All', 
-                    'route' => $router->generate($base_route, $options));
-
-        for ($i = 1 ; $i <= $pages ; $i++) {
-            if ($object_name && $object_id) { 
-                $options = array('page' => $i, $object_name => $object_id);
-            } else {
-                $options = array('page' => $i);
-            }
-            if ($order_by) {
-                // Ok, scream and let me know a better way if there are one.
-                // (The current thingie)
-                $options['order_by'] = current(array_keys($order_by));
-            }
-
-            $routes[] = array('num' => $i, 
-                'route' => $router->generate($base_route, $options));
-        }
-        return $routes;
-    }
-
-    public function createOrderByRoutes($request, $fields = array())
-    {
-        // I am not sure how future-proof PathInfo is here but we will find out.
-        $path = $request->getPathInfo();
-        $qs = $request->getQueryString();
-        $routes = array();
-        foreach ($fields as $field) {
-            // This should be more elegant, I guess.
-            $o_qs = preg_replace("/order_by=\w+/", "order_by=" . $field, $qs);
-
-            if (!preg_match("/order_by=\w+/", $o_qs)) {
-                $o_qs = empty($qs) ? "order_by=".$field : $qs . "&order_by=".$field;
-            }
-            $routes[] = array('route' => $path . "?" . $o_qs, 
-                    'label' => ucfirst($field) , 'orderby' => $field);
-        }
-        return $routes;
-    }
-
     public function createFilterByForm($request, $repo)
     {
         if (!method_exists($repo, "getFilterableProperties")) { return null; }
@@ -418,6 +319,8 @@ class CommonController extends AbstractController
             $direction = isset($oarr[1]) ? $oarr[1] : 'ASC';
             $order_by = array($oarr[0] => $direction);
         } else {
+// Only trigger if this is actually being used.
+trigger_error('The '.__METHOD__.' method is deprecated. Please use something else instead', E_USER_DEPRECATED);
             $order_by = null;
         }
         return $order_by;
@@ -459,6 +362,8 @@ class CommonController extends AbstractController
         }
 
         if (count($filter_by) > 0) {
+// Only trigger if this is actually being used.
+trigger_error('The '.__METHOD__.' method is deprecated. Please use something else instead', E_USER_DEPRECATED);
             $filters = array();
             if (is_array($filter_by)) {
                 foreach ($filter_by as $idx => $filter) {
@@ -510,6 +415,7 @@ class CommonController extends AbstractController
     public function returnNotFound($request, $text, \Exception $previous = null)
     {
         $data = array('code' => 404, 'status' => 'Not Found', 'error_text' => $text);
+trigger_error('The '.__METHOD__.' method is deprecated. Please use the not found exception again.', E_USER_DEPRECATED);
 
         /* Since I never sent the $access to this (Should I move it from a
          * function parameter in the isRest function  to using the $request
