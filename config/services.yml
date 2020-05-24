@@ -4,16 +4,13 @@ services:
         autowire: true
         tags: ['console.command']
 
-    BisonLab\CommonBundle\Controller\:
-        resource: '../Controller/*'
-        tags: ['controller.service_arguments']
-        # AbstractController still needs this!
-        calls:
-            - [ setContainer, ['@service_container'] ]
-
-    bisonlabcommon.commonstuff:
-        class: BisonLab\CommonBundle\Service\CommonStuff
-        arguments: [ '@fos_user.user_manager', '@security.token_storage' ]
+# There is nothing left to control.
+#    BisonLab\CommonBundle\Controller\:
+#        resource: '../Controller/*'
+#        tags: ['controller.service_arguments']
+#        # AbstractController still needs this!
+#        calls:
+#            - [ setContainer, ['@service_container'] ]
 
     my.inject_context_config:
         class: BisonLab\CommonBundle\EventListener\InsertConfigIntoEntitiesListener

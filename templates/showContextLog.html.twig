@@ -19,7 +19,10 @@
     <tbody>
     {% for log in logs %}
         <tr>
+{#
             <td>{{ bisonlab_commonstuff.getusernamefromuserid(log.userid) }}</td>
+ #}
+            <td>{{ log.userid }}</td>
             <td data-order="{{ log.loggedat | date('U')}}">{{ log.loggedat|date('Y-m-d H:i:s') }}</td>
             <td>{{ log.action }}</td>
             <td>{{ log.system }}</td>
