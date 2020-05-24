@@ -15,7 +15,7 @@
         "symfony/framework-bundle": "^3.4 || ^4.4 || ^5.0"
     },
     "suggest": {
-        "friendsofsymfony/user-bundle": "^2.1",
+        "bisonlab/user-bundle": "dev-master",
         "robloach/component-installer": "dev-master",
         "components/jquery": "^3.3",
         "components/jqueryui": "^1.12",
