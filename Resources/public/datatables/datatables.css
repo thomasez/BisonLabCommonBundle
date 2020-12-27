@@ -4,12 +4,13 @@
  *
  * To rebuild or modify this file with the latest versions of the included
  * software please visit:
- *   https://datatables.net/download/#bs4/jszip-2.5.0/pdfmake-0.1.36/dt-1.10.21/b-1.6.2/b-colvis-1.6.2/b-html5-1.6.2/b-print-1.6.2/cr-1.5.2/fc-3.3.1/fh-3.1.7/kt-2.5.2/r-2.2.5/rg-1.1.2/sc-2.0.2/sp-1.1.1/sl-1.3.1
+ *   https://datatables.net/download/#bs4/jszip-2.5.0/pdfmake-0.1.36/dt-1.10.23/b-1.6.5/b-colvis-1.6.5/b-html5-1.6.5/b-print-1.6.5/cr-1.5.3/fc-3.3.2/fh-3.1.7/kt-2.5.3/r-2.2.6/rg-1.1.2/rr-1.2.7/sc-2.0.3/sb-1.0.1/sp-1.2.2/sl-1.3.1
  *
  * Included libraries:
- *   JSZip 2.5.0, pdfmake 0.1.36, DataTables 1.10.21, Buttons 1.6.2, Column visibility 1.6.2, HTML5 export 1.6.2, Print view 1.6.2, ColReorder 1.5.2, FixedColumns 3.3.1, FixedHeader 3.1.7, KeyTable 2.5.2, Responsive 2.2.5, RowGroup 1.1.2, Scroller 2.0.2, SearchPanes 1.1.1, Select 1.3.1
+ *   JSZip 2.5.0, pdfmake 0.1.36, DataTables 1.10.23, Buttons 1.6.5, Column visibility 1.6.5, HTML5 export 1.6.5, Print view 1.6.5, ColReorder 1.5.3, FixedColumns 3.3.2, FixedHeader 3.1.7, KeyTable 2.5.3, Responsive 2.2.6, RowGroup 1.1.2, RowReorder 1.2.7, Scroller 2.0.3, SearchBuilder 1.0.1, SearchPanes 1.2.2, Select 1.3.1
  */
 
+@charset "UTF-8";
 table.dataTable {
   clear: both;
   margin-top: 6px !important;
@@ -56,7 +57,6 @@ div.dataTables_wrapper div.dataTables_filter input {
 }
 div.dataTables_wrapper div.dataTables_info {
   padding-top: 0.85em;
-  white-space: nowrap;
 }
 div.dataTables_wrapper div.dataTables_paginate {
   margin: 0;
@@ -79,60 +79,58 @@ div.dataTables_wrapper div.dataTables_processing {
   padding: 1em 0;
 }
 
-table.dataTable thead > tr > th.sorting_asc, table.dataTable thead > tr > th.sorting_desc, table.dataTable thead > tr > th.sorting,
-table.dataTable thead > tr > td.sorting_asc,
-table.dataTable thead > tr > td.sorting_desc,
-table.dataTable thead > tr > td.sorting {
-  padding-right: 30px;
-}
-table.dataTable thead > tr > th:active,
-table.dataTable thead > tr > td:active {
+table.dataTable > thead > tr > th:active,
+table.dataTable > thead > tr > td:active {
   outline: none;
 }
-table.dataTable thead .sorting,
-table.dataTable thead .sorting_asc,
-table.dataTable thead .sorting_desc,
-table.dataTable thead .sorting_asc_disabled,
-table.dataTable thead .sorting_desc_disabled {
+table.dataTable > thead > tr > th:not(.sorting_disabled),
+table.dataTable > thead > tr > td:not(.sorting_disabled) {
+  padding-right: 30px;
+}
+table.dataTable > thead .sorting,
+table.dataTable > thead .sorting_asc,
+table.dataTable > thead .sorting_desc,
+table.dataTable > thead .sorting_asc_disabled,
+table.dataTable > thead .sorting_desc_disabled {
   cursor: pointer;
   position: relative;
 }
-table.dataTable thead .sorting:before, table.dataTable thead .sorting:after,
-table.dataTable thead .sorting_asc:before,
-table.dataTable thead .sorting_asc:after,
-table.dataTable thead .sorting_desc:before,
-table.dataTable thead .sorting_desc:after,
-table.dataTable thead .sorting_asc_disabled:before,
-table.dataTable thead .sorting_asc_disabled:after,
-table.dataTable thead .sorting_desc_disabled:before,
-table.dataTable thead .sorting_desc_disabled:after {
+table.dataTable > thead .sorting:before, table.dataTable > thead .sorting:after,
+table.dataTable > thead .sorting_asc:before,
+table.dataTable > thead .sorting_asc:after,
+table.dataTable > thead .sorting_desc:before,
+table.dataTable > thead .sorting_desc:after,
+table.dataTable > thead .sorting_asc_disabled:before,
+table.dataTable > thead .sorting_asc_disabled:after,
+table.dataTable > thead .sorting_desc_disabled:before,
+table.dataTable > thead .sorting_desc_disabled:after {
   position: absolute;
   bottom: 0.9em;
   display: block;
   opacity: 0.3;
 }
-table.dataTable thead .sorting:before,
-table.dataTable thead .sorting_asc:before,
-table.dataTable thead .sorting_desc:before,
-table.dataTable thead .sorting_asc_disabled:before,
-table.dataTable thead .sorting_desc_disabled:before {
+table.dataTable > thead .sorting:before,
+table.dataTable > thead .sorting_asc:before,
+table.dataTable > thead .sorting_desc:before,
+table.dataTable > thead .sorting_asc_disabled:before,
+table.dataTable > thead .sorting_desc_disabled:before {
   right: 1em;
-  content: "\2191";
+  content: "↑";
 }
-table.dataTable thead .sorting:after,
-table.dataTable thead .sorting_asc:after,
-table.dataTable thead .sorting_desc:after,
-table.dataTable thead .sorting_asc_disabled:after,
-table.dataTable thead .sorting_desc_disabled:after {
+table.dataTable > thead .sorting:after,
+table.dataTable > thead .sorting_asc:after,
+table.dataTable > thead .sorting_desc:after,
+table.dataTable > thead .sorting_asc_disabled:after,
+table.dataTable > thead .sorting_desc_disabled:after {
   right: 0.5em;
-  content: "\2193";
+  content: "↓";
 }
-table.dataTable thead .sorting_asc:before,
-table.dataTable thead .sorting_desc:after {
+table.dataTable > thead .sorting_asc:before,
+table.dataTable > thead .sorting_desc:after {
   opacity: 1;
 }
-table.dataTable thead .sorting_asc_disabled:before,
-table.dataTable thead .sorting_desc_disabled:after {
+table.dataTable > thead .sorting_asc_disabled:before,
+table.dataTable > thead .sorting_desc_disabled:after {
   opacity: 0;
 }
 
@@ -168,16 +166,16 @@ div.dataTables_scrollFoot > .dataTables_scrollFootInner > table {
 
 @media screen and (max-width: 767px) {
   div.dataTables_wrapper div.dataTables_length,
-  div.dataTables_wrapper div.dataTables_filter,
-  div.dataTables_wrapper div.dataTables_info,
-  div.dataTables_wrapper div.dataTables_paginate {
+div.dataTables_wrapper div.dataTables_filter,
+div.dataTables_wrapper div.dataTables_info,
+div.dataTables_wrapper div.dataTables_paginate {
     text-align: center;
   }
   div.dataTables_wrapper div.dataTables_paginate ul.pagination {
     justify-content: center !important;
   }
 }
-table.dataTable.table-sm > thead > tr > th :not(.sorting_disabled) {
+table.dataTable.table-sm > thead > tr > th:not(.sorting_disabled) {
   padding-right: 20px;
 }
 table.dataTable.table-sm .sorting:before,
@@ -216,10 +214,10 @@ div.dataTables_scrollHead table.table-bordered {
 div.table-responsive > div.dataTables_wrapper > div.row {
   margin: 0;
 }
-div.table-responsive > div.dataTables_wrapper > div.row > div[class^="col-"]:first-child {
+div.table-responsive > div.dataTables_wrapper > div.row > div[class^=col-]:first-child {
   padding-left: 0;
 }
-div.table-responsive > div.dataTables_wrapper > div.row > div[class^="col-"]:last-child {
+div.table-responsive > div.dataTables_wrapper > div.row > div[class^=col-]:last-child {
   padding-right: 0;
 }
 
@@ -553,20 +551,20 @@ table.dataTable.dtr-inline.collapsed > tbody > tr[role="row"] > td.dtr-control:b
 table.dataTable.dtr-inline.collapsed > tbody > tr[role="row"] > th.dtr-control:before {
   top: 50%;
   left: 5px;
-  height: 14px;
-  width: 14px;
+  height: 1em;
+  width: 1em;
   margin-top: -9px;
   display: block;
   position: absolute;
   color: white;
-  border: 2px solid white;
-  border-radius: 14px;
-  box-shadow: 0 0 3px #444;
+  border: 0.15em solid white;
+  border-radius: 1em;
+  box-shadow: 0 0 0.2em #444;
   box-sizing: content-box;
   text-align: center;
   text-indent: 0 !important;
   font-family: 'Courier New', Courier, monospace;
-  line-height: 14px;
+  line-height: 1em;
   content: '+';
   background-color: #0275d8;
 }
@@ -588,33 +586,39 @@ table.dataTable.dtr-inline.collapsed.compact > tbody > tr > th.dtr-control:befor
   line-height: 14px;
   text-indent: 3px;
 }
+table.dataTable.dtr-column > tbody > tr > td.dtr-control,
+table.dataTable.dtr-column > tbody > tr > th.dtr-control,
 table.dataTable.dtr-column > tbody > tr > td.control,
 table.dataTable.dtr-column > tbody > tr > th.control {
   position: relative;
   cursor: pointer;
 }
+table.dataTable.dtr-column > tbody > tr > td.dtr-control:before,
+table.dataTable.dtr-column > tbody > tr > th.dtr-control:before,
 table.dataTable.dtr-column > tbody > tr > td.control:before,
 table.dataTable.dtr-column > tbody > tr > th.control:before {
   top: 50%;
   left: 50%;
-  height: 16px;
-  width: 16px;
-  margin-top: -10px;
-  margin-left: -10px;
+  height: 0.8em;
+  width: 0.8em;
+  margin-top: -0.5em;
+  margin-left: -0.5em;
   display: block;
   position: absolute;
   color: white;
-  border: 2px solid white;
-  border-radius: 14px;
-  box-shadow: 0 0 3px #444;
+  border: 0.15em solid white;
+  border-radius: 1em;
+  box-shadow: 0 0 0.2em #444;
   box-sizing: content-box;
   text-align: center;
   text-indent: 0 !important;
   font-family: 'Courier New', Courier, monospace;
-  line-height: 14px;
+  line-height: 1em;
   content: '+';
   background-color: #0275d8;
 }
+table.dataTable.dtr-column > tbody > tr.parent td.dtr-control:before,
+table.dataTable.dtr-column > tbody > tr.parent th.dtr-control:before,
 table.dataTable.dtr-column > tbody > tr.parent td.control:before,
 table.dataTable.dtr-column > tbody > tr.parent th.control:before {
   content: '-';
@@ -742,6 +746,30 @@ table.dataTable tr.dtrg-group.dtrg-level-2 td {
 }
 
 
+table.dt-rowReorder-float {
+  position: absolute !important;
+  opacity: 0.8;
+  table-layout: fixed;
+  outline: 2px solid #0275d8;
+  outline-offset: -2px;
+  z-index: 2001;
+}
+
+tr.dt-rowReorder-moving {
+  outline: 2px solid #888;
+  outline-offset: -2px;
+}
+
+body.dt-rowReorder-noOverflow {
+  overflow-x: hidden;
+}
+
+table.dataTable td.reorder {
+  text-align: center;
+  cursor: move;
+}
+
+
 div.dts {
   display: block !important;
 }
@@ -777,6 +805,348 @@ div.dts div.dataTables_length {
 
 div.DTS div.dataTables_scrollBody table {
   background-color: white;
+}
+
+
+div.dt-datetime {
+  position: absolute;
+  background-color: white;
+  z-index: 2050;
+  border: 1px solid #ccc;
+  box-shadow: 0 5px 15px -5px rgba(0, 0, 0, 0.5);
+  padding: 0 20px 6px 20px;
+  width: 275px;
+}
+div.dt-datetime.inline {
+  position: relative;
+  box-shadow: none;
+}
+div.dt-datetime div.dt-datetime-title {
+  text-align: center;
+  padding: 5px 0px 3px;
+}
+div.dt-datetime table {
+  border-spacing: 0;
+  margin: 12px 0;
+  width: 100%;
+}
+div.dt-datetime table.dt-datetime-table-nospace {
+  margin-top: -12px;
+}
+div.dt-datetime table th {
+  font-size: 0.8em;
+  color: #777;
+  font-weight: normal;
+  width: 14.285714286%;
+  padding: 0 0 4px 0;
+  text-align: center;
+}
+div.dt-datetime table td {
+  font-size: 0.9em;
+  color: #444;
+  padding: 0;
+}
+div.dt-datetime table td.selectable {
+  text-align: center;
+  background: #f5f5f5;
+}
+div.dt-datetime table td.selectable.disabled {
+  color: #aaa;
+  background: white;
+}
+div.dt-datetime table td.selectable.disabled button:hover {
+  color: #aaa;
+  background: white;
+}
+div.dt-datetime table td.selectable.now {
+  background-color: #ddd;
+}
+div.dt-datetime table td.selectable.now button {
+  font-weight: bold;
+}
+div.dt-datetime table td.selectable.selected button {
+  background: #4E6CA3;
+  color: white;
+  border-radius: 2px;
+}
+div.dt-datetime table td.selectable button:hover {
+  background: #ff8000;
+  color: white;
+  border-radius: 2px;
+}
+div.dt-datetime table td.dt-datetime-week {
+  font-size: 0.7em;
+}
+div.dt-datetime table button {
+  width: 100%;
+  box-sizing: border-box;
+  border: none;
+  background: transparent;
+  font-size: inherit;
+  color: inherit;
+  text-align: center;
+  padding: 4px 0;
+  cursor: pointer;
+  margin: 0;
+}
+div.dt-datetime table button span {
+  display: inline-block;
+  min-width: 14px;
+  text-align: right;
+}
+div.dt-datetime table.weekNumber th {
+  width: 12.5%;
+}
+div.dt-datetime div.dt-datetime-calendar table {
+  margin-top: 0;
+}
+div.dt-datetime div.dt-datetime-label {
+  position: relative;
+  display: inline-block;
+  height: 30px;
+  padding: 5px 6px;
+  border: 1px solid transparent;
+  box-sizing: border-box;
+  cursor: pointer;
+}
+div.dt-datetime div.dt-datetime-label:hover {
+  border: 1px solid #ddd;
+  border-radius: 2px;
+  background-color: #f5f5f5;
+}
+div.dt-datetime div.dt-datetime-label select {
+  position: absolute;
+  top: 6px;
+  left: 0;
+  cursor: pointer;
+  opacity: 0;
+}
+div.dt-datetime.horizontal {
+  width: 550px;
+}
+div.dt-datetime.horizontal div.dt-datetime-date,
+div.dt-datetime.horizontal div.dt-datetime-time {
+  width: 48%;
+}
+div.dt-datetime.horizontal div.dt-datetime-time {
+  margin-left: 4%;
+}
+div.dt-datetime div.dt-datetime-date {
+  position: relative;
+  float: left;
+  width: 100%;
+}
+div.dt-datetime div.dt-datetime-time {
+  position: relative;
+  float: left;
+  width: 100%;
+  text-align: center;
+}
+div.dt-datetime div.dt-datetime-time > span {
+  vertical-align: middle;
+}
+div.dt-datetime div.dt-datetime-time th {
+  text-align: left;
+}
+div.dt-datetime div.dt-datetime-time div.dt-datetime-timeblock {
+  display: inline-block;
+  vertical-align: middle;
+}
+div.dt-datetime div.dt-datetime-iconLeft,
+div.dt-datetime div.dt-datetime-iconRight,
+div.dt-datetime div.dt-datetime-iconUp,
+div.dt-datetime div.dt-datetime-iconDown {
+  width: 30px;
+  height: 30px;
+  background-position: center;
+  background-repeat: no-repeat;
+  opacity: 0.3;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+div.dt-datetime div.dt-datetime-iconLeft:hover,
+div.dt-datetime div.dt-datetime-iconRight:hover,
+div.dt-datetime div.dt-datetime-iconUp:hover,
+div.dt-datetime div.dt-datetime-iconDown:hover {
+  border: 1px solid #ccc;
+  border-radius: 2px;
+  background-color: #f0f0f0;
+  opacity: 0.6;
+}
+div.dt-datetime div.dt-datetime-iconLeft button,
+div.dt-datetime div.dt-datetime-iconRight button,
+div.dt-datetime div.dt-datetime-iconUp button,
+div.dt-datetime div.dt-datetime-iconDown button {
+  border: none;
+  background: transparent;
+  text-indent: 30px;
+  height: 100%;
+  width: 100%;
+  cursor: pointer;
+}
+div.dt-datetime div.dt-datetime-iconLeft {
+  position: absolute;
+  top: 5px;
+  left: 5px;
+  background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAeCAYAAAAsEj5rAAAAUklEQVR42u3VMQoAIBADQf8Pgj+OD9hG2CtONJB2ymQkKe0HbwAP0xucDiQWARITIDEBEnMgMQ8S8+AqBIl6kKgHiXqQqAeJepBo/z38J/U0uAHlaBkBl9I4GwAAAABJRU5ErkJggg==");
+}
+div.dt-datetime div.dt-datetime-iconRight {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAeCAYAAAAsEj5rAAAAU0lEQVR42u3VOwoAMAgE0dwfAnNjU26bYkBCFGwfiL9VVWoO+BJ4Gf3gtsEKKoFBNTCoCAYVwaAiGNQGMUHMkjGbgjk2mIONuXo0nC8XnCf1JXgArVIZAQh5TKYAAAAASUVORK5CYII=");
+}
+div.dt-datetime div.dt-datetime-iconUp {
+  height: 20px;
+  background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAALCAMAAABf9c24AAAAFVBMVEX///99fX1+fn57e3t6enoAAAAAAAC73bqPAAAABnRSTlMAYmJkZt92bnysAAAAL0lEQVR4AWOgJmBhxCvLyopHnpmVjY2VCadeoCxIHrcsWJ4RlyxCHlMWCTBRJxwAjrIBDMWSiM0AAAAASUVORK5CYII=");
+}
+div.dt-datetime div.dt-datetime-iconDown {
+  height: 20px;
+  background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAALCAMAAABf9c24AAAAFVBMVEX///99fX1+fn57e3t6enoAAAAAAAC73bqPAAAABnRSTlMAYmJkZt92bnysAAAAMElEQVR4AWOgDmBiRQIsmPKMrGxQgJDFlEfIYpoPk8Utz8qM232MYFfhkQfKUg8AANefAQxecJ58AAAAAElFTkSuQmCC");
+}
+
+div.dt-datetime-error {
+  clear: both;
+  padding: 0 1em;
+  max-width: 240px;
+  font-size: 11px;
+  line-height: 1.25em;
+  text-align: center;
+  color: #b11f1f;
+}
+
+div.dt-button-collection {
+  overflow: visible !important;
+}
+
+.dtsb-greyscale {
+  border: 1px solid #cecece !important;
+}
+
+div.dtsb-logicContainer .dtsb-greyscale {
+  border: none !important;
+}
+
+div.dtsb-searchBuilder {
+  justify-content: space-evenly;
+  cursor: default;
+  margin-bottom: 1em;
+  text-align: left;
+}
+div.dtsb-searchBuilder button.dtsb-button,
+div.dtsb-searchBuilder select {
+  font-size: 1em;
+}
+div.dtsb-searchBuilder div.dtsb-titleRow {
+  justify-content: space-evenly;
+  margin-bottom: 0.5em;
+}
+div.dtsb-searchBuilder div.dtsb-titleRow div.dtsb-title {
+  display: inline-block;
+  padding-top: 6px;
+}
+div.dtsb-searchBuilder div.dtsb-titleRow button.dtsb-clearAll {
+  float: right;
+  margin-bottom: 0.333em;
+}
+div.dtsb-searchBuilder div.dtsb-vertical .dtsb-value, div.dtsb-searchBuilder div.dtsb-vertical .dtsb-data, div.dtsb-searchBuilder div.dtsb-vertical .dtsb-condition {
+  display: block;
+}
+div.dtsb-searchBuilder div.dtsb-group {
+  position: relative;
+  clear: both;
+  margin-bottom: 0.8em;
+}
+div.dtsb-searchBuilder div.dtsb-group button.dtsb-clearGroup {
+  margin: 2px;
+  text-align: center;
+  padding: 0;
+}
+div.dtsb-searchBuilder div.dtsb-group div.dtsb-logicContainer {
+  -webkit-transform: rotate(90deg);
+  -moz-transform: rotate(90deg);
+  -o-transform: rotate(90deg);
+  -ms-transform: rotate(90deg);
+  transform: rotate(90deg);
+  position: absolute;
+  margin-top: 0.8em;
+  margin-right: 0.8em;
+}
+div.dtsb-searchBuilder div.dtsb-group div.dtsb-criteria {
+  margin-bottom: 0.8em;
+}
+div.dtsb-searchBuilder div.dtsb-group div.dtsb-criteria select.dtsb-dropDown,
+div.dtsb-searchBuilder div.dtsb-group div.dtsb-criteria input.dtsb-input {
+  padding: 0.4em;
+  margin-right: 0.8em;
+  max-width: 20em;
+}
+div.dtsb-searchBuilder div.dtsb-group div.dtsb-criteria select.dtsb-dropDown option.dtsb-notItalic,
+div.dtsb-searchBuilder div.dtsb-group div.dtsb-criteria input.dtsb-input option.dtsb-notItalic {
+  font-style: normal;
+}
+div.dtsb-searchBuilder div.dtsb-group div.dtsb-criteria select.dtsb-italic {
+  font-style: italic;
+}
+div.dtsb-searchBuilder div.dtsb-group div.dtsb-criteria div.dtsb-buttonContainer {
+  float: right;
+  display: inline-block;
+}
+div.dtsb-searchBuilder div.dtsb-group div.dtsb-criteria div.dtsb-buttonContainer button.dtsb-delete, div.dtsb-searchBuilder div.dtsb-group div.dtsb-criteria div.dtsb-buttonContainer button.dtsb-right, div.dtsb-searchBuilder div.dtsb-group div.dtsb-criteria div.dtsb-buttonContainer button.dtsb-left {
+  margin-right: 0.8em;
+}
+div.dtsb-searchBuilder div.dtsb-group div.dtsb-criteria div.dtsb-buttonContainer button.dtsb-delete:last-child, div.dtsb-searchBuilder div.dtsb-group div.dtsb-criteria div.dtsb-buttonContainer button.dtsb-right:last-child, div.dtsb-searchBuilder div.dtsb-group div.dtsb-criteria div.dtsb-buttonContainer button.dtsb-left:last-child {
+  margin-right: 0;
+}
+div.dtsb-searchBuilder div.dtsb-group div.dtsb-criteria span.dtsp-joiner {
+  margin-right: 0.8em;
+}
+
+div.dtsb-searchBuilder div.dtsb-titleRow {
+  height: 40px;
+}
+div.dtsb-searchBuilder div.dtsb-titleRow div.dtsb-title {
+  padding-top: 10px;
+}
+div.dtsb-searchBuilder div.dtsb-group button.dtsb-clearGroup {
+  margin-right: 8px;
+}
+div.dtsb-searchBuilder div.dtsb-group div.dtsb-criteria .form-control {
+  width: auto;
+  display: inline-block;
+}
+div.dtsb-searchBuilder div.dtsb-group div.dtsb-criteria select.dtsb-condition {
+  border-color: #28a745;
+}
+div.dtsb-searchBuilder div.dtsb-group div.dtsb-criteria select.dtsb-data {
+  border-color: #dc3545;
+}
+div.dtsb-searchBuilder div.dtsb-group div.dtsb-criteria select.dtsb-value, div.dtsb-searchBuilder div.dtsb-group div.dtsb-criteria input.dtsb-value {
+  border-color: #007bff;
+}
+div.dtsb-searchBuilder div.dtsb-group div.dtsb-logicContainer {
+  border-radius: 4px;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  align-content: flex-start;
+  align-items: flex-start;
+  margin-top: 10px;
+}
+div.dtsb-searchBuilder div.dtsb-group div.dtsb-logicContainer button.dtsb-logic {
+  border: none;
+  border-radius: 0px;
+  flex-grow: 1;
+  flex-shrink: 0;
+  flex-basis: 40px;
+  margin: 0px;
+}
+div.dtsb-searchBuilder div.dtsb-group div.dtsb-logicContainer button.dtsb-clearGroup {
+  border: none;
+  border-radius: 0px;
+  width: 30px;
+  margin: 0px;
 }
 
 
@@ -826,6 +1196,11 @@ div.dtsp-topRow button.dtsp-searchIcon {
   background-repeat: no-repeat;
   background-position: center;
   background-size: 12px;
+}
+
+div.dtsp-panesContainer div.dtsp-searchPanes div.dtsp-searchPane table thead th,
+div.dtsp-panesContainer div.dtsp-searchPanes div.dtsp-searchPane table thead td {
+  width: 100% !important;
 }
 
 div.dt-button-collection {
@@ -915,6 +1290,9 @@ div.dt-button-collection {
 div.dtsp-panesContainer {
   width: 100%;
 }
+div.dtsp-panesContainer div.dataTables_wrapper {
+  width: 100%;
+}
 
 div.dtsp-searchPanes {
   display: flex;
@@ -930,6 +1308,19 @@ div.dtsp-searchPanes button.btn {
 }
 div.dtsp-searchPanes button.dtsp-clearAll {
   max-width: 50px;
+}
+
+div.dtsp-columns-1,
+div.dtsp-columns-2,
+div.dtsp-columns-3,
+div.dtsp-columns-4,
+div.dtsp-columns-5,
+div.dtsp-columns-6,
+div.dtsp-columns-7,
+div.dtsp-columns-8,
+div.dtsp-columns-9 {
+  padding-left: 0px;
+  padding-right: 0px;
 }
 
 div.dtsp-searchPane {
@@ -976,6 +1367,17 @@ div.dtsp-searchPane div.dtsp-topRow div.dtsp-subRows {
 div.dtsp-searchPane div.dtsp-topRow div.row {
   width: 100%;
 }
+div.dtsp-searchPane div.dtsp-topRow button {
+  min-width: 35px;
+  max-width: 35px;
+  border: 1px solid #ced4da;
+}
+div.dtsp-searchPane div.dtsp-topRow div.dtsp-subRow2 {
+  margin-left: 5px;
+}
+div.dtsp-searchPane div.dtsp-topRow button.clearButton {
+  padding-left: 10px;
+}
 div.dtsp-searchPane thead {
   display: none;
 }
@@ -1002,11 +1404,33 @@ div.dtsp-searchPane div.dataTables_scrollBody {
 div.dtsp-searchPane div.dataTables_scrollBody:hover {
   border: 2px solid #cfcfcf !important;
 }
-div.dtsp-searchPane div.dataTables_scrollBody table tbody tr span.badge {
-  float: right;
+div.dtsp-searchPane div.dataTables_scrollBody table {
+  table-layout: fixed;
+}
+div.dtsp-searchPane div.dataTables_scrollBody table tbody tr td.dtsp-nameColumn {
+  width: 100% !important;
+}
+div.dtsp-searchPane div.dataTables_scrollBody table tbody tr div.dtsp-nameCont {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-content: flex-start;
+  align-items: flex-start;
+}
+div.dtsp-searchPane div.dataTables_scrollBody table tbody tr div.dtsp-nameCont span.dtsp-name {
+  text-overflow: ellipsis;
+  overflow: hidden;
+  display: inline-block;
+  vertical-align: middle;
+  white-space: nowrap;
+  flex-grow: 1;
+}
+div.dtsp-searchPane div.dataTables_scrollBody table tbody tr div.dtsp-nameCont span.badge {
   min-width: 30px;
   display: inline-block;
   line-height: 1;
+  margin-top: 3.5px;
 }
 div.dtsp-searchPane div.dataTables_scrollBody table tbody tr td.dtsp-countColumn {
   text-align: right;
@@ -1015,6 +1439,7 @@ div.dtsp-searchPane .dtsp-searchIcon {
   display: block;
   position: relative;
   padding: 18px 13px;
+  border: 1px solid #ced4da;
 }
 div.dtsp-searchPane div.dataTables_wrapper div.dataTables_filter {
   display: none;
@@ -1056,8 +1481,8 @@ div.dtsp-hidden {
 
 @media screen and (max-width: 767px) {
   div.dtsp-columns-4,
-  div.dtsp-columns-5,
-  div.dtsp-columns-6 {
+div.dtsp-columns-5,
+div.dtsp-columns-6 {
     max-width: 31% !important;
     min-width: 31% !important;
   }
