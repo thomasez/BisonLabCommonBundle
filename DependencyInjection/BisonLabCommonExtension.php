@@ -28,7 +28,7 @@ class BisonLabCommonExtension extends Extension
                 $container->getParameter('kernel.project_dir').'/config/packages'
                 )
             ));
-        $loader->load('services.yml');
-        $loader->load('contexts.yml');
+        $loader->load('services.yaml');
+        $loader->load('contexts.yaml');
     }
 }
