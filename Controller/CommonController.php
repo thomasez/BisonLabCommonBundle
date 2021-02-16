@@ -188,6 +188,7 @@ class CommonController extends AbstractController
         foreach ($columns as $c) {
             $aliases[$c['data']] = 's.' . $c['data'];
         }
+
         /*
          * Gonna build the request params here. Not liking giving out _GET to
          * the bundle. Better run it through some sanitizing in the symfony
@@ -210,11 +211,55 @@ class CommonController extends AbstractController
             $request_params['start'] = $request->get('start');
         if ($d = $request->get('length'))
             $request_params['length'] = $request->get('length');
-        if ($d = $request->get('search'))
-            $request_params['search'] = $request->get('search');
         if ($d = $request->get('draw'))
             $request_params['draw'] = $request->get('draw');
 
+        /*
+         * Doing my own search. Should consider hacking this into the
+         * datatablesbundle since the problem with searching on numbers will be
+         * around.
+         */
+        if ($search_params = $request->get('search')) {
+            // $request_params['search'] = $request->get('search');
+            $cn = $repo->getClassName();
+            $em = $qb->getEntityManager();
+            $md = $em->getClassMetadata($cn);
+
+            $columnField = "data";
+            $columns = &$request_params['columns'];
+            $c = count($columns);
+            $string_search = false;
+            $integer_search = false;
+            if ($value = trim($search_params['value'])) {
+                $orX = $qb->expr()->orX();
+                for ($i = 0; $i < $c; $i++) {
+                    $column = &$columns[$i];
+                    if ($column['searchable'] == 'true') {
+                        $type = $md->fieldMappings[$column[$columnField]]['type'];
+                        if (array_key_exists($column[$columnField], $aliases)) {
+                            $column[$columnField] = $aliases[$column[$columnField]];
+                        }
+                        // TODO: Any other integer like types?
+                        if ($type == "integer") {
+                            if (is_numeric($value)) {
+                                $orX->add($qb->expr()->eq($column[$columnField], ':int_search'));
+                                $integer_search = true;
+                            }
+                        // TODO: Any other types not able to handle liower or
+                        // like??
+                        } else {
+                            $searchColumn = "lower(" . $column[$columnField] . ")";
+                            $orX->add($qb->expr()->like($searchColumn, 'lower(:search)'));
+                            $string_search = true;
+                        }
+                    }
+                }
+                if ($integer_search)
+                    $qb->andWhere($orX)->setParameter('int_search', $value);
+                if ($string_search)
+                    $qb->andWhere($orX)->setParameter('search', "%{$value}%");
+            }
+        }
         $datatables = (new \Doctrine\DataTables\Builder())
             ->withColumnAliases($aliases)
             ->withIndexColumn('s.id')
