@@ -436,17 +436,6 @@ trigger_error('The '.__METHOD__.' method is deprecated. Please use something els
         return $filter_by;
     }
 
-    private function _serialize($data, $format)
-    {
-        if (method_exists($data, '__toArray')) {
-            $serialized = $data->__toArray();
-        } else {
-            $serializer = $this->get('jms_serializer');
-            $serialized = $serializer->serialize($data, $format, SerializationContext::create()->enableMaxDepthChecks());
-        }
-        return $serialized;
-    }
-
     /* Masking stuff. */
 
     /* Or kinda. Right now I cannot just throw an exception in one case and not
