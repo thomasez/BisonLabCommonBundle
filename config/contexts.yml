@@ -1,4 +1,0 @@
-#
-# Fallback.
-parameters:
-    app.contexts: []

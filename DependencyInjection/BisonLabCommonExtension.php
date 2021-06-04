@@ -22,7 +22,7 @@ class BisonLabCommonExtension extends Extension
 
         $loader = new Loader\YamlFileLoader($container,
             new FileLocator(array(
-                __DIR__.'/../config',
+                __DIR__.'/../Resources/config',
                 $container->getParameter('kernel.project_dir').'/app/config/',
                 // Kinda forward compatibility.
                 $container->getParameter('kernel.project_dir').'/config/packages'
