@@ -1,5 +1,10 @@
 services:
     BisonLab\CommonBundle\Command\:
+<<<<<<< HEAD:Resources/config/services.yml
+        resource: '../../Command/*'
+        tags: ['console.command']
+
+=======
         resource: '../Command/*'
         autowire: true
         tags: ['console.command']
@@ -11,6 +16,7 @@ services:
         calls:
             - [ setContainer, ['@service_container'] ]
 
+>>>>>>> 41775db... Moving stuff around to look more like newer bundles.:config/services.yml
     bisonlabcommon.commonstuff:
         class: BisonLab\CommonBundle\Service\CommonStuff
         arguments: [ '@fos_user.user_manager', '@security.token_storage' ]
