@@ -2,11 +2,26 @@
 
 {% block content %}
 
+{% if exception is defined and exception is not null %}
 <h1>Dang! An Error Occurred</h1>
-<h3>The server returned a "{{ status_code }} {{ status_text }}".</h3>
 
-<p><strong>The message:</strong> {{ exception.message }}</strong></p>
-<p>{{ message }}</p>
+<p>The server returned a "{{ status_code }} {{ status_text }}".</p>
+
+<pre><strong> {{ exception.message }}</strong></pre>
+
+{% if message is defined %}
+<pre>{{ message }}</pre>
+{% endif %}
+{% endif %}
+{# coming from returnRestData #}
+{% if data is defined and data is not null %}
+<h1>Sorry, something did not go according to our plan.</h1>
+
+<p>The server returned a "{{ code }} {{ status }}".</p>
+
+<pre>{{ message }}</pre>
+
+{% endif %}
 
 {% if url is defined %}
 <p><a href="{{ url.url }}">{{ url.text }}</a></p>
@@ -14,9 +29,9 @@
 
 {# I may have a dream.. #}
 {% if stacktrace is defined %}
-<p>
+<pre>
 {{ stacktrace }}
-</p>
+</pre>
 {% endif %}
 
 {% endblock %}

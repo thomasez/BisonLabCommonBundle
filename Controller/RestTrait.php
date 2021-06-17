@@ -273,12 +273,15 @@ Edge, Windows
             'message' => $message,
             'code' => $code
         );
-        return $this->returnRestData($request, $jsend, array(), $code);
+        return $this->returnRestData($request, $jsend, ['html' => '@BisonLabCommon/error.html.twig'], $code);
     }
 
-    /* Problem here? No request object I can use to find the Accept headers and
+    /* 
+     * Problem here? No request object I can use to find the Accept headers and
      * so on. This function should *not* be used. Use returnError or returnFail
-     * instead. */
+     * instead.
+     * Or it could be renamed to "returnRestError"
+     */
     public function returnErrorResponse($message, $code, $errors = null) 
     {
         $msg = array('code' => $code, 'message' => $message);
