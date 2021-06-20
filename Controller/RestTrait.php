@@ -320,5 +320,4 @@ Edge, Windows
         }
         return $serialized;
     }
-
 }
