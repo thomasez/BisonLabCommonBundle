@@ -24,6 +24,16 @@ class CommonController extends AbstractController
     use RestTrait;
 
     /* 
+     * BC fix.
+     */
+    protected $form_factory;
+
+    public function setFormFactory($form_factory)
+    {
+       $this->form_factory = $form_factory;
+    }
+
+    /* 
      * Common controller actions
      */
 
