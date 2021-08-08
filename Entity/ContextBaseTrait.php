@@ -70,17 +70,6 @@ trait ContextBaseTrait
         return $this->traitConstruct($options);
     }
 
-    /*
-     * I'll have this one before all those setters and getters.
-     * It's a default and if you do not want logging, copy this to your
-     * context and return true.
-     * Alas, default behaviour is to log context changes.
-     */
-    public function doNotLog()
-    {
-        return false;
-    }
-
     /**
      * Get id
      *
@@ -216,67 +205,6 @@ trait ContextBaseTrait
         return $this->url;
     }
 
-    public function __toString()
-    {
-        return (string)$this->id;
-    }
-
-    public function setConfig($config = array())
-    {
-        $this->config = $config;
-    }
-
-    public function getConfig()
-    {
-        return $this->config;
-    }
-
-    /**
-     * Get label
-     *
-     * @return string 
-     */
-    public function getLabel()
-    {
-        return $this->getConfig()['label'];
-    }
-
-    /**
-     * Get Context type
-     *
-     * @return string 
-     */
-    public function getContextType()
-    {
-        return $this->getConfig()['type'];
-    }
-
-    /**
-     * Get Default (Not that I have any idea if we need this or not..)
-     *
-     * @return boolean 
-     */
-    public function getRequired()
-    {
-        return isset($this->config['required']);
-    }
-
-    /*
-     * This is decided by the context type and the existance of an external id.
-     * It should be no context object if there are no external ID but that's
-     * another story.
-     */
-    public function isDeleteable()
-    {
-        // It's not really working well as it is now. Not bad enough so we'll
-        // keep it but if you end up having issues, just clone the function
-        // into your cojntext object and return true.
-        return (
-            ($this->getConfig()['type'] == 'external_master' || 
-             $this->getConfig()['type'] == 'master') 
-            && $this->getExternalId()) ? false : true;
-    }
-
     /**
      * Generic main object setting.
      *
@@ -303,5 +231,96 @@ trait ContextBaseTrait
     public function getOwnerId()
     {
         return $this->getOwner()->getid();
+    }
+
+    public function __toString()
+    {
+        return (string)$this->id;
+    }
+
+    public function setConfig($config = array())
+    {
+        $this->config = $config;
+    }
+
+    public function getConfig()
+    {
+        return $this->config;
+    }
+
+    /**
+     * Get label
+     *
+     * @return string 
+     */
+    public function getLabel()
+    {
+        return $this->config['label'];
+    }
+
+    /**
+     * Get Context type
+     *
+     * @return string 
+     */
+    public function getContextType()
+    {
+        return $this->config['type'];
+    }
+
+    /*
+     * This is decided by the context type and the existance of an external id.
+     * It should be no context object if there are no external ID but that's
+     * another story.
+     */
+    public function isDeleteable()
+    {
+        // It's not really working well as it is now. Not bad enough so we'll
+        // keep it but if you end up having issues, just clone the function
+        // into your context object and return true.
+        return (
+            ($this->getConfig()['type'] == 'external_master' || 
+             $this->getConfig()['type'] == 'master') 
+            && $this->getExternalId()) ? false : true;
+    }
+
+    /*
+     * Default behaviour is NOT to accept the same context used more than
+     * one. Not really sure I agree with myself here, but it makes
+     * the most sense.
+     */
+    public function isUnique()
+    {
+        return $this->config['unique'] ?? true;
+    }
+
+    /*
+     * If there can be only one of these per Owner.
+     * This is default true, it usually makes no sense with more.
+     */
+    public function getOnePerOwner()
+    {
+        return $this->config['one_per_owner'] ?? true;
+    }
+
+    /**
+     * Required. A flag for use if you want the form to have required set.
+     * I can add a check for this in the EventListener, but the only way I can
+     * "report" back to the application is through Exceptions, which I hate.
+     * But using a custom exception would make it kinda easier.
+     *
+     * @return boolean 
+     */
+    public function getRequired()
+    {
+        return $this->config['required'] ?? false;
+    }
+
+    /*
+     * Alas, default behaviour is to log context changes.
+     */
+    public function doNotLog()
+    {
+        return $this->config['no_logging'] ?? false;
     }
 }

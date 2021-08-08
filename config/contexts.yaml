@@ -1,4 +1,28 @@
 #
-# Fallback.
+# Example and fallback
 parameters:
     app.contexts: []
+#        # The bundle name.
+#        App:
+#            # Name of the Owner Entity.
+#            User:
+#                # The system we are pointing at:
+#                economy:
+#                   -
+#                       label: "Employee number"
+#                       object_name: employee
+#                       # external_master, readonly, informal
+#                       type: external_master
+#                       # template, manual, editable
+#                       url_from_method: template
+#                       url_template: "%env(ECONOMY_BASE_URL)%/employee/{{external_id}}"
+#                       object_name: employee
+#                       # Adds a required tag to the forms.
+#                       required: false
+#                       # Disables "Context History"
+#                       no_logging: false
+#                       # Only allowed to use the external_id once per set of
+#                       # system and object_name per owner.
+#                       unique: true
+#                       # Only possible with one context per set per owner.
+#                       one_per_owner: true

@@ -23,6 +23,7 @@ services:
         class: BisonLab\CommonBundle\EventListener\ChangeTracker
         tags:
             - { name: doctrine.event_listener, event: preUpdate  }
+            - { name: doctrine.event_listener, event: onFlush  }
 
     bisonlabcommon.contexthistory:
         class: BisonLab\CommonBundle\EventListener\ContextHistoryListener

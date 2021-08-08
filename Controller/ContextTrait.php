@@ -114,7 +114,7 @@ trait ContextTrait
                 $form_name  = "context__" . $system_name . "__" . $object_name;
                 $form_label = $context_object_config['label'];
 
-                // TODO: Use types more active. Like EternalId should be
+                // TODO: Use types more active. Like ExternalId should be
                 // compulsary in more or less all cases except
                 // "informal_url_only".
                 $has_value = false;
@@ -136,9 +136,11 @@ trait ContextTrait
                           'label' => 'External ID', 'required' => $required));
                 }
 
-                /* Only these two methods shall make it possible to edit/add a
+                /*
+                 * Only these two methods shall make it possible to edit/add a
                  * URL in the forms. The rest will be calculated
-                 * automatically.*/
+                 * automatically.
+                 */
                 if (!isset($context_object_config['url_from_method'])) {
                     error_log("No url_from_method for " . $systen_name
                             . "::" . $object_name);
