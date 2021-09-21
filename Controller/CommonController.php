@@ -192,18 +192,11 @@ class CommonController extends AbstractController
 
         if ($filter_by) {
             foreach ($filter_by as $key => $value) {
-                $qb->andWhere('s.'.$key .' = :value');
-                $qb->setParameter('value', $value);
+                $qb->andWhere('s.'.$key .' = :' . $key . '_value');
+                $qb->setParameter($key . '_value', $value);
             }
         }
         
-        // Cheating, and should rather hack the DataTables\Builder instead.
-        // But later.
-        $columns = $request->get('columns');
-        $aliases = array();
-        foreach ($columns as $c) {
-            $aliases[$c['data']] = 's.' . $c['data'];
-        }
 
         /*
          * Gonna build the request params here. Not liking giving out _GET to
@@ -235,20 +228,61 @@ class CommonController extends AbstractController
          * datatablesbundle since the problem with searching on numbers will be
          * around.
          */
-        if ($search_params = $request->get('search')) {
-            // $request_params['search'] = $request->get('search');
-            $cn = $repo->getClassName();
-            $em = $qb->getEntityManager();
-            $md = $em->getClassMetadata($cn);
+        $columns = &$request_params['columns'];
+        $columnField = "data";
+        $col_count = count($columns);
+        $cn = $repo->getClassName();
+        $em = $qb->getEntityManager();
+        $md = $em->getClassMetadata($cn);
 
-            $columnField = "data";
-            $columns = &$request_params['columns'];
-            $c = count($columns);
+        // Cheating, and should rather hack the DataTables\Builder instead.
+        // But later.
+        $aliases = array();
+        foreach ($columns as $c) {
+            $aliases[$c['data']] = 's.' . $c['data'];
+        }
+
+        /*
+         * First, see if there are any specified search on a field.
+         */
+        // See if we can find key/value search columns here.
+        $specified_search = false;
+        foreach ($columns as $i => $col) {
+            if ($col['searchable'] == 'true' && 
+                    $sval = $col['search']['value']) {
+                $key = $col[$columnField];
+                // This is kinda repeating the one below.
+                $type = $md->fieldMappings[$key]['type'];
+                if (array_key_exists($key, $aliases)) {
+                    $alias = $aliases[$key];
+                }
+                // TODO: Any other integer like types?
+                if ($type == "integer") {
+                    if (is_numeric($value)) {
+                        $qb->andWhere($qb->expr()->eq($alias, ':int_' . $key));
+                        $qb->setParameter('int_' . $key, $sval);
+                    }
+                } else {
+                    $searchColumn = "lower(" . $alias . ")";
+                    $qb->andWhere($qb->expr()->like($searchColumn, 'lower(:string_' . $key . ')'));
+                    $qb->setParameter('string_' . $key, "%{$sval}%");
+                }
+                $specified_search = true;
+            }
+            // Take it a<way.
+            $request_params['columns'][$i]['search']['value'] = '';
+        }
+
+        /*
+         * Then, wide search, if not any specified
+         */
+        if (!$specified_search && $search_params = $request->get('search')) {
+            // $request_params['search'] = $request->get('search');
             $string_search = false;
             $integer_search = false;
             if ($value = trim($search_params['value'])) {
                 $orX = $qb->expr()->orX();
-                for ($i = 0; $i < $c; $i++) {
+                for ($i = 0; $i < $col_count; $i++) {
                     $column = &$columns[$i];
                     if ($column['searchable'] == 'true') {
                         $type = $md->fieldMappings[$column[$columnField]]['type'];
@@ -276,6 +310,17 @@ class CommonController extends AbstractController
                     $qb->andWhere($orX)->setParameter('search', "%{$value}%");
             }
         }
+
+        /*
+         * Do not let the datatables builder mess with this.
+         * (Yes, it should do it all, but it just does not to it for me.)
+         * My issues are kinda unknown, but it may be a combination of the code
+         * here and filters. Both the sone added here and a filter added in
+         * one of my applications.
+         * (Yes, could ask myself why I use the datatables bundle at all then.)
+         */
+        // unset($request_params['search']);
+
         $datatables = (new \Doctrine\DataTables\Builder())
             ->withColumnAliases($aliases)
             ->withIndexColumn('s.id')
