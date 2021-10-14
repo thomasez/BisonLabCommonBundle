@@ -153,9 +153,7 @@ Edge, Windows
         throw new \InvalidArgumentException("No data returned because of no matching Accept header.");
     }
 
-    /* This is more or less a hack. It does the job, but should probably be
-     * more integrated into the pagedIndexAction and pagedListByEntityAction so
-     * we can get the total and filtered count correct. 
+    /* This is more or less a hack.
      * It's only used when DataTables is in serverSide mode.
      * http://datatables.net/manual/server-side
      * (DataTables themselves menas there is no need for this until er are
