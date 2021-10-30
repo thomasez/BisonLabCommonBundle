@@ -1,4 +1,5 @@
-#services:
+services:
+
 #    BisonLab\CommonBundle\Command\:
 #        resource: '../Command/*'
 #        autowire: true
@@ -18,7 +19,7 @@
         tags:
             - { name: 'twig.extension' }
 
-    my.validator.twigvalidator:
+    bisonlab.validator.twigvalidator:
         class: BisonLab\CommonBundle\Form\Validator\TwigValidatorService
         public: true
         tags:

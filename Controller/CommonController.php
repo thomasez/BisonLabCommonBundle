@@ -20,7 +20,7 @@ use Symfony\Component\Serializer\Encoder\XmlEncoder;
 
 class CommonController extends AbstractController
 {
-    use ContextTrait;
+    use \BisonLab\ContextBundle\Controller\ContextTrait;
     use RestTrait;
 
     /* 
