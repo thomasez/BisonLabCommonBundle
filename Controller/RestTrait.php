@@ -187,7 +187,11 @@ Edge, Windows
         if ($request->get('draw'))
             return $this->returnAsDataTablesJson($request, $data);
 
-        $content = $this->_serialize($data, 'json');
+        if (is_object($data))
+            $content = $this->_serialize($data, 'json');
+        else
+            $content = json_encode($data);
+
         $headers = array();
 
         if ($request->get('callback')) { 
