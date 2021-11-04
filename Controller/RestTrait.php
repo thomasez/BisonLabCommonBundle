@@ -187,10 +187,7 @@ Edge, Windows
         if ($request->get('draw'))
             return $this->returnAsDataTablesJson($request, $data);
 
-        if (is_object($data))
-            $content = $this->_serialize($data, 'json');
-        else
-            $content = json_encode($data);
+        $content = $this->_serialize($data, 'json');
 
         $headers = array();
 
@@ -314,7 +311,7 @@ Edge, Windows
 
     private function _serialize($data, $format)
     {
-        if (method_exists($data, '__toArray')) {
+        if (is_object($data) && method_exists($data, '__toArray')) {
             $serialized = $data->__toArray();
         } else {
             $serializer = $this->get('jms_serializer');
