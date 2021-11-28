@@ -188,6 +188,7 @@ Edge, Windows
             return $this->returnAsDataTablesJson($request, $data);
 
         $content = $this->_serialize($data, 'json');
+
         $headers = array();
 
         if ($request->get('callback')) { 
@@ -310,7 +311,7 @@ Edge, Windows
 
     private function _serialize($data, $format)
     {
-        if (method_exists($data, '__toArray')) {
+        if (is_object($data) && method_exists($data, '__toArray')) {
             $serialized = $data->__toArray();
         } else {
             $serializer = $this->get('jms_serializer');
