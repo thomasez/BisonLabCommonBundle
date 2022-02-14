@@ -1,8 +1,9 @@
 services:
-    BisonLab\CommonBundle\Command\:
-        resource: '../Command/*'
-        autowire: true
-        tags: ['console.command']
+
+#    BisonLab\CommonBundle\Command\:
+#        resource: '../Command/*'
+#        autowire: true
+#        tags: ['console.command']
 
 # There is nothing left to control.
 #    BisonLab\CommonBundle\Controller\:
@@ -12,37 +13,13 @@ services:
 #        calls:
 #            - [ setContainer, ['@service_container'] ]
 
-    my.inject_context_config:
-        class: BisonLab\CommonBundle\EventListener\InsertConfigIntoEntitiesListener
-        autowire: true
-        tags:
-            - { name: doctrine.event_listener, event: postLoad  }
-            - { name: doctrine.event_listener, event: prePersist  }
-
-    bisonlabcommon.changetracker:
-        class: BisonLab\CommonBundle\EventListener\ChangeTracker
-        tags:
-            - { name: doctrine.event_listener, event: preUpdate  }
-            - { name: doctrine.event_listener, event: onFlush  }
-
-    bisonlabcommon.contexthistory:
-        class: BisonLab\CommonBundle\EventListener\ContextHistoryListener
-        tags:
-            - { name: doctrine.event_listener, event: onFlush  }
-        arguments: ['@security.token_storage', '@doctrine' ]
-
-    external_retriever:
-        class: BisonLab\CommonBundle\Service\ExternalRetriever
-        public: true
-        arguments: ['@service_container']
-
     twig.extension.pretty_print:
         class: BisonLab\CommonBundle\Extension\TwigExtensionPrettyPrint
         public: true
         tags:
             - { name: 'twig.extension' }
 
-    my.validator.twigvalidator:
+    bisonlab.validator.twigvalidator:
         class: BisonLab\CommonBundle\Form\Validator\TwigValidatorService
         public: true
         tags:

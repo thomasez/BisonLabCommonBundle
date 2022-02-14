@@ -6,7 +6,6 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Serializer\Normalizer\GetSetMethodNormalizer;
 use Symfony\Component\Serializer\Serializer;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
-use JMS\Serializer\SerializationContext;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
@@ -20,7 +19,7 @@ use Symfony\Component\Serializer\Encoder\XmlEncoder;
 
 class CommonController extends AbstractController
 {
-    use ContextTrait;
+    use \BisonLab\ContextBundle\Controller\ContextTrait;
     use RestTrait;
 
     /* 
@@ -28,6 +27,7 @@ class CommonController extends AbstractController
      */
     protected $form_factory;
     protected $parameter_bag;
+    protected $serializer;
 
     public function setFormFactory($form_factory)
     {
@@ -37,6 +37,11 @@ class CommonController extends AbstractController
     public function setParameterBag($parameter_bag)
     {
        $this->parameter_bag = $parameter_bag;
+    }
+
+    public function setSerializer($serializer)
+    {
+       $this->serializer = $serializer;
     }
 
     /* 

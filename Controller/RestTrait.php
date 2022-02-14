@@ -10,11 +10,6 @@ use JMS\Serializer\SerializationContext;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Form\Extension\Core\Type\FormType;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
-use Symfony\Component\Form\Extension\Core\Type\SubmitType;
-use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 
 use Symfony\Component\Serializer\Encoder\XmlEncoder;
 
@@ -204,7 +199,7 @@ Edge, Windows
     public function returnAsXml($request, $data, $status_code = 200) 
     {
         $headers["Content-Type"] = "application/xml";
-        $content .= $this->serializer->_serialize($data, 'xml');
+        $content .= $this->_serialize($data, 'xml');
         return new Response($content, $status_code, $headers);
     }
 
@@ -314,8 +309,12 @@ Edge, Windows
         if (is_object($data) && method_exists($data, '__toArray')) {
             $serialized = $data->__toArray();
         } else {
-            $serializer = $this->get('jms_serializer');
-            $serialized = $serializer->serialize($data, $format, SerializationContext::create()->enableMaxDepthChecks());
+            if ($this->serializer) {
+                $serialized = $this->serializer->serialize($data, $format);
+            } else {
+                $serializer = $this->get('jms_serializer');
+                $serialized = $serializer->serialize($data, $format, SerializationContext::create()->enableMaxDepthChecks());
+            }
         }
         return $serialized;
     }

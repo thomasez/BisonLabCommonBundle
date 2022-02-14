@@ -13,8 +13,7 @@ use Twig\Environment as TwigEnvironment;
 
 class TwigExtensionCsv2Html extends AbstractExtension
 {
-   
-   public function getFilters()
+   public function getFilters(): array
    {
         return [ new TwigFunction('csv2html',
                     [$this, 'twig_csv2html'],
@@ -27,7 +26,7 @@ class TwigExtensionCsv2Html extends AbstractExtension
      *
      * @return string The extension name
      */
-    public function getName()
+    public function getName(): string
     {
         return 'csv2html';
     }

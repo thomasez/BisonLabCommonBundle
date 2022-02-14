@@ -16,7 +16,7 @@ class TwigExtensionPrettyPrint extends AbstractExtension
 {
     private $attributes;
 
-    public function getFilters()
+    public function getFilters(): array
     {
         return [
             new TwigFilter('prettyprint',
