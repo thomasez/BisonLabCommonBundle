@@ -119,11 +119,11 @@ Edge, Windows
                     if (isset($templates['html'])) {
                         // Here we'll let the programmer choose.
                         return $this->render($templates['html'],
-                            array(
+                            array_merge($data, array(
                                 // That name is so wrong, but can I remove it?
                                 'data_entity' => $data,
                                 'data' => $data,
-                                ),
+                                )),
                                 new Response('', $status_code)
                                 );
                     } else {
