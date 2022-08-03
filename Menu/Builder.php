@@ -9,7 +9,6 @@ use Symfony\Component\Routing\Exception\RouteNotFoundException;
 
 /*
  * This can be used by itself or called from another builder.
- * If you do the latter, remember to send a menu object and the container.
  * (It's not injected when you do.)
  */
 class Builder implements ContainerAwareInterface
@@ -18,21 +17,13 @@ class Builder implements ContainerAwareInterface
 
     public function userMenu(FactoryInterface $factory, array $options)
     {
-        $menu = $container = null;
-        if (isset($options['menu'])) {
-            $menu = $options['menu'];
-        } else {
-            $menu = $factory->createItem('root');
-        }
-        if (isset($options['container'])) {
-            $container = $options['container'];
-        } else {
-            $container = $this->container;
-        }
-        $user = $container->get('security.token_storage')->getToken()->getUser();
-        $username = $user->getUserName();
+        $menu = null;
+        $menu = $options['menu'] ?? $factory->createItem('root');
+        $user = $options['user'];
 
+        $username = $user->getUserName();
         $usermenu = $menu->addChild($username);
+
         // This pythonesque way is suggested by the symfony docs.
         try {
             $usermenu->addChild('Profile', array('route' => 'bisonlab_user_profile'));
