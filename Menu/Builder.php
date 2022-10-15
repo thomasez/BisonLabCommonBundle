@@ -5,6 +5,7 @@ namespace BisonLab\CommonBundle\Menu;
 use Knp\Menu\FactoryInterface;
 use Symfony\Component\Routing\Exception\RouteNotFoundException;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 
 /*
  * This can be used by itself or called from another builder.
