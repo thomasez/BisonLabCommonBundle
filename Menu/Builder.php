@@ -3,18 +3,19 @@
 namespace BisonLab\CommonBundle\Menu;
 
 use Knp\Menu\FactoryInterface;
-use Symfony\Component\DependencyInjection\ContainerAwareInterface;
-use Symfony\Component\DependencyInjection\ContainerAwareTrait;
 use Symfony\Component\Routing\Exception\RouteNotFoundException;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 /*
  * This can be used by itself or called from another builder.
- * If you do the latter, remember to send a menu object and the container.
- * (It's not injected when you do.)
  */
-class Builder implements ContainerAwareInterface
+class Builder
 {
-    use ContainerAwareTrait;
+    public function __construct(
+        private TokenStorageInterface $tokenStorage,
+        private ParameterBagInterface $params,
+    ) {
+    }
 
     public function userMenu(FactoryInterface $factory, array $options)
     {
@@ -24,12 +25,7 @@ class Builder implements ContainerAwareInterface
         } else {
             $menu = $factory->createItem('root');
         }
-        if (isset($options['container'])) {
-            $container = $options['container'];
-        } else {
-            $container = $this->container;
-        }
-        $user = $container->get('security.token_storage')->getToken()->getUser();
+        $user = $this->tokenStorage->getToken()->getUser();
         $username = $user->getUserName();
 
         $usermenu = $menu->addChild($username);
