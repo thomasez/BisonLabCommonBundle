@@ -309,11 +309,12 @@ Edge, Windows
         if (is_object($data) && method_exists($data, '__toArray')) {
             $serialized = $data->__toArray();
         } else {
-            if ($this->serializer) {
+            if ($this->serializer ?? null) {
                 $serialized = $this->serializer->serialize($data, $format);
+            } elseif ($this->jmsSerializer ?? null) {
+                $serialized = $this->jmsSerializer->serialize($data, $format, SerializationContext::create()->enableMaxDepthChecks());
             } else {
-                $serializer = $this->get('jms_serializer');
-                $serialized = $serializer->serialize($data, $format, SerializationContext::create()->enableMaxDepthChecks());
+                throw new \Exception("No serializer found or configured.");
             }
         }
         return $serialized;
