@@ -24,7 +24,7 @@ trait AttributesTrait
      * @ORM\Column(name="attributes", type="json", nullable=true)
      * @Gedmo\Versioned
      */
-    private $attributes;
+    private $attributes = [];
 
     /**
      * Set attribute
@@ -54,7 +54,7 @@ trait AttributesTrait
     public function getAttribute($Attribute)
     {
         $attributes = $this->getAttributes();
-        return isset($attributes[$Attribute]) ? $attributes[$Attribute] : null;
+        return $attributes[$Attribute] ?: null;
     }
 
     /**
@@ -76,7 +76,7 @@ trait AttributesTrait
      */
     public function getAttributes()
     {
-        return $this->attributes;
+        return $this->attributes ?: [];
     }
 
     /**
