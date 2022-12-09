@@ -54,7 +54,7 @@ trait AttributesTrait
     public function getAttribute($Attribute)
     {
         $attributes = $this->getAttributes();
-        return $attributes[$Attribute] ?: null;
+        return $attributes[$Attribute] ?? null;
     }
 
     /**
