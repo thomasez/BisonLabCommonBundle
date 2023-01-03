@@ -30,7 +30,6 @@ trait CommonControllerTrait
      */
     public function showLogPage($request, $access, $entity_name, $id, $options = array())
     {
-        $em = $this->getDoctrine()->getManagerForClass($entity_name);
         $entity = $this->entityManager->getRepository($entity_name)->find($id);
 
         if (!$entity) {
