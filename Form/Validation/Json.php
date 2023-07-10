@@ -8,6 +8,7 @@ use Symfony\Component\Validator\Constraint;
  * @Annotation
  */
 
+#[\Attribute(\Attribute::TARGET_PROPERTY)]
 class Json extends Constraint
 {
     public function validatedBy(): string

@@ -2,6 +2,10 @@
 
 namespace BisonLab\CommonBundle\Entity;
 
+use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Mapping\Annotation as Gedmo;
+use BisonLab\CommonBundle\Form\Validation\Json as JsonValidation;
+
 /*
  * This is the basic attributes stuff.
  * If you have to, override these functions in the Entity you need to do it.
@@ -15,15 +19,15 @@ namespace BisonLab\CommonBundle\Entity;
  * 
  * And yes, it makes setting attributes kinda messy.
  */
-
 trait AttributesTrait
 {
     /**
      * @var json $attributes
-     *
-     * @ORM\Column(name="attributes", type="json", nullable=true)
-     * @Gedmo\Versioned
      */
+    #[ORM\Column(name: 'attributes', type: 'json', nullable: true)]
+    #[Gedmo\Versioned]
+    #[Expose]
+    #[JsonValidation]
     private $attributes = [];
 
     /**
