@@ -5,9 +5,9 @@ namespace BisonLab\CommonBundle\Form\Validation;
 use Symfony\Component\Validator\Constraint;
 
 /**
- * @Annotation
+ * Symfony now has it's own Json validator.
+ * Use Assert\Json instead.
  */
-
 #[\Attribute(\Attribute::TARGET_PROPERTY)]
 class Json extends Constraint
 {

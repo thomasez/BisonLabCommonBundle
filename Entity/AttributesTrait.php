@@ -4,7 +4,6 @@ namespace BisonLab\CommonBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
-use BisonLab\CommonBundle\Form\Validation\Json as JsonValidation;
 
 /*
  * This is the basic attributes stuff.
@@ -27,7 +26,6 @@ trait AttributesTrait
     #[ORM\Column(name: 'attributes', type: 'json', nullable: true)]
     #[Gedmo\Versioned]
     #[Expose]
-    #[JsonValidation]
     private $attributes = [];
 
     /**
@@ -35,7 +33,7 @@ trait AttributesTrait
      *
      * @return $this
      */
-    public function setAttribute($Attribute, $value)
+    public function setAttribute(string $Attribute, $value)
     {
         // Gotta lowercase it all.
         $attribute = strtolower($Attribute);
@@ -55,7 +53,7 @@ trait AttributesTrait
      *
      * @return mixed 
      */
-    public function getAttribute($Attribute)
+    public function getAttribute(string $Attribute)
     {
         $attributes = $this->getAttributes();
         return $attributes[$Attribute] ?? null;
@@ -88,7 +86,7 @@ trait AttributesTrait
      *
      * @return array 
      */
-    public function getA($key = null)
+    public function getA(string $key)
     {
         return $this->getAttribute($key);
     }
