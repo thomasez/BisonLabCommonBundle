@@ -12,14 +12,15 @@
 {% if message is defined %}
 <pre>{{ message }}</pre>
 {% endif %}
+
 {% endif %}
 {# coming from returnRestData #}
 {% if data is defined and data is not null %}
 <h1>Sorry, something did not go according to our plan.</h1>
 
-<p>The server returned a "{{ code }} {{ status }}".</p>
+<p>The server returned a "{{ data.code }} {{ data.status }}".</p>
 
-<pre>{{ message }}</pre>
+<pre>{{ data.message }}</pre>
 
 {% endif %}
 
