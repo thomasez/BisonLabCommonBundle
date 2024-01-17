@@ -117,6 +117,7 @@ Edge, Windows
                                 // That name is so wrong, but can I remove it?
                                 'data_entity' => $data,
                                 'data' => $data,
+                                'status_code' => $status_code,
                                 ),
                                 new Response('', $status_code)
                                 );
@@ -222,7 +223,8 @@ Edge, Windows
     {
         $jsend = array(
             'status' => 'success',
-            'data' => $data
+            'data' => $data,
+            'code' => $code
         );
         return $this->returnRestData($request, $jsend, array(), $code);
     }
