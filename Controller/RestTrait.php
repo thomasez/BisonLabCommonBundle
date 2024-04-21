@@ -310,10 +310,11 @@ Edge, Windows
         if (is_object($data) && method_exists($data, '__toArray')) {
             $serialized = $data->__toArray();
         } else {
-            if ($this->serializer ?? null) {
-                $serialized = $this->serializer->serialize($data, $format);
-            } elseif ($this->jmsSerializer ?? null) {
+            // This is in a trait, this may not even be set, gotta null check.
+            if ($this->jmsSerializer ?? null) {
                 $serialized = $this->jmsSerializer->serialize($data, $format, SerializationContext::create()->enableMaxDepthChecks());
+            } elseif ($this->serializer ?? null) {
+                $serialized = $this->serializer->serialize($data, $format);
             } else {
                 throw new \Exception("No serializer found or configured.");
             }
