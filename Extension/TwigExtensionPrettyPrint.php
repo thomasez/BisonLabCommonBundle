@@ -44,9 +44,9 @@ class TwigExtensionPrettyPrint extends AbstractExtension
     function pretty($data)
     {
         if (empty($data)) { return ""; }
-        echo $this->composeTag('table');
+        echo $this->composeTag('table', ['class' => 'prettyprint']);
         $tr = $this->composeTag('tr');
-        $th = $this->composeTag('th', array('valign' => 'top'));
+        $th = $this->composeTag('th', ['valign' => 'top']);
         $td = $this->composeTag('td');
 
         foreach($data as $key => $value) {
