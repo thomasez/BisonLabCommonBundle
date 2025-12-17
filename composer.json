@@ -12,12 +12,12 @@
         }
     ],
     "require": {
-        "symfony/framework-bundle": "^6.3 || ^7.0"
+        "symfony/framework-bundle": "^7.3 || ^8.0"
     },
     "suggest": {
         "bisonlab/user-bundle": "dev-attributes",
         "oomphinc/composer-installers-extender": "^2.0",
-        "components/jquery": "^3.6",
+        "components/jquery": "^3.7",
         "vaibhavpandeyvpz/doctrine-datatables": "dev-master",
         "datatables/datatables": "^1.10"
     },
