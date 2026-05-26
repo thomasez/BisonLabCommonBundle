@@ -393,7 +393,7 @@ trigger_error('The '.__METHOD__.' method is deprecated. Please use something els
      * Name is kinda misleading though. It will return an error response if
      * REST and throw the usual exception if the usual web/html stuff.
      */
-    public function returnNotFound($request, $text, \Exception $previous = null)
+    public function returnNotFound($request, $text, ?\Exception $previous = null)
     {
         $data = array('code' => 404, 'status' => 'Not Found', 'error_text' => $text);
 trigger_error('The '.__METHOD__.' method is deprecated. Please use the not found exception again.', E_USER_DEPRECATED);
