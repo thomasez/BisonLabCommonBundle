@@ -307,17 +307,25 @@ Edge, Windows
 
     private function _serialize($data, $format)
     {
+        // The simplest method available, while keeping the option to encode
+        // into whatever by the serializer.
         if (is_object($data) && method_exists($data, '__toArray')) {
-            $serialized = $data->__toArray();
+            $array = $data->__toArray();
+            $data = (object)$array;
+        }
+        // Or.
+        if (is_object($data) && method_exists($data, 'toArray')) {
+            $array = $data->toArray();
+            $data = (object)$array;
+        }
+
+        // This is in a trait, this may not even be set, gotta null check.
+        if ($this->jmsSerializer ?? null) {
+            $serialized = $this->jmsSerializer->serialize($data, $format, SerializationContext::create()->enableMaxDepthChecks());
+        } elseif ($this->serializer ?? null) {
+            $serialized = $this->serializer->serialize($data, $format);
         } else {
-            // This is in a trait, this may not even be set, gotta null check.
-            if ($this->jmsSerializer ?? null) {
-                $serialized = $this->jmsSerializer->serialize($data, $format, SerializationContext::create()->enableMaxDepthChecks());
-            } elseif ($this->serializer ?? null) {
-                $serialized = $this->serializer->serialize($data, $format);
-            } else {
-                throw new \Exception("No serializer found or configured.");
-            }
+            throw new \Exception("No serializer found or configured.");
         }
         return $serialized;
     }
