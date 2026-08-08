@@ -313,11 +313,9 @@ Edge, Windows
             $array = $data->__toArray();
             $data = (object)$array;
         }
-        // Or.
-        if (is_object($data) && method_exists($data, 'toArray')) {
-            $array = $data->toArray();
-            $data = (object)$array;
-        }
+        // I had one as the above with just toArray, but it is dangrous.
+        // If you want a manual serializing/toArray, use __serialize.
+        // On the other hand, a toArray on an object shoud be exactly that.
 
         // This is in a trait, this may not even be set, gotta null check.
         if ($this->jmsSerializer ?? null) {
