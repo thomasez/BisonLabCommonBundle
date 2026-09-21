@@ -21,11 +21,8 @@ class BisonLabCommonExtension extends Extension
         $config = $this->processConfiguration($this->getConfiguration($configs, $container), $configs);
 
         $loader = new Loader\YamlFileLoader($container,
-            new FileLocator(array(
-                __DIR__.'/../config',
-                $container->getParameter('kernel.project_dir').'/config/packages'
-                )
-            ));
+            new FileLocator(__DIR__.'/../config')
+            );
         $loader->load('services.yaml');
     }
 }
