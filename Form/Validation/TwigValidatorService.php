@@ -22,7 +22,7 @@ class TwigValidatorService extends ConstraintValidator
         $this->twig = $twig;
     }
     
-    public function validate($value, Constraint $constraint)
+    public function validate(mixed $value, Constraint $constraint): void
     {
         try {
             $tokens = $this->twig->tokenize(new TwigSource($value, 'validation'));

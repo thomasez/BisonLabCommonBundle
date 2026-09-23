@@ -21,13 +21,13 @@ services:
         alias: BisonLab\CommonBundle\Extension\TwigExtensionPrettyPrint
         public: true
 
-    BisonLab\CommonBundle\Form\Validator\TwigValidatorService:
+    BisonLab\CommonBundle\Form\Validation\TwigValidatorService:
         tags:
             - { name: 'validator.constraint_validator' }
         arguments: ['@twig']
 
     bisonlab.validator.twigvalidator:
-        class: BisonLab\CommonBundle\Form\Validator\TwigValidatorService
+        class: BisonLab\CommonBundle\Form\Validation\TwigValidatorService
         public: true
 
 #    twig.extension.csv2html:

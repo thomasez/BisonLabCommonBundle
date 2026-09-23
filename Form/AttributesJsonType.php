@@ -5,8 +5,7 @@ namespace BisonLab\CommonBundle\Form;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Norzechowicz\AceEditorBundle\Form\Extension\AceEditor\Type\AceEditorType;
-use Norzechowicz\AceEditorBundle\Form\Extension\JsonEditor\Type\JsonEditorType;
+use AceEditorBundle\Form\Extension\JsonEditor\Type\JsonEditorType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 
 class AttributesJsonType extends AbstractType
