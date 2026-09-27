@@ -40,12 +40,13 @@ trait RestTrait
       * TODO: Investigate changing this to find the web/rest access from
       * within the request.
       * And this is how stupendously simple it is:
-      * $request->get('access');
+      * We might be both GETting and POSTing.
+      * $request->query->get('access') ?? $request->request->get('access');
       */
-    public function isRest($check)
+    public function isRest($check): bool
     {
         if ($check instanceof Request)
-            $access = $check->get('access');
+            $access = $check->query->get('access') ?? $request->request->get('access');
         else
             $access = $check;
 
@@ -148,7 +149,8 @@ Edge, Windows
         throw new \InvalidArgumentException("No data returned because of no matching Accept header.");
     }
 
-    /* This is more or less a hack.
+    /*
+     * This is more or less a hack.
      * It's only used when DataTables is in serverSide mode.
      * http://datatables.net/manual/server-side
      * (DataTables themselves menas there is no need for this until er are
@@ -158,7 +160,7 @@ Edge, Windows
     public function returnAsDataTablesJson($request, $data, $records_filtered = null, $total_amount = null) 
     {
         $content_arr = array(
-            'draw' => $request->get('draw'),
+            'draw' => $request->query->get('draw'),
             // Cheating.
             'recordsTotal' => $total_amount != null ? $total_amount : count($data),
             'recordsFiltered' => $records_filtered != null ? $records_filtered : count($data),
@@ -167,9 +169,9 @@ Edge, Windows
         $content = $this->_serialize($content_arr, 'json');
         $headers = array();
 
-        if ($request->get('callback')) { 
+        if ($request->query->get('callback')) { 
             $headers["Content-Type"] = "application/javascript";
-            $content = $request->get('callback') . "(" . $content . ");";
+            $content = $request->query->get('callback') . "(" . $content . ");";
         } else {
             $headers["Content-Type"] = "application/json";
         }
@@ -179,16 +181,16 @@ Edge, Windows
 
     public function returnAsJson($request, $data, $status_code = 200) 
     {
-        if ($request->get('draw'))
+        if ($request->query->get('draw'))
             return $this->returnAsDataTablesJson($request, $data);
 
         $content = $this->_serialize($data, 'json');
 
         $headers = array();
 
-        if ($request->get('callback')) { 
+        if ($request->query->get('callback')) { 
             $headers["Content-Type"] = "application/javascript";
-            $content = $request->get('callback') . "(" . $content . ");";
+            $content = $request->query->get('callback') . "(" . $content . ");";
         } else {
             $headers["Content-Type"] = "application/json";
         }

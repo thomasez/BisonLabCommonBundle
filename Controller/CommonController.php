@@ -16,6 +16,10 @@ use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 
 use Symfony\Component\Serializer\Encoder\XmlEncoder;
 
+/*
+ * This in itself is basically deprecated.
+ * Replace with the CommonControllerTrait
+ */
 class CommonController extends AbstractController
 {
     use \BisonLab\ContextBundle\Controller\ContextTrait;
