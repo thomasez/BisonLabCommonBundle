@@ -60,7 +60,7 @@ trait CommonControllerTrait
         $order_by = $this->getOrderBy($request);
         $filter_by = $this->getFilterBy($request);
 
-        if (!$request->get('draw')) {
+        if (!$request->query->get('draw')) {
             if ($field_name && $entity_obj) {
                 $entities = $repo->findBy(
                     array($field_name => $entity_obj));
@@ -98,16 +98,16 @@ trait CommonControllerTrait
          * * draw
          */
         $request_params = array();
-        if ($d = $request->get('columns'))
-            $request_params['columns'] = $request->get('columns');
-        if ($d = $request->get('order'))
-            $request_params['order'] = $request->get('order');
-        if ($d = $request->get('start'))
-            $request_params['start'] = $request->get('start');
-        if ($d = $request->get('length'))
-            $request_params['length'] = $request->get('length');
-        if ($d = $request->get('draw'))
-            $request_params['draw'] = $request->get('draw');
+        if ($d = $request->query->get('columns'))
+            $request_params['columns'] = $request->query->get('columns');
+        if ($d = $request->query->get('order'))
+            $request_params['order'] = $request->query->get('order');
+        if ($d = $request->query->get('start'))
+            $request_params['start'] = $request->query->get('start');
+        if ($d = $request->query->get('length'))
+            $request_params['length'] = $request->query->get('length');
+        if ($d = $request->query->get('draw'))
+            $request_params['draw'] = $request->query->get('draw');
 
         /*
          * Doing my own search. Should consider hacking this into the
@@ -162,8 +162,8 @@ trait CommonControllerTrait
         /*
          * Then, wide search, if not any specified
          */
-        if (!$specified_search && $search_params = $request->get('search')) {
-            // $request_params['search'] = $request->get('search');
+        if (!$specified_search && $search_params = $request->query->get('search')) {
+            // $request_params['search'] = $request->query->get('search');
             $string_search = false;
             $integer_search = false;
             if ($value = trim($search_params['value'])) {
@@ -261,19 +261,19 @@ trait CommonControllerTrait
     {
         $criterias = array();
         // Got something to do? 
-        if (!$request->get('draw')) return $criterias;
+        if (!$request->query->get('draw')) return $criterias;
 
         $criterias['search'] = array();
-        $criterias['per_page'] = $request->get('length');
-        $criterias['offset'] = $request->get('start');
+        $criterias['per_page'] = $request->query->get('length');
+        $criterias['offset'] = $request->query->get('start');
 
         // Can just as well use the old variables.
-        $columns = $request->get('columns');
+        $columns = $request->query->get('columns');
 
         // Guess the TODO:
         // For now I will take for granted there is only one value to search
         // for. And that there is no regexp, just a value.
-        if ($search = $request->get('search')) {
+        if ($search = $request->query->get('search')) {
             if ($value = trim($search['value'])) {
                 $criterias['search'] = array();
                 foreach ($columns as $c) {
@@ -287,9 +287,9 @@ trait CommonControllerTrait
             }
         }
 
-        if ($request->get('order')) {
+        if ($request->query->get('order')) {
             // Lazy for now, just use the first order.
-            $o = $request->get('order')[0];
+            $o = $request->query->get('order')[0];
             $column_num = $o['column'];
             if ($col = $columns[$column_num]['data']) {
                 $criterias['order_by'] = array($col => $o['dir']);
@@ -306,7 +306,7 @@ trait CommonControllerTrait
     public function getOrderBy($request) 
     {
         // Should check against what is allowed to order by. Searchable?
-        if ($order_by = $request->get('order_by')) {
+        if ($order_by = $request->query->get('order_by')) {
             $oarr = explode(",", $order_by);
             $direction = isset($oarr[1]) ? $oarr[1] : 'ASC';
             $order_by = array($oarr[0] => $direction);
@@ -320,15 +320,16 @@ trigger_error('The '.__METHOD__.' method is deprecated. Please use something els
 
     /* 
      * Sorry folks, this looks odd and stupid. And maybe it is.
-     * It has to handle both POSt and GEt and two ways of defining a filter,
-     * list and string.
      * Yes, it should and could be simplified.
+     * It tries to handle both GEt and POST but I really hope there is no more use of POST.
      */
     public function getFilterBy($request) 
     {
+        if ($request->getMethod() == 'POST')
+trigger_error('The '.__METHOD__.' method in a POST is deprecated. Please change to GET', E_USER_DEPRECATED);
         $filter_by = array();
         // Should check against what is allowed to order by. Searchable?
-        if ($filter = $request->get('filter_by')) {
+        if ($filter = $request->query->get('filter_by')) {
             if (is_array($filter))
                 $filter_by = array_merge($filter_by, $filter);
             else 
@@ -337,7 +338,7 @@ trigger_error('The '.__METHOD__.' method is deprecated. Please use something els
 
         // No, I could not use filters in an && 
         $filters_list = array();
-        if ($filters = $request->get('filters'))
+        if ($filters = $request->query->get('filters'))
             if (is_array($filters))
                 $filters_list = $filters;
         
