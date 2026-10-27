@@ -11,14 +11,14 @@ use Symfony\Component\Validator\ConstraintValidator;
 
 class JsonValidator extends ConstraintValidator
 {
-    public function validate($value, Constraint $constraint)
+    public function validate($value, Constraint $constraint): void
     {
-        if (empty($value)) { return true; }
+        if (empty($value)) { return; }
 
         if (!is_array(json_decode($value, true))) {
             $this->context->buildViolation("Not proper Json")
                 ->addViolation();
         }
-        return true;
+        return;
     }
 }
