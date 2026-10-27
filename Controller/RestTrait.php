@@ -42,11 +42,12 @@ trait RestTrait
       * And this is how stupendously simple it is:
       * We might be both GETting and POSTing.
       * $request->query->get('access') ?? $request->request->get('access');
+      * But we also have it as attributes.
       */
     public function isRest($check): bool
     {
         if ($check instanceof Request)
-            $access = $check->query->get('access') ?? $check->request->get('access');
+            $access = $check->attributes->get('access') ?? $check->query->get('access') ?? $check->request->get('access');
         else
             $access = $check;
 

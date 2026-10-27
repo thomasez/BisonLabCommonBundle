@@ -82,7 +82,6 @@ trait CommonControllerTrait
                 $qb->setParameter($key . '_value', $value);
             }
         }
-        
 
         /*
          * Gonna build the request params here. Not liking giving out _GET to
@@ -98,16 +97,18 @@ trait CommonControllerTrait
          * * draw
          */
         $request_params = array();
-        if ($d = $request->query->get('columns'))
-            $request_params['columns'] = $request->query->get('columns');
-        if ($d = $request->query->get('order'))
-            $request_params['order'] = $request->query->get('order');
-        if ($d = $request->query->get('start'))
-            $request_params['start'] = $request->query->get('start');
-        if ($d = $request->query->get('length'))
-            $request_params['length'] = $request->query->get('length');
-        if ($d = $request->query->get('draw'))
-            $request_params['draw'] = $request->query->get('draw');
+        // No scalar values (array) allowed when you get directly, this is hack.
+        $all_params = $request->query->all();
+        if ($d = $all_params['columns'] ?? null)
+            $request_params['columns'] = $d;
+        if ($d = $all_params['order'] ?? null)
+            $request_params['order'] = $d;
+        if ($d = $all_params['start'] ?? null)
+            $request_params['start'] = $d;
+        if ($d = $all_params['length'] ?? null)
+            $request_params['length'] = $d;
+        if ($d = $all_params['draw'] ?? null)
+            $request_params['draw'] = $d;
 
         /*
          * Doing my own search. Should consider hacking this into the
@@ -162,8 +163,7 @@ trait CommonControllerTrait
         /*
          * Then, wide search, if not any specified
          */
-        if (!$specified_search && $search_params = $request->query->get('search')) {
-            // $request_params['search'] = $request->query->get('search');
+        if (!$specified_search && $search_params = ($request->query->all()['search'] ?? null)) {
             $string_search = false;
             $integer_search = false;
             if ($value = trim($search_params['value'])) {
@@ -268,12 +268,12 @@ trait CommonControllerTrait
         $criterias['offset'] = $request->query->get('start');
 
         // Can just as well use the old variables.
-        $columns = $request->query->get('columns');
+        $columns = $request->query->all()['columns'] ?? [];
 
         // Guess the TODO:
         // For now I will take for granted there is only one value to search
         // for. And that there is no regexp, just a value.
-        if ($search = $request->query->get('search')) {
+        if ($search = $request->query->all()['search'] ?? null) {
             if ($value = trim($search['value'])) {
                 $criterias['search'] = array();
                 foreach ($columns as $c) {
@@ -287,7 +287,7 @@ trait CommonControllerTrait
             }
         }
 
-        if ($request->query->get('order')) {
+        if ($request->query->all()['order'] ?? null) {
             // Lazy for now, just use the first order.
             $o = $request->query->get('order')[0];
             $column_num = $o['column'];
@@ -306,7 +306,7 @@ trait CommonControllerTrait
     public function getOrderBy($request) 
     {
         // Should check against what is allowed to order by. Searchable?
-        if ($order_by = $request->query->get('order_by')) {
+        if ($order_by = $request->query->all()['order_by'] ?? null) {
             $oarr = explode(",", $order_by);
             $direction = isset($oarr[1]) ? $oarr[1] : 'ASC';
             $order_by = array($oarr[0] => $direction);
@@ -327,9 +327,11 @@ trigger_error('The '.__METHOD__.' method is deprecated. Please use something els
     {
         if ($request->getMethod() == 'POST')
 trigger_error('The '.__METHOD__.' method in a POST is deprecated. Please change to GET', E_USER_DEPRECATED);
+        // No scalar values (array) allowed when you get directly, this is hack.
+        $all_params = $request->query->all();
         $filter_by = array();
         // Should check against what is allowed to order by. Searchable?
-        if ($filter = $request->query->get('filter_by')) {
+        if ($filter = $all_params['filter_by'] ?? null) {
             if (is_array($filter))
                 $filter_by = array_merge($filter_by, $filter);
             else 
@@ -338,11 +340,11 @@ trigger_error('The '.__METHOD__.' method in a POST is deprecated. Please change 
 
         // No, I could not use filters in an && 
         $filters_list = array();
-        if ($filters = $request->query->get('filters'))
+        if ($filters = $all_params['filters'] ?? null)
             if (is_array($filters))
                 $filters_list = $filters;
         
-        if ($filters = $request->request->get('filters'))
+        if ($filters = $all_params['filters'] ?? null)
             if (is_array($filters))
                 $filters_list = array_merge($filters, $filters_list);
 
